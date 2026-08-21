@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mi panel · ConectaFlor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css" />
+<style>
+  .tabs { display:inline-flex; gap:6px; background:var(--paper-2); padding:5px; border-radius:999px; margin-bottom:24px; flex-wrap:wrap; }
+  .tab { border:none; background:transparent; cursor:pointer; font:inherit; font-weight:600; font-size:.92rem; color:var(--ink-soft); padding:9px 16px; border-radius:999px; }
+  .tab.active { background:#fff; color:var(--ink); box-shadow:var(--shadow); }
+  .item { background:#fffdf8; border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-bottom:14px; box-shadow:var(--shadow); }
+  .item .top { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-start; }
+  .item h4 { margin:0 0 2px; font-family:"Fraunces",serif; font-size:1.15rem; }
+  .item .detail { font-size:.92rem; color:var(--ink-soft); margin-top:8px; }
+  .item .detail b { color:var(--ink); }
+  .pill { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; padding:4px 10px; border-radius:999px; }
+  .pill.open { background:var(--sage); color:var(--forest); }
+  .pill.quoted { background:#fdeecf; color:#8a5a14; }
+  .pill.accepted { background:#d9eede; color:#1f6b3f; }
+  .pill.rejected, .pill.cancelled { background:var(--rose-soft); color:#8d2640; }
+  .inline-form { margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); display:none; }
+  .inline-form.show { display:block; }
+  .inline-form .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .inline-form .field { margin-bottom:12px; }
+  .quote-box { background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-top:10px; }
+  .banner { background:var(--sage); border:1px solid #b9d3bf; color:var(--forest); border-radius:14px; padding:18px 20px; margin-bottom:20px; }
+  .banner.warn { background:#fdeecf; border-color:#eccf95; color:#8a5a14; }
+  @media (max-width:560px){ .inline-form .grid-2 { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="dot"></span> ConectaFlor</a>
+    <div class="nav-links">
+      <a href="index.html">Directorio</a>
+      <a href="panel.html">Mi panel</a>
+      <a href="#" id="nav-logout">Salir</a>
+    </div>
+  </div>
+</nav>
+
+<main class="section" style="padding-top:48px;">
+  <div class="wrap">
+
+    <!-- LOGIN -->
+    <div id="login" class="form-card login-box" style="display:none;">
+      <span class="eyebrow">Acceso de empresas</span>
+      <h2 style="margin:8px 0 18px;">Inicia sesión</h2>
+      <div id="login-notice" class="notice"></div>
+      <div class="field"><label>Correo</label><input id="email" type="email" autocomplete="username" /></div>
+      <div class="field"><label>Contraseña</label><input id="password" type="password" autocomplete="current-password" /></div>
+      <button id="loginBtn" class="btn btn-primary" style="width:100%; justify-content:center;">Entrar</button>
+      <p style="text-align:center; margin-top:12px; font-size:.92rem;">
+        <a href="#" id="forgot-link" style="color:var(--ink-soft);">¿Olvidaste tu contraseña?</a>
+      </p>
+      <p style="text-align:center; margin-top:6px; font-size:.92rem; color:var(--ink-soft);">¿No tienes cuenta? <a href="registro.html">Regístrate</a></p>
+    </div>
+
+    <!-- Establecer nueva contraseña (al volver desde el correo de recuperación) -->
+    <div id="reset" class="form-card login-box" style="display:none;">
+      <span class="eyebrow">Recuperar acceso</span>
+      <h2 style="margin:8px 0 18px;">Nueva contraseña</h2>
+      <div id="reset-notice" class="notice"></div>
+      <div class="field"><label>Escribe tu nueva contraseña (mín. 6)</label><input id="new-password" type="password" minlength="6" autocomplete="new-password" /></div>
+      <button id="resetBtn" class="btn btn-primary" style="width:100%; justify-content:center;">Guardar contraseña</button>
+    </div>
+
+    <!-- PANEL -->
+    <div id="panel" style="display:none;">
+      <div class="admin-row">
+        <div><span class="eyebrow">Mi empresa</span><h2 id="who" style="margin-top:6px;">—</h2></div>
+        <button id="logoutBtn" class="btn btn-ghost btn-sm">Cerrar sesión</button>
+      </div>
+
+      <div id="status-banner"></div>
+
+      <div id="dash" style="display:none;">
+        <div class="tabs">
+          <button class="tab active" data-tab="explorar">Explorar</button>
+          <button class="tab" data-tab="recibidas">Solicitudes recibidas</button>
+          <button class="tab" data-tab="enviadas">Mis solicitudes</button>
+          <button class="tab" data-tab="excedentes">Excedentes 🌸</button>
+          <button class="tab" data-tab="perfil">Mi perfil</button>
+        </div>
+        <div id="content"></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer><div class="wrap"><span>© <span id="year"></span> ConectaFlor</span></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/app.js"></script>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+const db = getDB();
+const ADMIN_EMAIL = "juanjota98@gmail.com";
+let me = null;          // mi listing
+let currentTab = "explorar";
+
+// Botón "Salir" del menú
+document.getElementById("nav-logout").addEventListener("click", async (e) => {
+  e.preventDefault(); await db.auth.signOut(); location.href = "index.html";
+});
+
+/* ---------- helpers ---------- */
+function fmtMoney(p, m) { if (p === null || p === undefined || p === "") return "—"; return (m || "USD") + " " + Number(p).toLocaleString("es-EC"); }
+function namesMap(rows) { const m = {}; (rows||[]).forEach(r => m[r.id] = r); return m; }
+
+/* ---------- sesión ---------- */
+let recoveryMode = false;
+
+// Detecta si el usuario volvió desde el correo de recuperación
+db.auth.onAuthStateChange((event) => {
+  if (event === "PASSWORD_RECOVERY") {
+    recoveryMode = true;
+    showReset();
+  }
+});
+
+async function init() {
+  // Si la URL trae el token de recuperación, esperamos al evento PASSWORD_RECOVERY
+  if (location.hash.includes("type=recovery")) { showReset(); return; }
+  const { data } = await db.auth.getSession();
+  if (data.session) loadMe(); else showLogin();
+}
+function showLogin() {
+  document.getElementById("login").style.display = "block";
+  document.getElementById("panel").style.display = "none";
+  document.getElementById("reset").style.display = "none";
+}
+function showReset() {
+  document.getElementById("login").style.display = "none";
+  document.getElementById("panel").style.display = "none";
+  document.getElementById("reset").style.display = "block";
+}
+
+// "¿Olvidaste tu contraseña?" -> envía correo de recuperación
+document.getElementById("forgot-link").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const n = document.getElementById("login-notice");
+  if (!email) { n.className = "notice err"; n.textContent = "Escribe tu correo arriba y vuelve a tocar el enlace."; return; }
+  const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: location.origin + "/panel.html" });
+  if (error) { n.className = "notice err"; n.textContent = "No se pudo enviar el correo. Revisa la dirección."; console.error(error); return; }
+  n.className = "notice ok"; n.textContent = "📧 Te enviamos un correo para restablecer tu contraseña. Revisa tu bandeja (y spam).";
+});
+
+// Guardar la nueva contraseña tras volver del correo
+document.getElementById("resetBtn").addEventListener("click", async () => {
+  const pass = document.getElementById("new-password").value;
+  const n = document.getElementById("reset-notice");
+  if (!pass || pass.length < 6) { n.className = "notice err"; n.textContent = "La contraseña debe tener al menos 6 caracteres."; return; }
+  const btn = document.getElementById("resetBtn"); btn.disabled = true; btn.textContent = "Guardando…";
+  const { error } = await db.auth.updateUser({ password: pass });
+  btn.disabled = false; btn.textContent = "Guardar contraseña";
+  if (error) { n.className = "notice err"; n.textContent = "No se pudo guardar. El enlace pudo expirar; pide otro correo."; console.error(error); return; }
+  n.className = "notice ok"; n.textContent = "✅ Contraseña actualizada. Entrando…";
+  recoveryMode = false;
+  setTimeout(() => { history.replaceState(null, "", location.pathname); loadMe(); }, 800);
+});
+
+function showPanel(){ /* compat */ }
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const btn = document.getElementById("loginBtn"); btn.disabled = true; btn.textContent = "Entrando…";
+  const { error } = await db.auth.signInWithPassword({ email, password });
+  btn.disabled = false; btn.textContent = "Entrar";
+  if (error) { document.getElementById("login-notice").className = "notice err"; document.getElementById("login-notice").textContent = "Correo o contraseña incorrectos."; return; }
+  loadMe();
+});
+document.getElementById("logoutBtn").addEventListener("click", async () => { await db.auth.signOut(); me = null; showLogin(); });
+
+async function loadMe() {
+  if (recoveryMode) { showReset(); return; }
+  document.getElementById("login").style.display = "none";
+  document.getElementById("reset").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  const { data: ures } = await db.auth.getUser();
+  const { data: rows, error } = await db.from("listings").select("*").eq("user_id", ures.user.id).limit(1);
+  if (error) { console.error(error); }
+  me = rows && rows[0];
+
+  const banner = document.getElementById("status-banner");
+  const dash = document.getElementById("dash");
+
+  if (!me) {
+    document.getElementById("who").textContent = ures.user.email;
+    if ((ures.user.email||"").toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+      banner.innerHTML = `<div class="banner">Estás conectado como <b>administrador</b>. Ve al <a href="admin.html">panel de administración</a> para aprobar empresas.</div>`;
+    } else {
+      banner.innerHTML = `<div class="banner warn">Aún no has registrado tu empresa. <a href="registro.html">Completa tu registro</a> para empezar.</div>`;
+    }
+    dash.style.display = "none"; return;
+  }
+
+  document.getElementById("who").textContent = me.nombre_empresa;
+
+  if (me.status !== "approved") {
+    const txt = me.status === "rejected"
+      ? "Tu empresa fue rechazada. Puedes corregir tus datos en <b>Mi perfil</b> y se enviará a revisión de nuevo."
+      : "Tu empresa está <b>en revisión</b>. Cuando el administrador la apruebe, podrás explorar el directorio y enviar solicitudes. Mientras tanto, puedes editar tus datos en <b>Mi perfil</b>.";
+    banner.innerHTML = `<div class="banner warn">${txt}</div>`;
+    // Sin aprobar: solo dejamos la pestaña "Mi perfil"
+    document.querySelectorAll('.tab').forEach(t => { if (t.dataset.tab !== "perfil") t.style.display = "none"; });
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove("active"));
+    const pt = document.querySelector('.tab[data-tab="perfil"]'); pt.classList.add("active"); pt.style.display = "";
+    currentTab = "perfil";
+    dash.style.display = "block";
+    renderTab();
+    return;
+  }
+
+  // Aprobada: todas las pestañas visibles
+  document.querySelectorAll('.tab').forEach(t => t.style.display = "");
+  banner.innerHTML = `<div class="banner">Tu empresa está <b>aprobada y publicada</b> ✅ — ${me.tipo === "floricola" ? "Florícola" : (me.tipo === "logistica" ? "Logística" : "Transporte")}</div>`;
+  dash.style.display = "block";
+  renderTab();
+}
+
+/* ---------- tabs ---------- */
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  t.classList.add("active"); currentTab = t.dataset.tab; renderTab();
+}));
+function renderTab() {
+  if (currentTab === "explorar") renderExplorar();
+  else if (currentTab === "recibidas") renderRecibidas();
+  else if (currentTab === "enviadas") renderEnviadas();
+  else if (currentTab === "excedentes") renderExcedentes();
+  else renderPerfil();
+}
+
+/* ---------- EXPLORAR ---------- */
+// Decide el tipo de solicitud según mi tipo y el del destino.
+// Permitido: floricola<->logistica (envio), floricola<->floricola (pedido),
+//            floricola/logistica -> transporte (transporte).
+// Prohibido: logistica<->logistica, transportista no solicita.
+function kindFor(targetTipo) {
+  if (me.tipo === "transporte") return null; // el transportista da servicio, no solicita
+  if (targetTipo === "transporte") return "transporte";
+  if (me.tipo === "floricola" && targetTipo === "logistica") return "envio";
+  if (me.tipo === "floricola" && targetTipo === "floricola") return "pedido";
+  if (me.tipo === "logistica" && targetTipo === "floricola") return "pedido";
+  return null;
+}
+function verbFor(kind) {
+  if (kind === "transporte") return "Solicitar transporte 🚛";
+  if (kind === "envio") return "Solicitar envío";
+  return "Pedir flores";
+}
+
+async function renderExplorar() {
+  const c = document.getElementById("content");
+  // El transportista no solicita; ve sus solicitudes en "Recibidas".
+  if (me.tipo === "transporte") {
+    c.innerHTML = "<div class='empty'>Como empresa de transporte, recibes solicitudes en la pestaña <b>Solicitudes recibidas</b>. Mantén tu disponibilidad al día en <b>Mi perfil</b>.</div>";
+    return;
+  }
+  c.innerHTML = "<div class='loading'>Cargando empresas…</div>";
+
+  // florícola: ve logísticas, otras florícolas y transportistas. logística: florícolas y transportistas.
+  const tiposVisibles = me.tipo === "floricola" ? ["floricola","logistica","transporte"] : ["floricola","transporte"];
+
+  const { data, error } = await db.from("listings")
+    .select("id,nombre_empresa,tipo,ciudad,provincia,descripcion,camiones_disponibles,capacidad_carga,tipo_vehiculo,cobertura,refrigerado,disponible")
+    .eq("status","approved").in("tipo", tiposVisibles).neq("id", me.id).order("nombre_empresa");
+  if (error) { c.innerHTML = "<div class='empty'>Error al cargar.</div>"; console.error(error); return; }
+
+  // A los transportistas no disponibles no los mostramos para solicitar
+  const lista = (data || []).filter(co => kindFor(co.tipo) !== null && !(co.tipo === "transporte" && co.disponible === false));
+  if (!lista.length) { c.innerHTML = `<div class='empty'>Aún no hay empresas disponibles para solicitar.</div>`; return; }
+
+  c.innerHTML = lista.map(co => {
+    const kind = kindFor(co.tipo);
+    const tipoTag = co.tipo === "floricola" ? "🌹 Florícola" : (co.tipo === "logistica" ? "✈️ Logística" : "🚛 Transporte");
+    // Ficha extra para transportistas
+    const infoTransporte = co.tipo === "transporte" ? `
+      <div class="detail">
+        ${co.camiones_disponibles != null ? `<b>Camiones:</b> ${co.camiones_disponibles} · ` : ""}
+        ${co.tipo_vehiculo ? `<b>Vehículo:</b> ${esc(co.tipo_vehiculo)} · ` : ""}
+        ${co.capacidad_carga ? `<b>Capacidad:</b> ${esc(co.capacidad_carga)} · ` : ""}
+        ${co.cobertura ? `<b>Cobertura:</b> ${esc(co.cobertura)} · ` : ""}
+        <b>Refrigerado:</b> ${co.refrigerado ? "Sí ❄️" : "No"}
+      </div>` : "";
+    // Campos del formulario según el tipo de solicitud
+    let camposForm;
+    if (kind === "transporte") {
+      camposForm = `
+        <div class="grid-2">
+          <div class="field"><label>Origen (recoger en)</label><input id="or-${co.id}" placeholder="Ej: Finca en Cayambe" /></div>
+          <div class="field"><label>Destino (entregar en)</label><input id="cd-${co.id}" placeholder="Ej: Aeropuerto Tababela" /></div>
+        </div>
+        <div class="field"><label>Carga / cantidad</label><input id="fl-${co.id}" placeholder="Ej: 20 cajas / 5.000 tallos" /></div>`;
+    } else if (kind === "pedido") {
+      camposForm = `
+        <div class="grid-2">
+          <div class="field"><label>Flores</label><input id="fl-${co.id}" placeholder="Ej: Rosas rojas 60cm" /></div>
+          <div class="field"><label>Cantidad</label><input id="cd-${co.id}" placeholder="Ej: 5.000 tallos" /></div>
+        </div>`;
+    } else { // envio
+      camposForm = `
+        <div class="grid-2">
+          <div class="field"><label>Origen</label><input id="or-${co.id}" placeholder="Ej: Cayambe" /></div>
+          <div class="field"><label>Destino</label><input id="cd-${co.id}" placeholder="Ej: Miami, USA" /></div>
+        </div>`;
+    }
+    return `
+    <div class="item">
+      <div class="top">
+        <div><h4>${esc(co.nombre_empresa)}</h4><div class="place">${tipoTag} · ${esc([co.ciudad,co.provincia].filter(Boolean).join(", ")) || "Ecuador"}</div></div>
+        <button class="btn btn-rose btn-sm" data-toggle="${co.id}">${verbFor(kind)}</button>
+      </div>
+      ${co.descripcion ? `<div class="detail">${esc(co.descripcion)}</div>` : ""}
+      ${infoTransporte}
+      <div class="inline-form" id="f-${co.id}">
+        <div class="field"><label>Título</label><input id="ti-${co.id}" placeholder="${kind === "transporte" ? "Ej: Transporte de cajas al aeropuerto" : (kind === "envio" ? "Ej: Envío de rosas a Miami" : "Ej: Pedido de rosas premium")}" /></div>
+        ${camposForm}
+        <div class="grid-2">
+          <div class="field"><label>Fecha requerida</label><input id="fe-${co.id}" type="date" /></div>
+          <div class="field"><label>Detalle</label><input id="de-${co.id}" placeholder="Notas adicionales" /></div>
+        </div>
+        <button class="btn btn-primary btn-sm" data-send="${co.id}" data-kind="${kind}">Enviar solicitud</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  c.querySelectorAll("[data-toggle]").forEach(b => b.addEventListener("click", () => document.getElementById("f-"+b.dataset.toggle).classList.toggle("show")));
+  c.querySelectorAll("[data-send]").forEach(b => b.addEventListener("click", () => sendRequest(b.dataset.send, b.dataset.kind, b)));
+}
+
+async function sendRequest(recipientId, kind, btn) {
+  btn.disabled = true; btn.textContent = "Enviando…";
+  const g = id => { const el = document.getElementById(id); return el ? (el.value.trim() || null) : null; };
+  const payload = {
+    requester_id: me.id, recipient_id: recipientId, kind,
+    titulo: g("ti-"+recipientId), detalle: g("de-"+recipientId),
+    flores: kind === "pedido" ? g("fl-"+recipientId) : null,
+    cantidad: kind === "pedido" ? g("cd-"+recipientId) : null,
+    origen: kind === "envio" ? g("or-"+recipientId) : null,
+    destino: kind === "envio" ? g("cd-"+recipientId) : null,
+    fecha_requerida: g("fe-"+recipientId)
+  };
+  const { error } = await db.from("requests").insert(payload);
+  btn.disabled = false; btn.textContent = "Enviar solicitud";
+  if (error) { alert("No se pudo enviar la solicitud."); console.error(error); return; }
+  alert("✅ Solicitud enviada. La verás en 'Mis solicitudes'.");
+  document.getElementById("f-"+recipientId).classList.remove("show");
+}
+
+/* ---------- RECIBIDAS (yo cotizo) ---------- */
+async function renderRecibidas() {
+  const c = document.getElementById("content");
+  c.innerHTML = "<div class='loading'>Cargando…</div>";
+  const { data: reqs, error } = await db.from("requests").select("*").eq("recipient_id", me.id).order("created_at",{ascending:false});
+  if (error) { c.innerHTML = "<div class='empty'>Error al cargar.</div>"; console.error(error); return; }
+  if (!reqs.length) { c.innerHTML = "<div class='empty'>No tienes solicitudes recibidas todavía.</div>"; return; }
+
+  const reqIds = reqs.map(r => r.id);
+  const reqsterIds = [...new Set(reqs.map(r => r.requester_id))];
+  const [{ data: companies }, { data: myQuotes }] = await Promise.all([
+    db.from("listings").select("id,nombre_empresa,email,whatsapp,ciudad").in("id", reqsterIds),
+    db.from("quotes").select("*").in("request_id", reqIds).eq("sender_id", me.id)
+  ]);
+  const cMap = namesMap(companies);
+  const qByReq = {}; (myQuotes||[]).forEach(q => { qByReq[q.request_id] = q; });
+
+  c.innerHTML = reqs.map(r => {
+    const co = cMap[r.requester_id] || {};
+    const q = qByReq[r.id];
+    const contact = r.status === "accepted" ? `<div class="detail"><b>Contacto:</b> ${esc(co.email||"")} ${co.whatsapp ? "· WA "+esc(co.whatsapp) : ""}</div>` : "";
+    const noteHTML = r.change_note ? `<div class="detail" style="color:#8a5a14;"><b>El solicitante pidió cambios:</b> ${esc(r.change_note)}</div>` : "";
+    // Puedo (re)cotizar si la solicitud está abierta o sin cotizar y no fue aceptada/rechazada.
+    const puedoCotizar = (r.status === "open" || r.status === "quoted") && r.status !== "accepted";
+    // Muestro mi última cotización si existe y NO está pendiente de recotizar
+    const mostrarQuotePrevia = q && !(r.status === "open" && (q.status === "rejected" || q.status === "changes_requested"));
+    const formCotizar = `
+        <div class="inline-form show" style="border-top:none;">
+          ${q ? `<div class="detail" style="margin-bottom:8px;">Tu cotización anterior: ${fmtMoney(q.precio,q.moneda)} (${q.status}). Envía una nueva:</div>` : ""}
+          <div class="grid-2">
+            <div class="field"><label>Precio</label><input id="p-${r.id}" type="number" min="0" step="0.01" placeholder="0.00" /></div>
+            <div class="field"><label>Moneda</label><input id="m-${r.id}" value="USD" maxlength="5" /></div>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>Válida hasta</label><input id="v-${r.id}" type="date" /></div>
+            <div class="field"><label>Detalle</label><input id="qd-${r.id}" placeholder="Condiciones, incluye, etc." /></div>
+          </div>
+          <button class="btn btn-primary btn-sm" data-quote="${r.id}">${q ? "Enviar nueva cotización" : "Enviar cotización"}</button>
+        </div>`;
+    return `
+    <div class="item">
+      <div class="top">
+        <div><h4>${esc(r.titulo || (r.kind === "pedido" ? "Pedido de flores" : "Solicitud de envío"))}</h4>
+          <div class="place">De: ${esc(co.nombre_empresa || "—")}${co.ciudad ? " · "+esc(co.ciudad) : ""}</div></div>
+        <span class="pill ${r.status}">${r.status}</span>
+      </div>
+      <div class="detail">
+        ${r.flores ? `<b>Flores:</b> ${esc(r.flores)} · ` : ""}${r.cantidad ? `<b>Cantidad:</b> ${esc(r.cantidad)} · ` : ""}
+        ${r.origen ? `<b>Origen:</b> ${esc(r.origen)} · ` : ""}${r.destino ? `<b>Destino:</b> ${esc(r.destino)} · ` : ""}
+        ${r.fecha_requerida ? `<b>Para:</b> ${esc(r.fecha_requerida)}` : ""}
+        ${r.detalle ? `<br>${esc(r.detalle)}` : ""}
+      </div>
+      ${noteHTML}
+      ${contact}
+      ${r.transporte_empresa ? `<div class="detail" style="color:var(--forest);"><b>🚛 Transporte:</b> ${esc(r.transporte_empresa)}${r.pickup_date ? " · recoge el "+esc(r.pickup_date) : ""}</div>` : ""}
+      ${mostrarQuotePrevia ? `<div class="quote-box">Tu cotización: <b>${fmtMoney(q.precio,q.moneda)}</b> — <span class="pill ${q.status}">${q.status}</span>${q.detalle ? "<br>"+esc(q.detalle) : ""}</div>` : ""}
+      ${puedoCotizar && !mostrarQuotePrevia ? formCotizar : ""}
+    </div>`;
+  }).join("");
+
+  c.querySelectorAll("[data-quote]").forEach(b => b.addEventListener("click", () => sendQuote(b.dataset.quote, b)));
+}
+
+async function sendQuote(requestId, btn) {
+  btn.disabled = true; btn.textContent = "Enviando…";
+  const precio = document.getElementById("p-"+requestId).value;
+  const payload = {
+    request_id: requestId, sender_id: me.id,
+    precio: precio === "" ? null : Number(precio),
+    moneda: document.getElementById("m-"+requestId).value.trim() || "USD",
+    validez: document.getElementById("v-"+requestId).value || null,
+    detalle: document.getElementById("qd-"+requestId).value.trim() || null
+  };
+  const { error } = await db.from("quotes").insert(payload);
+  if (!error) await db.from("requests").update({ status: "quoted", change_note: null }).eq("id", requestId);
+  btn.disabled = false; btn.textContent = "Enviar cotización";
+  if (error) { alert("No se pudo enviar la cotización."); console.error(error); return; }
+  renderRecibidas();
+}
+
+/* ---------- ENVIADAS (yo acepto) ---------- */
+async function renderEnviadas() {
+  const c = document.getElementById("content");
+  c.innerHTML = "<div class='loading'>Cargando…</div>";
+  const { data: reqs, error } = await db.from("requests").select("*").eq("requester_id", me.id).order("created_at",{ascending:false});
+  if (error) { c.innerHTML = "<div class='empty'>Error al cargar.</div>"; console.error(error); return; }
+  if (!reqs.length) { c.innerHTML = "<div class='empty'>Aún no has enviado solicitudes. Ve a <b>Explorar</b>.</div>"; return; }
+
+  const reqIds = reqs.map(r => r.id);
+  const recIds = [...new Set(reqs.map(r => r.recipient_id))];
+  const [{ data: companies }, { data: quotes }] = await Promise.all([
+    db.from("listings").select("id,nombre_empresa,email,whatsapp,ciudad").in("id", recIds),
+    db.from("quotes").select("*").in("request_id", reqIds).order("created_at",{ascending:false})
+  ]);
+  const cMap = namesMap(companies);
+  const qByReq = {}; (quotes||[]).forEach(q => { (qByReq[q.request_id] = qByReq[q.request_id] || []).push(q); });
+
+  // Precio aceptado de una solicitud (si lo hay)
+  const acceptedPrice = (reqId) => { const q = (qByReq[reqId]||[]).find(x => x.status === "accepted"); return q ? { precio: q.precio, moneda: q.moneda } : null; };
+  // Hijo de transporte por trato de flores
+  const childByParent = {}; reqs.forEach(r => { if (r.parent_request_id) childByParent[r.parent_request_id] = r; });
+
+  c.innerHTML = reqs.map(r => {
+    const co = cMap[r.recipient_id] || {};
+    const qs = qByReq[r.id] || [];
+    const contact = r.status === "accepted" ? `<div class="detail"><b>Contacto:</b> ${esc(co.email||"")} ${co.whatsapp ? "· WA "+esc(co.whatsapp) : ""}</div>` : "";
+
+    // --- Bloque de transporte / costo acumulado (solo en PEDIDO de flores cerrado) ---
+    let transporteCTA = "";
+    if (r.status === "accepted" && r.kind === "pedido") {
+      const child = childByParent[r.id];
+      const flor = acceptedPrice(r.id);
+      if (!child) {
+        transporteCTA = `
+        <div class="banner" id="cta-${r.id}" style="margin-top:12px;">
+          <div style="margin-bottom:10px;"><b>Trato cerrado ✅</b> ¿Necesitas transporte para mover esta carga?</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-rose btn-sm" data-need-transport="${r.id}">🚛 Contratar transporte</button>
+            <button class="btn btn-ghost btn-sm" data-have-transport="${r.id}">Tengo transporte propio</button>
+          </div>
+          <div id="tp-${r.id}"></div>
+        </div>`;
+      } else {
+        const tr = acceptedPrice(child.id);
+        const transNombre = (cMap[child.recipient_id]||{}).nombre_empresa || "Transportista";
+        let totalLine = "";
+        if (flor && tr && (flor.moneda === tr.moneda)) {
+          const total = (Number(flor.precio)||0) + (Number(tr.precio)||0);
+          totalLine = `<div style="margin-top:6px;"><b>Costo acumulado:</b> flores ${fmtMoney(flor.precio,flor.moneda)} + transporte ${fmtMoney(tr.precio,tr.moneda)} = <b>${fmtMoney(total,flor.moneda)}</b></div>`;
+        } else if (tr) {
+          totalLine = `<div style="margin-top:6px;"><b>Transporte:</b> ${fmtMoney(tr.precio,tr.moneda)} ${flor ? "· flores "+fmtMoney(flor.precio,flor.moneda) : ""}</div>`;
+        }
+        transporteCTA = `
+        <div class="banner" style="margin-top:12px;">
+          <div><b>Transporte:</b> ${esc(transNombre)} ${child.pickup_date ? "· recoge el "+esc(child.pickup_date) : ""} · <span class="pill ${child.status}">${child.status === "accepted" ? "contratado" : child.status}</span></div>
+          ${totalLine}
+          ${child.status !== "accepted" ? `<div class="detail" style="margin-top:6px;">La solicitud de transporte está más abajo, pendiente de cotización/aceptación.</div>` : ""}
+        </div>`;
+      }
+    }
+
+    const noteHTML = r.change_note ? `<div class="detail"><b>Cambios pedidos:</b> ${esc(r.change_note)}</div>` : "";
+    const quotesHTML = qs.length ? qs.map(q => `
+      <div class="quote-box">
+        <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center;">
+          <span><b>${fmtMoney(q.precio,q.moneda)}</b> ${q.validez ? "· válida hasta "+esc(q.validez) : ""} <span class="pill ${q.status}">${q.status}</span></span>
+          ${q.status === "sent" && r.status !== "accepted" ? `
+            <span style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button class="btn btn-primary btn-sm" data-accept="${q.id}" data-req="${r.id}">Aceptar</button>
+              <button class="btn btn-ghost btn-sm" data-changes="${q.id}" data-req="${r.id}">Pedir cambios</button>
+              <button class="btn btn-sm" style="background:#bd3f5c;color:#fff;" data-reject="${q.id}" data-req="${r.id}">Rechazar</button>
+            </span>` : ""}
+        </div>
+        ${q.detalle ? `<div class="detail">${esc(q.detalle)}</div>` : ""}
+      </div>`).join("") : `<div class="detail">Aún sin cotizaciones.</div>`;
+
+    const titulo = r.kind === "transporte" ? (r.titulo || "Solicitud de transporte 🚛")
+                 : (r.titulo || (r.kind === "pedido" ? "Pedido de flores" : "Solicitud de envío"));
+    return `
+    <div class="item">
+      <div class="top">
+        <div><h4>${esc(titulo)}</h4>
+          <div class="place">Para: ${esc(co.nombre_empresa || "—")}</div></div>
+        <span class="pill ${r.status}">${r.status}</span>
+      </div>
+      <div class="detail">
+        ${r.flores ? `<b>Carga:</b> ${esc(r.flores)} · ` : ""}${r.cantidad ? `<b>Cantidad:</b> ${esc(r.cantidad)} · ` : ""}
+        ${r.origen ? `<b>Origen:</b> ${esc(r.origen)} · ` : ""}${r.destino ? `<b>Destino:</b> ${esc(r.destino)} · ` : ""}
+        ${r.fecha_requerida ? `<b>Para:</b> ${esc(r.fecha_requerida)}` : ""}
+      </div>
+      ${noteHTML}
+      ${contact}
+      ${transporteCTA}
+      ${quotesHTML}
+    </div>`;
+  }).join("");
+
+  c.querySelectorAll("[data-accept]").forEach(b => b.addEventListener("click", () => acceptQuote(b.dataset.accept, b.dataset.req, b)));
+  c.querySelectorAll("[data-reject]").forEach(b => b.addEventListener("click", () => rejectQuote(b.dataset.reject, b.dataset.req, b)));
+  c.querySelectorAll("[data-changes]").forEach(b => b.addEventListener("click", () => requestChanges(b.dataset.changes, b.dataset.req, b)));
+  c.querySelectorAll("[data-need-transport]").forEach(b => b.addEventListener("click", () => openTransportPicker(b.dataset.needTransport)));
+  c.querySelectorAll("[data-have-transport]").forEach(b => b.addEventListener("click", (e) => {
+    const banner = e.target.closest(".banner");
+    if (banner) banner.innerHTML = "<b>Listo ✅</b> Indicaste que cuentas con transporte propio.";
+  }));
+}
+
+// Muestra transportistas disponibles para contratar, ligado al trato de flores
+async function openTransportPicker(flowerId) {
+  const cont = document.getElementById("tp-"+flowerId);
+  if (!cont) return;
+  cont.innerHTML = "<div class='detail' style='margin-top:10px;'>Cargando transportistas…</div>";
+  const { data, error } = await db.from("listings")
+    .select("id,nombre_empresa,ciudad,provincia,camiones_disponibles,tipo_vehiculo,capacidad_carga,cobertura,refrigerado,disponible")
+    .eq("status","approved").eq("tipo","transporte").eq("disponible", true).order("nombre_empresa");
+  if (error) { cont.innerHTML = "<div class='detail'>Error al cargar.</div>"; console.error(error); return; }
+  if (!data.length) { cont.innerHTML = "<div class='detail' style='margin-top:10px;'>No hay transportistas disponibles ahora.</div>"; return; }
+  cont.innerHTML = `
+    <div class="field" style="margin-top:12px;"><label>Fecha de recogida</label><input id="pk-${flowerId}" type="date"></div>
+    ${data.map(t => `
+      <div class="quote-box">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+          <span><b>${esc(t.nombre_empresa)}</b> ${t.camiones_disponibles!=null?"· "+t.camiones_disponibles+" camiones":""} ${t.refrigerado?"· ❄️":""}</span>
+          <button class="btn btn-primary btn-sm" data-contract="${t.id}" data-flower="${flowerId}">Solicitar a esta empresa</button>
+        </div>
+        <div class="detail">${[t.tipo_vehiculo,t.capacidad_carga,t.cobertura].filter(Boolean).map(esc).join(" · ")}</div>
+      </div>`).join("")}`;
+  cont.querySelectorAll("[data-contract]").forEach(b => b.addEventListener("click", () => contractTransport(b.dataset.flower, b.dataset.contract, b)));
+}
+
+// Crea la solicitud de transporte ligada al trato (sin precios; la transportista solo ve la carga)
+async function contractTransport(flowerId, transportId, btn) {
+  const pk = document.getElementById("pk-"+flowerId);
+  const pickup = pk ? pk.value : "";
+  if (!pickup) { alert("Indica la fecha de recogida."); return; }
+  // Tomo la carga del trato de flores para que la transportista sepa qué mover
+  const { data: parent } = await db.from("requests").select("flores,cantidad,origen,destino,titulo").eq("id", flowerId).single();
+  btn.disabled = true; btn.textContent = "Solicitando…";
+  const payload = {
+    requester_id: me.id, recipient_id: transportId, kind: "transporte",
+    parent_request_id: flowerId,
+    titulo: "Transporte: " + ((parent && (parent.titulo || parent.flores)) || "carga de flores"),
+    flores: parent ? parent.flores : null,
+    cantidad: parent ? parent.cantidad : null,
+    origen: parent ? parent.origen : null,
+    destino: parent ? parent.destino : null,
+    fecha_requerida: pickup, pickup_date: pickup
+  };
+  const { error } = await db.from("requests").insert(payload);
+  btn.disabled = false; btn.textContent = "Solicitar a esta empresa";
+  if (error) { alert("No se pudo solicitar el transporte."); console.error(error); return; }
+  renderEnviadas();
+}
+
+// Cambia de pestaña por código (reusa el resaltado visual)
+function goToTab(name) {
+  const tab = document.querySelector(`.tab[data-tab="${name}"]`);
+  if (!tab) return;
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  tab.classList.add("active");
+  currentTab = name;
+  renderTab();
+  document.getElementById("content").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function rejectQuote(quoteId, requestId, btn) {
+  if (!confirm("¿Rechazar esta cotización? La empresa podrá enviar otra.")) return;
+  btn.disabled = true; btn.textContent = "…";
+  const { error: e1 } = await db.from("quotes").update({ status: "rejected" }).eq("id", quoteId);
+  // Reabrimos la solicitud para que pueda recotizar
+  const { error: e2 } = await db.from("requests").update({ status: "open" }).eq("id", requestId);
+  if (e1 || e2) { alert("No se pudo rechazar."); console.error(e1 || e2); btn.disabled = false; btn.textContent = "Rechazar"; return; }
+  renderEnviadas();
+}
+
+async function requestChanges(quoteId, requestId, btn) {
+  const note = prompt("¿Qué cambios necesitas en la cotización? (ej: bajar precio, otra fecha, incluir aduana)");
+  if (note === null) return; // canceló
+  btn.disabled = true; btn.textContent = "…";
+  const { error: e1 } = await db.from("quotes").update({ status: "changes_requested" }).eq("id", quoteId);
+  // Reabrimos la solicitud y guardamos la nota para que la otra empresa la vea
+  const { error: e2 } = await db.from("requests").update({ status: "open", change_note: note.trim() || null }).eq("id", requestId);
+  if (e1 || e2) { alert("No se pudo enviar la solicitud de cambios."); console.error(e1 || e2); btn.disabled = false; btn.textContent = "Pedir cambios"; return; }
+  renderEnviadas();
+}
+
+async function acceptQuote(quoteId, requestId, btn) {
+  if (!confirm("¿Aceptar esta cotización? Se cerrará la solicitud.")) return;
+  btn.disabled = true; btn.textContent = "Aceptando…";
+  const { error: e1 } = await db.from("quotes").update({ status: "accepted" }).eq("id", quoteId);
+  const { error: e2 } = await db.from("requests").update({ status: "accepted" }).eq("id", requestId);
+  if (e1 || e2) { alert("No se pudo aceptar la cotización."); console.error(e1 || e2); btn.disabled = false; btn.textContent = "Aceptar"; return; }
+
+  // Si era una solicitud de TRANSPORTE ligada a un trato, dejo el resumen (sin precio)
+  // en el trato de flores para que la florícola vendedora lo vea.
+  try {
+    const { data: rq } = await db.from("requests").select("kind,parent_request_id,recipient_id,pickup_date").eq("id", requestId).single();
+    if (rq && rq.kind === "transporte" && rq.parent_request_id) {
+      const { data: tco } = await db.from("listings").select("nombre_empresa").eq("id", rq.recipient_id).single();
+      await db.from("requests").update({
+        transporte_empresa: tco ? tco.nombre_empresa : "Transportista",
+        pickup_date: rq.pickup_date
+      }).eq("id", rq.parent_request_id);
+    }
+  } catch (e) { console.error(e); }
+
+  btn.disabled = false; btn.textContent = "Aceptar";
+  renderEnviadas();
+}
+
+/* ---------- MI PERFIL (editar / eliminar) ---------- */
+function renderPerfil() {
+  const c = document.getElementById("content");
+  const r = me;
+  const f = (id, label, val, attrs="") => `<div class="field"><label>${label}</label><input id="pf-${id}" value="${esc(val||"")}" ${attrs}></div>`;
+  const tipoLabel = r.tipo === "floricola" ? "🌹 Florícola" : (r.tipo === "logistica" ? "✈️ Logística" : "🚛 Transporte");
+
+  let camposTipo = "";
+  if (r.tipo === "floricola") {
+    camposTipo = `
+      ${f("tipos_flores","Tipos de flores", r.tipos_flores, "maxlength=160")}
+      <div class="grid-2">
+        ${f("volumen_mensual","Volumen mensual", r.volumen_mensual, "maxlength=80")}
+        ${f("certificaciones","Certificaciones", r.certificaciones, "maxlength=160")}
+      </div>`;
+  } else if (r.tipo === "logistica") {
+    camposTipo = `
+      ${f("servicios","Servicios", r.servicios, "maxlength=200")}
+      ${f("destinos","Destinos", r.destinos, "maxlength=200")}
+      <div class="field check" style="margin-bottom:12px;"><input type="checkbox" id="pf-cadena_frio" ${r.cadena_frio ? "checked" : ""}><label for="pf-cadena_frio" style="margin:0;">Ofrecemos cadena de frío ❄️</label></div>`;
+  } else { // transporte
+    camposTipo = `
+      <div class="banner ${r.disponible === false ? "warn" : ""}" style="margin-bottom:14px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin:0;font-weight:600;">
+          <input type="checkbox" id="pf-disponible" ${r.disponible === false ? "" : "checked"} style="width:auto;">
+          Disponible para recibir solicitudes ahora
+        </label>
+      </div>
+      <div class="grid-2">
+        ${f("camiones_disponibles","Camiones disponibles", r.camiones_disponibles, "type=number min=0 step=1")}
+        ${f("tipo_vehiculo","Tipo de vehículo", r.tipo_vehiculo, "maxlength=120")}
+      </div>
+      ${f("capacidad_carga","Capacidad / tamaño de carga", r.capacidad_carga, "maxlength=120")}
+      ${f("cobertura","Cobertura / rutas", r.cobertura, "maxlength=200")}
+      <div class="field check" style="margin-bottom:12px;"><input type="checkbox" id="pf-refrigerado" ${r.refrigerado ? "checked" : ""}><label for="pf-refrigerado" style="margin:0;">Transporte refrigerado / cadena de frío ❄️</label></div>`;
+  }
+
+  c.innerHTML = `
+    <div class="item">
+      <div class="top">
+        <div><h4>Editar mi empresa</h4>
+          <div class="place">Tipo: ${tipoLabel} · Estado: <span class="pill ${r.status}">${r.status}</span></div></div>
+      </div>
+      <div id="pf-notice" class="notice" style="margin-top:14px;"></div>
+
+      <div style="margin-top:14px;">
+        ${f("nombre_empresa","Nombre de la empresa *", r.nombre_empresa, "maxlength=120")}
+        <div class="grid-2">
+          ${f("ruc","RUC", r.ruc, "maxlength=20")}
+          ${f("provincia","Provincia", r.provincia, "maxlength=60")}
+        </div>
+        ${f("ciudad","Ciudad", r.ciudad, "maxlength=60")}
+        <div class="field"><label>Descripción</label><textarea id="pf-descripcion" maxlength="500" style="width:100%;font:inherit;padding:11px 14px;border-radius:10px;border:1px solid var(--line);min-height:80px;">${esc(r.descripcion||"")}</textarea></div>
+
+        ${camposTipo}
+
+        <hr style="border:none;border-top:1px dashed var(--line);margin:8px 0 16px;">
+        <div class="grid-2">
+          ${f("contacto_nombre","Persona de contacto", r.contacto_nombre, "maxlength=100")}
+          ${f("telefono","Teléfono", r.telefono, "maxlength=30")}
+        </div>
+        <div class="grid-2">
+          ${f("whatsapp","WhatsApp", r.whatsapp, "maxlength=30")}
+          ${f("sitio_web","Sitio web", r.sitio_web, "maxlength=160")}
+        </div>
+
+        <button class="btn btn-primary" id="pf-save" style="width:100%;justify-content:center;">Guardar cambios</button>
+        ${r.status === "approved" && r.tipo !== "transporte" ? `<p style="font-size:.85rem;color:var(--ink-soft);text-align:center;margin-top:10px;">Al editar, tu empresa volverá a revisión antes de re-publicarse.</p>` : ""}
+      </div>
+    </div>
+
+    <div class="item" style="border-color:#e6b9c2;">
+      <h4 style="color:#8d2640;">Eliminar mi cuenta</h4>
+      <div class="detail">Esto borra tu empresa del directorio junto con todas tus solicitudes y cotizaciones. No se puede deshacer.</div>
+      <button class="btn btn-sm" id="pf-delete" style="margin-top:12px;background:#bd3f5c;color:#fff;">Eliminar mi empresa</button>
+    </div>`;
+
+  document.getElementById("pf-save").addEventListener("click", savePerfil);
+  document.getElementById("pf-delete").addEventListener("click", deleteAccount);
+}
+
+async function savePerfil() {
+  const btn = document.getElementById("pf-save");
+  const g = id => { const el = document.getElementById("pf-"+id); return el ? (el.value.trim() || null) : null; };
+  const nombre = g("nombre_empresa");
+  if (!nombre) { return notifyPerfil("err", "El nombre de la empresa es obligatorio."); }
+
+  const upd = {
+    nombre_empresa: nombre, ruc: g("ruc"), provincia: g("provincia"), ciudad: g("ciudad"),
+    descripcion: g("descripcion"), contacto_nombre: g("contacto_nombre"),
+    telefono: g("telefono"), whatsapp: g("whatsapp"), sitio_web: g("sitio_web")
+  };
+  if (me.tipo === "floricola") {
+    upd.tipos_flores = g("tipos_flores"); upd.volumen_mensual = g("volumen_mensual"); upd.certificaciones = g("certificaciones");
+  } else if (me.tipo === "logistica") {
+    upd.servicios = g("servicios"); upd.destinos = g("destinos");
+    upd.cadena_frio = document.getElementById("pf-cadena_frio").checked;
+  } else { // transporte
+    const cam = document.getElementById("pf-camiones_disponibles").value;
+    upd.camiones_disponibles = cam === "" ? null : parseInt(cam, 10);
+    upd.tipo_vehiculo = g("tipo_vehiculo");
+    upd.capacidad_carga = g("capacidad_carga");
+    upd.cobertura = g("cobertura");
+    upd.refrigerado = document.getElementById("pf-refrigerado").checked;
+    upd.disponible = document.getElementById("pf-disponible").checked;
+  }
+  // Si estaba aprobada y NO es transporte, al editar vuelve a revisión.
+  // Para transporte no re-revisamos (disponibilidad/camiones son operativos).
+  if (me.status === "approved" && me.tipo !== "transporte") upd.status = "pending";
+
+  btn.disabled = true; btn.textContent = "Guardando…";
+  const { error } = await db.from("listings").update(upd).eq("id", me.id);
+  btn.disabled = false; btn.textContent = "Guardar cambios";
+  if (error) { notifyPerfil("err", "No se pudieron guardar los cambios."); console.error(error); return; }
+  notifyPerfil("ok", "✅ Cambios guardados." + (upd.status === "pending" ? " Tu empresa volvió a revisión." : ""));
+  loadMe();
+}
+
+function notifyPerfil(type, msg) {
+  const n = document.getElementById("pf-notice");
+  if (!n) return;
+  n.className = "notice " + type; n.innerHTML = msg;
+}
+
+async function deleteAccount() {
+  if (!confirm("¿Seguro que quieres eliminar tu empresa? Se borrarán también tus solicitudes y cotizaciones. Esta acción no se puede deshacer.")) return;
+  if (!confirm("Última confirmación: esto es permanente. ¿Continuar?")) return;
+  const { error } = await db.from("listings").delete().eq("id", me.id);
+  if (error) { alert("No se pudo eliminar."); console.error(error); return; }
+  await db.auth.signOut();
+  alert("Tu empresa fue eliminada. Tu sesión se cerró.");
+  me = null; showLogin();
+}
+
+/* ---------- EXCEDENTES (tablón) ---------- */
+async function renderExcedentes() {
+  const c = document.getElementById("content");
+  c.innerHTML = "<div class='loading'>Cargando excedentes…</div>";
+
+  const [{ data: mine, error: e1 }, { data: others, error: e2 }] = await Promise.all([
+    db.from("surplus").select("*").eq("listing_id", me.id).order("created_at",{ascending:false}),
+    db.from("surplus").select("*").eq("status","active").neq("listing_id", me.id).order("created_at",{ascending:false})
+  ]);
+  if (e1 || e2) { c.innerHTML = "<div class='empty'>Error al cargar excedentes.</div>"; console.error(e1||e2); return; }
+
+  const myIds = (mine||[]).map(s => s.id);
+  const [{ data: offersOnMine }, { data: myOffers }] = await Promise.all([
+    myIds.length ? db.from("surplus_offers").select("*").in("surplus_id", myIds).order("created_at",{ascending:false}) : Promise.resolve({data:[]}),
+    db.from("surplus_offers").select("*").eq("buyer_id", me.id).order("created_at",{ascending:false})
+  ]);
+  // Para mostrar a las dos partes el nombre/contacto del otro
+  const counterIds = [...new Set([...(offersOnMine||[]).map(o=>o.buyer_id)])];
+  // dueños de los excedentes donde yo oferté (para registro de trato)
+  const ownerListingIds = [...new Set((others||[]).map(s=>s.listing_id))];
+  const { data: parties } = (counterIds.length || ownerListingIds.length)
+    ? await db.from("listings").select("id,nombre_empresa,email,whatsapp").in("id", [...new Set([...counterIds, ...ownerListingIds])])
+    : {data:[]};
+  const pMap = namesMap(parties);
+  const offByS = {}; (offersOnMine||[]).forEach(o => { (offByS[o.surplus_id]=offByS[o.surplus_id]||[]).push(o); });
+  const myOffByS = {}; (myOffers||[]).forEach(o => { if (!myOffByS[o.surplus_id]) myOffByS[o.surplus_id]=o; });
+
+  // ---- Formulario de publicar ----
+  const formHTML = `
+    <div class="item">
+      <h4>Publicar un excedente</h4>
+      <div class="detail" style="margin-bottom:12px;">Publica flores disponibles. Aparecerá en el directorio público y otras empresas podrán hacerte ofertas.</div>
+      <div id="sp-notice" class="notice"></div>
+      <div class="field"><label>Flores *</label><input id="sp-flores" placeholder="Ej: Rosa Freedom 60cm" maxlength="160"></div>
+      <div class="grid-2">
+        <div class="field"><label>Cantidad disponible (tallos) *</label><input id="sp-tallos" type="number" min="1" step="1" placeholder="Ej: 8000"></div>
+        <div class="field"><label>Disponible hasta</label><input id="sp-fecha" type="date"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Precio (por tallo o lote)</label><input id="sp-precio" type="number" min="0" step="0.01" placeholder="0.00"></div>
+        <div class="field"><label>Moneda</label><input id="sp-moneda" value="USD" maxlength="5"></div>
+      </div>
+      <div class="field"><label>Ubicación</label><input id="sp-ubicacion" placeholder="Ej: Cayambe, Pichincha" maxlength="120"></div>
+      <div class="field"><label>Detalle</label><input id="sp-detalle" placeholder="Calidad, motivo del excedente, etc." maxlength="300"></div>
+      <button class="btn btn-primary" id="sp-publish" style="width:100%;justify-content:center;">Publicar excedente</button>
+    </div>`;
+
+  // ---- Mis excedentes (yo recibo ofertas, acepto; el comprador confirma) ----
+  const mineHTML = (mine||[]).length ? (mine||[]).map(s => {
+    const offers = offByS[s.id] || [];
+    const cerrado = s.status === "closed";
+    const offersHTML = offers.length ? offers.map(o => {
+      const b = pMap[o.buyer_id] || {};
+      const verContacto = (o.status === "confirmed");
+      const contacto = verContacto ? `<div class="detail"><b>Trato cerrado ✅ Contacto:</b> ${esc(b.email||"")} ${b.whatsapp ? "· WA "+esc(b.whatsapp):""}</div>` : "";
+      let acciones = "";
+      if (o.status === "sent" && !cerrado) {
+        acciones = `<span style="display:flex;gap:6px;">
+          <button class="btn btn-primary btn-sm" data-acc-offer="${o.id}" data-sid="${s.id}">Aceptar</button>
+          <button class="btn btn-sm" style="background:#bd3f5c;color:#fff;" data-rej-offer="${o.id}">Rechazar</button></span>`;
+      } else if (o.status === "accepted") {
+        acciones = `<span class="detail" style="color:#8a5a14;">Esperando confirmación del comprador…</span>`;
+      }
+      return `<div class="quote-box">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+          <span><b>${esc(b.nombre_empresa||"Empresa")}</b>: ${fmtMoney(o.precio,o.moneda)} ${o.tallos?"· "+o.tallos+" tallos":""} <span class="pill ${o.status === "confirmed" ? "accepted" : (o.status === "accepted" ? "quoted" : o.status)}">${o.status}</span></span>
+          ${acciones}
+        </div>
+        ${o.mensaje ? `<div class="detail">${esc(o.mensaje)}</div>` : ""}
+        ${contacto}
+      </div>`;
+    }).join("") : `<div class="detail">Sin ofertas todavía.</div>`;
+    return `<div class="item">
+      <div class="top">
+        <div><h4>${esc(s.flores)}</h4><div class="place">${s.tallos?s.tallos+" tallos · ":""}${fmtMoney(s.precio,s.moneda)}${s.disponible_hasta?" · hasta "+esc(s.disponible_hasta):""}</div></div>
+        <span class="pill ${cerrado ? "accepted" : "open"}">${cerrado ? "trato cerrado" : "activo"}</span>
+      </div>
+      ${s.detalle?`<div class="detail">${esc(s.detalle)}</div>`:""}
+      ${!cerrado ? `<div style="margin-top:10px;display:flex;gap:8px;">
+        <button class="btn btn-ghost btn-sm" data-close-surplus="${s.id}">Retirar</button>
+        <button class="btn btn-ghost btn-sm" data-del-surplus="${s.id}">Eliminar</button>
+      </div>` : ""}
+      <div style="margin-top:10px;">${offersHTML}</div>
+    </div>`;
+  }).join("") : "<div class='detail'>Aún no has publicado excedentes.</div>";
+
+  // ---- Excedentes de otros (yo oferto, luego confirmo si me aceptan) ----
+  const othersHTML = (others||[]).length ? (others||[]).map(s => {
+    const mineOffer = myOffByS[s.id];
+    const owner = pMap[s.listing_id] || {};
+    let bloque;
+    if (mineOffer) {
+      let extra = "";
+      if (mineOffer.status === "accepted") {
+        extra = `<div style="margin-top:8px;"><button class="btn btn-primary btn-sm" data-confirm-offer="${mineOffer.id}" data-sid="${s.id}">Confirmar y cerrar trato</button></div>`;
+      } else if (mineOffer.status === "confirmed") {
+        extra = `<div class="detail"><b>Trato cerrado ✅ Contacto:</b> ${esc(owner.email||"")} ${owner.whatsapp ? "· WA "+esc(owner.whatsapp):""}</div>`;
+      }
+      bloque = `<div class="quote-box">Tu oferta: <b>${fmtMoney(mineOffer.precio,mineOffer.moneda)}</b> ${mineOffer.tallos?"· "+mineOffer.tallos+" tallos":""} — <span class="pill ${mineOffer.status === "confirmed" ? "accepted" : (mineOffer.status === "accepted" ? "quoted" : mineOffer.status)}">${mineOffer.status}</span>${extra}</div>`;
+    } else {
+      bloque = `<div class="inline-form" id="of-${s.id}">
+            <div class="grid-2">
+              <div class="field"><label>Tu precio</label><input id="op-${s.id}" type="number" min="0" step="0.01" placeholder="0.00"></div>
+              <div class="field"><label>Tallos (máx ${s.tallos || "?"})</label><input id="ot-${s.id}" type="number" min="1" step="1" max="${s.tallos || ""}" placeholder="${s.tallos || ""}"></div>
+            </div>
+            <div class="field"><label>Mensaje</label><input id="om-${s.id}" placeholder="Condiciones, recogida, etc."></div>
+            <button class="btn btn-primary btn-sm" data-make-offer="${s.id}" data-max="${s.tallos || ""}">Enviar oferta</button>
+          </div>
+          <button class="btn btn-rose btn-sm" data-toggle-offer="${s.id}" style="margin-top:10px;">Hacer oferta</button>`;
+    }
+    return `<div class="item">
+      <div class="top">
+        <div><h4>${esc(s.flores)}</h4><div class="place">${esc(owner.nombre_empresa||"Empresa")} · ${s.tallos?s.tallos+" tallos · ":""}${fmtMoney(s.precio,s.moneda)}${s.ubicacion?" · "+esc(s.ubicacion):""}${s.disponible_hasta?" · hasta "+esc(s.disponible_hasta):""}</div></div>
+      </div>
+      ${s.detalle?`<div class="detail">${esc(s.detalle)}</div>`:""}
+      ${bloque}
+    </div>`;
+  }).join("") : "<div class='detail'>No hay excedentes de otras empresas por ahora.</div>";
+
+  c.innerHTML = `
+    ${formHTML}
+    <h3 style="font-family:'Fraunces',serif;margin:26px 0 12px;">Mis excedentes</h3>
+    ${mineHTML}
+    <h3 style="font-family:'Fraunces',serif;margin:26px 0 12px;">Excedentes disponibles</h3>
+    ${othersHTML}`;
+
+  document.getElementById("sp-publish").addEventListener("click", publishSurplus);
+  c.querySelectorAll("[data-close-surplus]").forEach(b => b.addEventListener("click", () => setSurplusStatus(b.dataset.closeSurplus, "closed")));
+  c.querySelectorAll("[data-del-surplus]").forEach(b => b.addEventListener("click", () => deleteSurplus(b.dataset.delSurplus)));
+  c.querySelectorAll("[data-acc-offer]").forEach(b => b.addEventListener("click", () => acceptOffer(b.dataset.accOffer, b)));
+  c.querySelectorAll("[data-rej-offer]").forEach(b => b.addEventListener("click", () => setOfferStatus(b.dataset.rejOffer, "rejected", b)));
+  c.querySelectorAll("[data-confirm-offer]").forEach(b => b.addEventListener("click", () => confirmOffer(b.dataset.confirmOffer, b.dataset.sid, b)));
+  c.querySelectorAll("[data-toggle-offer]").forEach(b => b.addEventListener("click", () => document.getElementById("of-"+b.dataset.toggleOffer).classList.toggle("show")));
+  c.querySelectorAll("[data-make-offer]").forEach(b => b.addEventListener("click", () => makeOffer(b.dataset.makeOffer, b.dataset.max, b)));
+}
+
+async function publishSurplus() {
+  const g = id => { const el = document.getElementById(id); return el ? (el.value.trim() || null) : null; };
+  const flores = g("sp-flores");
+  const n = document.getElementById("sp-notice");
+  if (!flores) { n.className = "notice err"; n.textContent = "Indica qué flores ofreces."; return; }
+  const tallos = parseInt(document.getElementById("sp-tallos").value, 10);
+  if (!tallos || tallos < 1) { n.className = "notice err"; n.textContent = "Indica la cantidad de tallos disponibles (un número)."; return; }
+  const precio = document.getElementById("sp-precio").value;
+  const payload = {
+    listing_id: me.id, flores, tallos,
+    cantidad: tallos + " tallos",
+    precio: precio === "" ? null : Number(precio),
+    moneda: g("sp-moneda") || "USD",
+    disponible_hasta: document.getElementById("sp-fecha").value || null,
+    ubicacion: g("sp-ubicacion"),
+    detalle: g("sp-detalle")
+  };
+  const btn = document.getElementById("sp-publish");
+  btn.disabled = true; btn.textContent = "Publicando…";
+  const { error } = await db.from("surplus").insert(payload);
+  btn.disabled = false; btn.textContent = "Publicar excedente";
+  if (error) { n.className = "notice err"; n.textContent = "No se pudo publicar."; console.error(error); return; }
+  renderExcedentes();
+}
+
+async function setSurplusStatus(id, status) {
+  const { error } = await db.from("surplus").update({ status }).eq("id", id);
+  if (error) { alert("No se pudo actualizar."); console.error(error); return; }
+  renderExcedentes();
+}
+
+async function deleteSurplus(id) {
+  if (!confirm("¿Eliminar esta publicación de excedente? Se borran también sus ofertas.")) return;
+  const { error } = await db.from("surplus").delete().eq("id", id);
+  if (error) { alert("No se pudo eliminar."); console.error(error); return; }
+  renderExcedentes();
+}
+
+async function makeOffer(surplusId, max, btn) {
+  const precio = document.getElementById("op-"+surplusId).value;
+  const tallos = parseInt(document.getElementById("ot-"+surplusId).value, 10);
+  const maxN = parseInt(max, 10);
+  if (!tallos || tallos < 1) { alert("Indica cuántos tallos quieres (un número)."); return; }
+  if (maxN && tallos > maxN) { alert("No puedes ofertar más de " + maxN + " tallos disponibles."); return; }
+  const payload = {
+    surplus_id: surplusId, buyer_id: me.id, tallos,
+    precio: precio === "" ? null : Number(precio),
+    cantidad: tallos + " tallos",
+    mensaje: document.getElementById("om-"+surplusId).value.trim() || null
+  };
+  btn.disabled = true; btn.textContent = "Enviando…";
+  const { error } = await db.from("surplus_offers").insert(payload);
+  btn.disabled = false; btn.textContent = "Enviar oferta";
+  if (error) { alert("No se pudo enviar la oferta."); console.error(error); return; }
+  renderExcedentes();
+}
+
+// Dueño acepta una oferta (queda pendiente de confirmación del comprador)
+async function acceptOffer(offerId, btn) {
+  if (!confirm("¿Aceptar esta oferta? El comprador deberá confirmar para cerrar el trato.")) return;
+  btn.disabled = true; btn.textContent = "…";
+  const { error } = await db.from("surplus_offers").update({ status: "accepted" }).eq("id", offerId);
+  if (error) { alert("No se pudo aceptar."); console.error(error); btn.disabled = false; return; }
+  renderExcedentes();
+}
+
+// Comprador confirma: cierra el trato y retira el excedente del público
+async function confirmOffer(offerId, surplusId, btn) {
+  if (!confirm("¿Confirmar y cerrar el trato? El excedente saldrá del directorio público.")) return;
+  btn.disabled = true; btn.textContent = "Cerrando…";
+  const { error: e1 } = await db.from("surplus_offers").update({ status: "confirmed" }).eq("id", offerId);
+  const { error: e2 } = await db.from("surplus").update({ status: "closed" }).eq("id", surplusId);
+  if (e1 || e2) { alert("No se pudo cerrar el trato."); console.error(e1||e2); btn.disabled = false; btn.textContent = "Confirmar y cerrar trato"; return; }
+  renderExcedentes();
+}
+
+async function setOfferStatus(offerId, status, btn) {
+  btn.disabled = true; btn.textContent = "…";
+  const { error } = await db.from("surplus_offers").update({ status }).eq("id", offerId);
+  if (error) { alert("No se pudo actualizar la oferta."); console.error(error); btn.disabled = false; return; }
+  renderExcedentes();
+}
+
+init();
+</script>
+</body>
+</html>

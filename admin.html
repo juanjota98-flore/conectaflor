@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin · ConectaFlor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="dot"></span> ConectaFlor</a>
+    <div class="nav-links">
+      <a href="index.html">Directorio</a>
+      <a href="registro.html">Registrar empresa</a>
+      <a href="admin.html">Admin</a>
+    </div>
+  </div>
+</nav>
+
+<main class="section" style="padding-top:48px;">
+  <div class="wrap">
+
+    <!-- LOGIN -->
+    <div id="login" class="form-card login-box">
+      <span class="eyebrow">Acceso restringido</span>
+      <h2 style="margin:8px 0 18px;">Panel de administración</h2>
+      <div id="login-notice" class="notice"></div>
+      <div class="field">
+        <label>Correo</label>
+        <input id="email" type="email" autocomplete="username" />
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input id="password" type="password" autocomplete="current-password" />
+      </div>
+      <button id="loginBtn" class="btn btn-primary" style="width:100%; justify-content:center;">Iniciar sesión</button>
+    </div>
+
+    <!-- PANEL -->
+    <div id="panel" style="display:none;">
+      <div class="admin-row">
+        <div>
+          <span class="eyebrow">Administración</span>
+          <h2 id="who" style="margin-top:6px;">Registros</h2>
+        </div>
+        <button id="logoutBtn" class="btn btn-ghost btn-sm">Cerrar sesión</button>
+      </div>
+
+      <div class="filters" style="margin-bottom:22px; display:inline-flex;">
+        <button class="chip active" data-tab="pending">Pendientes <span id="c-pending"></span></button>
+        <button class="chip" data-tab="approved">Aprobados</button>
+        <button class="chip" data-tab="rejected">Rechazados</button>
+      </div>
+
+      <div id="adminList"></div>
+      <div id="adminEmpty" class="empty" style="display:none;">No hay registros en esta categoría.</div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap"><span>© <span id="year"></span> ConectaFlor</span></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/app.js"></script>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+const db = getDB();
+let currentTab = "pending";
+
+// Único correo autorizado para el panel de administración.
+// Debe coincidir EXACTO con el de las políticas RLS en Supabase.
+const ADMIN_EMAIL = "juanjota98@gmail.com";
+
+function loginNotice(type, msg) {
+  const n = document.getElementById("login-notice");
+  n.className = "notice " + type; n.innerHTML = msg;
+}
+
+async function refreshSession() {
+  const { data } = await db.auth.getSession();
+  if (!data.session) { showLogin(); return; }
+  const email = data.session.user.email;
+  // Solo el correo admin puede usar el panel. Otro correo => fuera.
+  if ((email || "").toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+    await db.auth.signOut();
+    showLogin();
+    loginNotice("err", "⚠️ Esta cuenta no tiene acceso de administrador. Si eres una empresa, entra a tu <a href='panel.html'>panel</a>.");
+    return;
+  }
+  showPanel(email);
+}
+
+function showLogin() {
+  document.getElementById("login").style.display = "block";
+  document.getElementById("panel").style.display = "none";
+}
+function showPanel(email) {
+  document.getElementById("login").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  document.getElementById("who").textContent = "Hola, " + email;
+  loadList();
+}
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const btn = document.getElementById("loginBtn");
+  btn.disabled = true; btn.textContent = "Entrando…";
+  const { error } = await db.auth.signInWithPassword({ email, password });
+  btn.disabled = false; btn.textContent = "Iniciar sesión";
+  if (error) { loginNotice("err", "⚠️ Credenciales incorrectas o usuario no existe."); return; }
+  refreshSession();
+});
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await db.auth.signOut();
+  showLogin();
+});
+
+document.querySelectorAll("[data-tab]").forEach(c => {
+  c.addEventListener("click", () => {
+    document.querySelectorAll("[data-tab]").forEach(x => x.classList.remove("active"));
+    c.classList.add("active");
+    currentTab = c.dataset.tab;
+    loadList();
+  });
+});
+
+function itemHTML(r) {
+  const tipo = r.tipo === "floricola" ? "🌹 Florícola" : "✈️ Logística";
+  const place = [r.ciudad, r.provincia].filter(Boolean).map(esc).join(", ") || "—";
+
+  let extra = "";
+  if (r.tipo === "floricola") {
+    extra = `<div class="detail"><b>Flores:</b> ${esc(r.tipos_flores) || "—"} · <b>Volumen:</b> ${esc(r.volumen_mensual) || "—"} · <b>Certificaciones:</b> ${esc(r.certificaciones) || "—"}</div>`;
+  } else {
+    extra = `<div class="detail"><b>Servicios:</b> ${esc(r.servicios) || "—"} · <b>Destinos:</b> ${esc(r.destinos) || "—"} · <b>Cadena frío:</b> ${r.cadena_frio ? "Sí" : "No"}</div>`;
+  }
+
+  let actions = "";
+  if (r.status === "pending") {
+    actions = `
+      <button class="btn btn-primary btn-sm" data-act="approve" data-id="${r.id}">✓ Aprobar</button>
+      <button class="btn btn-ghost btn-sm" data-act="reject" data-id="${r.id}">✕ Rechazar</button>`;
+  } else if (r.status === "approved") {
+    actions = `<button class="btn btn-ghost btn-sm" data-act="reject" data-id="${r.id}">Quitar del directorio</button>`;
+  } else {
+    actions = `<button class="btn btn-primary btn-sm" data-act="approve" data-id="${r.id}">Aprobar ahora</button>`;
+  }
+  actions += `<button class="btn btn-ghost btn-sm" data-act="delete" data-id="${r.id}">🗑</button>`;
+
+  return `
+    <div class="admin-item">
+      <div class="top">
+        <div>
+          <span class="tag ${esc(r.tipo)}">${tipo}</span>
+          <h3 style="margin:8px 0 2px;">${esc(r.nombre_empresa)}</h3>
+          <div class="place">${place} · RUC: ${esc(r.ruc) || "—"}</div>
+        </div>
+        <div class="actions">${actions}</div>
+      </div>
+      ${r.descripcion ? `<div class="detail">${esc(r.descripcion)}</div>` : ""}
+      ${extra}
+      <div class="detail"><b>Contacto:</b> ${esc(r.contacto_nombre) || "—"} · ${esc(r.email)} · ${esc(r.telefono) || ""} ${r.whatsapp ? "· WA " + esc(r.whatsapp) : ""} ${r.sitio_web ? "· " + esc(r.sitio_web) : ""}</div>
+    </div>`;
+}
+
+async function loadList() {
+  const list = document.getElementById("adminList");
+  const empty = document.getElementById("adminEmpty");
+  list.innerHTML = "<div class='loading'>Cargando…</div>";
+  empty.style.display = "none";
+
+  const { data, error } = await db
+    .from("listings")
+    .select("*")
+    .eq("status", currentTab)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    list.innerHTML = `<div class="empty">⚠️ Error al cargar. ¿Tu correo coincide con el admin definido en las políticas SQL?</div>`;
+    return;
+  }
+
+  // Contador de pendientes
+  if (currentTab === "pending") {
+    document.getElementById("c-pending").textContent = data.length ? `(${data.length})` : "";
+  }
+
+  if (!data || data.length === 0) {
+    list.innerHTML = "";
+    empty.style.display = "block";
+    return;
+  }
+  list.innerHTML = data.map(itemHTML).join("");
+}
+
+// Acciones (delegación de eventos)
+document.getElementById("adminList").addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-act]");
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const act = btn.dataset.act;
+  btn.disabled = true;
+
+  try {
+    if (act === "approve") {
+      await db.from("listings").update({ status: "approved" }).eq("id", id);
+    } else if (act === "reject") {
+      await db.from("listings").update({ status: "rejected" }).eq("id", id);
+    } else if (act === "delete") {
+      if (!confirm("¿Borrar este registro permanentemente?")) { btn.disabled = false; return; }
+      await db.from("listings").delete().eq("id", id);
+    }
+    loadList();
+  } catch (err) {
+    alert("No se pudo completar la acción.");
+    console.error(err);
+    btn.disabled = false;
+  }
+});
+
+refreshSession();
+</script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Crear cuenta · ConectaFlor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="dot"></span> ConectaFlor</a>
+    <div class="nav-links">
+      <a href="index.html">Directorio</a>
+      <a href="registro.html">Registrar empresa</a>
+      <a href="panel.html">Iniciar sesión</a>
+    </div>
+  </div>
+</nav>
+
+<main class="section" style="padding-top:48px;">
+  <div class="wrap">
+    <div class="section-head" style="justify-content:center; text-align:center; flex-direction:column; align-items:center;">
+      <span class="eyebrow">Crear cuenta gratis</span>
+      <h2>Registra tu empresa</h2>
+      <p class="lead" style="max-width:54ch; margin-top:10px;">Creas tu cuenta y el perfil de tu empresa. Tras la aprobación del administrador, aparecerás en el directorio y podrás enviar y recibir solicitudes y cotizaciones.</p>
+    </div>
+
+    <div class="form-card">
+      <div id="notice" class="notice"></div>
+
+      <form id="form">
+        <div class="type-toggle" style="grid-template-columns:1fr 1fr 1fr;">
+          <label>
+            <input type="radio" name="tipo" value="floricola" checked />
+            <span class="ico">🌹</span>
+            <span class="t">Florícola</span>
+          </label>
+          <label>
+            <input type="radio" name="tipo" value="logistica" />
+            <span class="ico">✈️</span>
+            <span class="t">Logística</span>
+          </label>
+          <label>
+            <input type="radio" name="tipo" value="transporte" />
+            <span class="ico">🚛</span>
+            <span class="t">Transporte</span>
+          </label>
+        </div>
+
+        <h3 style="font-size:1.15rem; margin:0 0 14px;">Datos de acceso</h3>
+        <div class="grid-2">
+          <div class="field">
+            <label>Correo <span class="required">*</span> <span class="hint">(será tu usuario)</span></label>
+            <input name="email" type="email" required maxlength="120" autocomplete="email" />
+          </div>
+          <div class="field">
+            <label>Contraseña <span class="required">*</span> <span class="hint">(mín. 6)</span></label>
+            <input name="password" type="password" required minlength="6" autocomplete="new-password" />
+          </div>
+        </div>
+
+        <hr style="border:none; border-top:1px dashed var(--line); margin:6px 0 22px;" />
+        <h3 style="font-size:1.15rem; margin:0 0 14px;">Datos de la empresa</h3>
+
+        <div class="field">
+          <label>Nombre de la empresa <span class="required">*</span></label>
+          <input name="nombre_empresa" required maxlength="120" />
+        </div>
+
+        <div class="grid-2">
+          <div class="field"><label>RUC <span class="hint">(opcional)</span></label><input name="ruc" maxlength="20" /></div>
+          <div class="field"><label>Provincia</label><input name="provincia" maxlength="60" placeholder="Ej: Pichincha, Cotopaxi" /></div>
+        </div>
+
+        <div class="field"><label>Ciudad</label><input name="ciudad" maxlength="60" placeholder="Ej: Cayambe, Latacunga" /></div>
+        <div class="field"><label>Descripción breve</label><textarea name="descripcion" maxlength="500"></textarea></div>
+
+        <div class="only" data-only="floricola">
+          <div class="field"><label>Tipos de flores</label><input name="tipos_flores" maxlength="160" placeholder="Ej: Rosas premium, Gypsophila" /></div>
+          <div class="grid-2">
+            <div class="field"><label>Volumen mensual</label><input name="volumen_mensual" maxlength="80" placeholder="Ej: 1.5M tallos/mes" /></div>
+            <div class="field"><label>Certificaciones</label><input name="certificaciones" maxlength="160" placeholder="Ej: Flor Ecuador, BASC" /></div>
+          </div>
+        </div>
+
+        <div class="only" data-only="logistica">
+          <div class="field"><label>Servicios</label><input name="servicios" maxlength="200" placeholder="Ej: Carga aérea, aduanas, courier" /></div>
+          <div class="field"><label>Destinos principales</label><input name="destinos" maxlength="200" placeholder="Ej: Miami, Ámsterdam, Moscú" /></div>
+          <div class="field check"><input type="checkbox" name="cadena_frio" id="cf" /><label for="cf" style="margin:0;">Ofrecemos cadena de frío ❄️</label></div>
+        </div>
+
+        <div class="only" data-only="transporte">
+          <div class="grid-2">
+            <div class="field"><label>Camiones disponibles</label><input name="camiones_disponibles" type="number" min="0" step="1" placeholder="Ej: 5" /></div>
+            <div class="field"><label>Tipo de vehículo</label><input name="tipo_vehiculo" maxlength="120" placeholder="Ej: Furgón, camión 3.5T" /></div>
+          </div>
+          <div class="field"><label>Capacidad / tamaño de carga</label><input name="capacidad_carga" maxlength="120" placeholder="Ej: hasta 10 ton / 12 pallets" /></div>
+          <div class="field"><label>Cobertura / rutas</label><input name="cobertura" maxlength="200" placeholder="Ej: Sierra, aeropuerto de Quito y Tababela" /></div>
+          <div class="field check"><input type="checkbox" name="refrigerado" id="refri" /><label for="refri" style="margin:0;">Tenemos transporte refrigerado / cadena de frío ❄️</label></div>
+          <div class="field check"><input type="checkbox" name="disponible" id="disp" checked /><label for="disp" style="margin:0;">Disponible para recibir solicitudes ahora</label></div>
+        </div>
+
+        <hr style="border:none; border-top:1px dashed var(--line); margin:6px 0 22px;" />
+        <h3 style="font-size:1.15rem; margin:0 0 14px;">Contacto (visible cuando te aprueben)</h3>
+        <div class="grid-2">
+          <div class="field"><label>Persona de contacto</label><input name="contacto_nombre" maxlength="100" /></div>
+          <div class="field"><label>Teléfono</label><input name="telefono" maxlength="30" placeholder="+593 ..." /></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>WhatsApp <span class="hint">(con código país)</span></label><input name="whatsapp" maxlength="30" placeholder="+593 99 999 9999" /></div>
+          <div class="field"><label>Sitio web</label><input name="sitio_web" maxlength="160" placeholder="www.tuempresa.com" /></div>
+        </div>
+
+        <button type="submit" id="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:8px;">Crear cuenta y registrar empresa</button>
+        <p style="text-align:center; margin-top:14px; font-size:.92rem; color:var(--ink-soft);">¿Ya tienes cuenta? <a href="panel.html">Inicia sesión</a></p>
+      </form>
+    </div>
+  </div>
+</main>
+
+<footer><div class="wrap"><span>© <span id="year"></span> ConectaFlor · Hecho en Ecuador 🇪🇨</span></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/app.js"></script>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+
+// Si ya hay sesión iniciada, esta página no aplica: al panel.
+(async () => {
+  try {
+    const { data } = await getDB().auth.getSession();
+    if (data.session) {
+      const card = document.querySelector(".form-card");
+      if (card) card.innerHTML = `<div style="text-align:center;padding:20px;">
+        <h3 style="font-family:'Fraunces',serif;margin-bottom:10px;">Ya tienes una sesión iniciada</h3>
+        <p style="color:var(--ink-soft);margin-bottom:18px;">Para registrar o editar tu empresa, ve a tu panel.</p>
+        <a class="btn btn-primary" href="panel.html">Ir a mi panel</a>
+        <p style="margin-top:14px;"><a href="#" id="ro-logout" style="color:var(--ink-soft);">Cerrar sesión para registrar otra empresa</a></p>
+      </div>`;
+      const lo = document.getElementById("ro-logout");
+      if (lo) lo.addEventListener("click", async (e) => { e.preventDefault(); await getDB().auth.signOut(); location.reload(); });
+    }
+  } catch (e) { /* sin sesión: registro normal */ }
+})();
+
+function toggleFields() {
+  const tipo = document.querySelector('input[name="tipo"]:checked').value;
+  document.querySelectorAll(".only").forEach(el => { el.style.display = (el.dataset.only === tipo) ? "block" : "none"; });
+}
+document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener("change", toggleFields));
+toggleFields();
+
+function notify(type, msg) {
+  const n = document.getElementById("notice");
+  n.className = "notice " + type; n.innerHTML = msg;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.getElementById("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById("submit");
+  btn.disabled = true; btn.textContent = "Creando…";
+
+  const fd = new FormData(e.target);
+  const tipo = fd.get("tipo");
+  const email = fd.get("email").trim();
+  const password = fd.get("password");
+
+  const payload = {
+    tipo,
+    nombre_empresa: fd.get("nombre_empresa").trim(),
+    ruc: fd.get("ruc")?.trim() || null,
+    provincia: fd.get("provincia")?.trim() || null,
+    ciudad: fd.get("ciudad")?.trim() || null,
+    descripcion: fd.get("descripcion")?.trim() || null,
+    contacto_nombre: fd.get("contacto_nombre")?.trim() || null,
+    email: email,
+    telefono: fd.get("telefono")?.trim() || null,
+    whatsapp: fd.get("whatsapp")?.trim() || null,
+    sitio_web: fd.get("sitio_web")?.trim() || null,
+  };
+  if (tipo === "floricola") {
+    payload.tipos_flores = fd.get("tipos_flores")?.trim() || null;
+    payload.volumen_mensual = fd.get("volumen_mensual")?.trim() || null;
+    payload.certificaciones = fd.get("certificaciones")?.trim() || null;
+  } else if (tipo === "logistica") {
+    payload.servicios = fd.get("servicios")?.trim() || null;
+    payload.destinos = fd.get("destinos")?.trim() || null;
+    payload.cadena_frio = fd.get("cadena_frio") === "on";
+  } else { // transporte
+    const cam = fd.get("camiones_disponibles");
+    payload.camiones_disponibles = cam ? parseInt(cam, 10) : null;
+    payload.tipo_vehiculo = fd.get("tipo_vehiculo")?.trim() || null;
+    payload.capacidad_carga = fd.get("capacidad_carga")?.trim() || null;
+    payload.cobertura = fd.get("cobertura")?.trim() || null;
+    payload.refrigerado = fd.get("refrigerado") === "on";
+    payload.disponible = fd.get("disponible") === "on";
+  }
+
+  try {
+    const db = getDB();
+
+    // 1) Crear la cuenta
+    const { error: suErr } = await db.auth.signUp({ email, password });
+    if (suErr) {
+      if (/registered|already|exists/i.test(suErr.message)) {
+        notify("err", "Ya existe una cuenta con ese correo. <a href='panel.html'>Inicia sesión</a> para registrar tu empresa.");
+        btn.disabled = false; btn.textContent = "Crear cuenta y registrar empresa"; return;
+      }
+      throw suErr;
+    }
+
+    // 2) Asegurar sesión iniciada
+    let { data: sess } = await db.auth.getSession();
+    if (!sess.session) {
+      const { error: siErr } = await db.auth.signInWithPassword({ email, password });
+      if (siErr) {
+        notify("ok", "✅ Cuenta creada. Si te pide confirmar el correo, revisa tu bandeja; luego entra al <a href='panel.html'>panel</a> para completar el registro.");
+        btn.disabled = false; btn.textContent = "Crear cuenta y registrar empresa"; return;
+      }
+    }
+
+    // 3) Insertar la empresa ligada a la cuenta
+    const { data: ures } = await db.auth.getUser();
+    payload.user_id = ures.user.id;
+    const { error: insErr } = await db.from("listings").insert(payload);
+    if (insErr) throw insErr;
+
+    notify("ok", "✅ <b>¡Listo!</b> Tu cuenta y tu empresa fueron creadas. Quedará visible al aprobarla el administrador. Ya puedes entrar a tu <a href='panel.html'>panel</a>.");
+    e.target.reset(); toggleFields();
+  } catch (err) {
+    notify("err", "⚠️ No se pudo completar el registro. Revisa la configuración de Supabase o inténtalo de nuevo.");
+    console.error(err);
+  } finally {
+    btn.disabled = false; btn.textContent = "Crear cuenta y registrar empresa";
+  }
+});
+</script>
+</body>
+</html>
