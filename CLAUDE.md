@@ -13,8 +13,8 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 - **Backend:** Supabase (Postgres + Auth + RLS). La seguridad REAL vive en las
   políticas RLS de Postgres; los chequeos en JS (ocultar botones, etc.) son solo cosméticos.
 - **Hosting:** Netlify (sitio estático).
-- **Emails:** Supabase envía los de autenticación/recuperación; Make.com + Brevo envían
-  los transaccionales (bienvenida, aprobación).
+- **Emails:** Supabase envía los de autenticación/recuperación; Edge Function `notify-empresa`
+  + Brevo envían los transaccionales (bienvenida, aprobación, rechazo).
 
 ## Archivos
 - `index.html` — página pública: hero, cifras del sector, tablón de excedentes público,
@@ -30,6 +30,10 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 - `assets/app.js` — helpers: `getDB()`, `esc()`, `waLink()`, `siteLink()`.
 - `*.sql` — esquemas de base de datos. **NO se suben a Netlify**; se corren manualmente en
   Supabase → SQL Editor, en orden.
+- `supabase/functions/notify-empresa/index.ts` — Edge Function que envía emails transaccionales
+  (bienvenida, aprobación, rechazo). Se despliega con `supabase functions deploy`.
+- `webhook-triggers.sql` — Triggers SQL con pg_net que disparan la Edge Function automáticamente
+  al insertar/actualizar empresas. Corre una sola vez en Supabase SQL Editor.
 
 ## Supabase
 - Proyecto: `jbsgahlfsixbltvpdmqt` · URL en `assets/config.js`.
@@ -75,11 +79,19 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 - Validar/probar antes de dar por terminado.
 - Avisarme si un cambio requiere correr SQL nuevo en Supabase.
 
+## Notificaciones por Email (COMPLETADO ✅)
+- ✅ Bienvenida: cuando se registra una empresa (`INSERT` en listings)
+- ✅ Aprobación: cuando el admin cambia status a `approved` (`UPDATE` en listings)
+- ✅ Rechazo: cuando el admin cambia status a `rejected` (`UPDATE` en listings)
+- Vía: Edge Function `notify-empresa` + Brevo API
+- Triggers: SQL con pg_net (`webhook-triggers.sql`)
+
 ## Roadmap / pendientes
+- **Notificaciones adicionales:** solicitudes recibidas, sobrantes publicados, cotizaciones
+  (requiere triggers en `requests`, `surplus`, `quotes`)
 - **Pago con pasarela** (PayPhone o Kushki): requiere RUC + cuenta de comercio + credenciales
   y un backend seguro (Supabase Edge Function) para confirmar el pago vía webhook. No se puede
   hacer de forma segura desde el sitio estático.
 - **Migración recomendada:** frontend a React (Vite + React) sobre el MISMO backend Supabase,
   para poder escalar y mantener mejor (panel.html ya es difícil de mantener a mano).
-- Correo de aprobación en Make (pendiente de afinar el filtro `record.status = approved`).
 - Moderación opcional de excedentes por el admin.
