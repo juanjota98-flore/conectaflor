@@ -8,6 +8,27 @@ export default function Features() {
     { icon: '🌍', title: 'Internacional', text: 'Conecta con logística especializada en exportación.' }
   ]
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.2,
+      },
+    },
+  }
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 40, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.8, ease: 'easeOut' },
+    },
+  }
+
   return (
     <section className="section" id="features">
       <motion.h2
@@ -19,25 +40,47 @@ export default function Features() {
       >
         ¿Por qué ConectaFlor?
       </motion.h2>
-      <p className="section-subtitle">Beneficios reales para tu negocio</p>
+      <motion.p
+        className="section-subtitle"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        viewport={{ once: true }}
+      >
+        Beneficios reales para tu negocio
+      </motion.p>
 
-      <div className="cards-grid">
+      <motion.div
+        className="cards-grid"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         {features.map((feature, i) => (
           <motion.div
             key={i}
             className="card"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: i * 0.1 }}
-            viewport={{ once: true }}
-            whileHover={{ scale: 1.05 }}
+            variants={cardVariants}
+            whileHover={{
+              scale: 1.08,
+              y: -10,
+              transition: { duration: 0.3 }
+            }}
+            whileTap={{ scale: 0.95 }}
           >
-            <div className="card-icon">{feature.icon}</div>
+            <motion.div
+              className="card-icon"
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+            >
+              {feature.icon}
+            </motion.div>
             <h3 className="card-title">{feature.title}</h3>
             <p className="card-text">{feature.text}</p>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   )
 }
