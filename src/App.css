@@ -50,23 +50,22 @@
   pointer-events: none;
 }
 
-.hero-flower {
+.hero-flower-left {
   position: absolute;
+  left: 2%;
+  top: 22%;
   z-index: 1;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
-  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+  animation: float 4.5s ease-in-out infinite;
 }
 
-.hero-flower.left {
-  left: 5%;
-  top: 25%;
-  opacity: 0.9;
-}
-
-.hero-flower.right {
-  right: 5%;
-  top: 30%;
-  opacity: 0.85;
+.hero-truck-right {
+  position: absolute;
+  right: 3%;
+  top: 35%;
+  z-index: 1;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+  animation: float 3.8s ease-in-out infinite 0.3s;
 }
 
 .hero-content {

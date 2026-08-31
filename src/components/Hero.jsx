@@ -16,31 +16,42 @@ export default function Hero() {
 
   return (
     <div className="hero">
-      {/* Flores decorativas */}
-      <svg className="hero-flower left" viewBox="0 0 100 120" width="120" height="150">
-        <ellipse cx="50" cy="25" rx="9" ry="22" fill="#e8847f" />
-        <ellipse cx="70" cy="35" rx="9" ry="22" fill="#e8847f" transform="rotate(60 50 50)" />
-        <ellipse cx="75" cy="55" rx="9" ry="22" fill="#e8847f" transform="rotate(120 50 50)" />
-        <ellipse cx="50" cy="75" rx="9" ry="22" fill="#e8847f" transform="rotate(180 50 50)" />
-        <ellipse cx="25" cy="55" rx="9" ry="22" fill="#e8847f" transform="rotate(240 50 50)" />
-        <ellipse cx="30" cy="35" rx="9" ry="22" fill="#e8847f" transform="rotate(300 50 50)" />
-        <circle cx="50" cy="50" r="14" fill="#ffd700" />
-        <circle cx="50" cy="50" r="8" fill="#ffed4e" opacity="0.8" />
-        <path d="M 50 64 Q 48 90 50 115" stroke="#2d6a4f" strokeWidth="3" fill="none" />
-        <ellipse cx="40" cy="90" rx="6" ry="16" fill="#2d6a4f" opacity="0.7" transform="rotate(-30 40 90)" />
+      {/* Flor roja - izquierda */}
+      <svg className="hero-flower-left" viewBox="0 0 200 280" width="140" height="200">
+        <path d="M 100 200 Q 95 240 100 280" stroke="#1a5e3f" strokeWidth="4" fill="none" strokeLinecap="round"/>
+        <ellipse cx="70" cy="240" rx="8" ry="30" fill="#2d6a4f" opacity="0.8" transform="rotate(-45 70 240)"/>
+        <ellipse cx="130" cy="260" rx="8" ry="30" fill="#2d6a4f" opacity="0.7" transform="rotate(45 130 260)"/>
+        <ellipse cx="100" cy="40" rx="14" ry="38" fill="#d64045"/>
+        <ellipse cx="145" cy="70" rx="14" ry="38" fill="#d64045" transform="rotate(72 100 100)"/>
+        <ellipse cx="155" cy="130" rx="14" ry="38" fill="#d64045" transform="rotate(144 100 100)"/>
+        <ellipse cx="115" cy="170" rx="14" ry="38" fill="#d64045" transform="rotate(216 100 100)"/>
+        <ellipse cx="45" cy="130" rx="14" ry="38" fill="#d64045" transform="rotate(288 100 100)"/>
+        <ellipse cx="100" cy="60" rx="10" ry="28" fill="#e8847f"/>
+        <ellipse cx="130" cy="90" rx="10" ry="28" fill="#e8847f" transform="rotate(72 100 100)"/>
+        <ellipse cx="135" cy="145" rx="10" ry="28" fill="#e8847f" transform="rotate(144 100 100)"/>
+        <ellipse cx="95" cy="160" rx="10" ry="28" fill="#e8847f" transform="rotate(216 100 100)"/>
+        <ellipse cx="65" cy="110" rx="10" ry="28" fill="#e8847f" transform="rotate(288 100 100)"/>
+        <circle cx="100" cy="100" r="20" fill="#ffd700"/>
+        <circle cx="100" cy="100" r="13" fill="#ffed4e" opacity="0.8"/>
       </svg>
 
-      <svg className="hero-flower right" viewBox="0 0 100 120" width="120" height="150">
-        <ellipse cx="50" cy="25" rx="9" ry="22" fill="#d4a574" />
-        <ellipse cx="70" cy="35" rx="9" ry="22" fill="#d4a574" transform="rotate(60 50 50)" />
-        <ellipse cx="75" cy="55" rx="9" ry="22" fill="#d4a574" transform="rotate(120 50 50)" />
-        <ellipse cx="50" cy="75" rx="9" ry="22" fill="#d4a574" transform="rotate(180 50 50)" />
-        <ellipse cx="25" cy="55" rx="9" ry="22" fill="#d4a574" transform="rotate(240 50 50)" />
-        <ellipse cx="30" cy="35" rx="9" ry="22" fill="#d4a574" transform="rotate(300 50 50)" />
-        <circle cx="50" cy="50" r="14" fill="#ffd700" />
-        <circle cx="50" cy="50" r="8" fill="#ffed4e" opacity="0.8" />
-        <path d="M 50 64 Q 52 90 50 115" stroke="#2d6a4f" strokeWidth="3" fill="none" />
-        <ellipse cx="60" cy="90" rx="6" ry="16" fill="#2d6a4f" opacity="0.7" transform="rotate(30 60 90)" />
+      {/* Camión - derecha */}
+      <svg className="hero-truck-right" viewBox="0 0 280 200" width="160" height="120">
+        <rect x="20" y="80" width="60" height="50" rx="8" fill="#2c3e50"/>
+        <rect x="30" y="90" width="35" height="25" rx="4" fill="#87ceeb" opacity="0.7"/>
+        <rect x="80" y="60" width="140" height="70" rx="8" fill="#e8847f"/>
+        <rect x="85" y="65" width="130" height="60" rx="6" fill="#d64045"/>
+        <line x1="100" y1="65" x2="100" y2="125" stroke="#ffd700" strokeWidth="2" opacity="0.6"/>
+        <line x1="130" y1="65" x2="130" y2="125" stroke="#ffd700" strokeWidth="2" opacity="0.6"/>
+        <line x1="160" y1="65" x2="160" y2="125" stroke="#ffd700" strokeWidth="2" opacity="0.6"/>
+        <line x1="190" y1="65" x2="190" y2="125" stroke="#ffd700" strokeWidth="2" opacity="0.6"/>
+        <circle cx="110" cy="155" r="18" fill="#333"/>
+        <circle cx="110" cy="155" r="12" fill="#555"/>
+        <circle cx="200" cy="155" r="18" fill="#333"/>
+        <circle cx="200" cy="155" r="12" fill="#555"/>
+        <circle cx="40" cy="155" r="15" fill="#333"/>
+        <circle cx="40" cy="155" r="9" fill="#555"/>
+        <rect x="10" y="145" width="15" height="25" fill="#444"/>
       </svg>
 
       <motion.div className="hero-content" variants={containerVariants} initial="hidden" animate="visible">
