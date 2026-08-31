@@ -8,23 +8,36 @@ empresas de **transporte** en Ecuador. Las empresas se registran, se aprueban, y
 solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 
 ## Stack actual
-- **Frontend:** HTML/CSS/JS puro (vanilla, sin framework, sin paso de build).
-  Supabase se carga por CDN (`@supabase/supabase-js@2`).
+- **Frontend Landing:** React 18 + Vite + Framer Motion (animaciones suaves)
+  - Tipografía: Plus Jakarta Sans (Google Fonts)
+  - Paleta: Verde natural (#15803D) + Rosa floral (#EC4899)
+  - Componentes: Hero, Features, HowItWorks, Footer
+  - Build: `npm run build` → dist/ → Netlify
+- **Frontend Panel/Admin:** HTML/CSS/JS puro (vanilla) — `panel.html`, `admin.html`, `registro.html`
+  - Conectado a Supabase real con RLS
+  - Requiere actualización con nuevo diseño floral
 - **Backend:** Supabase (Postgres + Auth + RLS). La seguridad REAL vive en las
   políticas RLS de Postgres; los chequeos en JS (ocultar botones, etc.) son solo cosméticos.
-- **Hosting:** Netlify (sitio estático).
+- **Hosting:** Netlify (Vite build + static files)
+  - Landing: https://bespoke-alpaca-050188.netlify.app/
 - **Emails:** Supabase envía los de autenticación/recuperación; Edge Function `notify-empresa`
   + Brevo envían los transaccionales (bienvenida, aprobación, rechazo).
 
 ## Archivos
-- `index.html` — página pública REDISEÑADA: 
-  - Hero con fondo gradiente y SVG animado (flores realistas con Lottie)
-  - Sección "¿Por qué ConectaFlor?" con 3 cards (Verificado, Gratis, Directo)
-  - Sección "¿Cómo funciona?" con 4 pasos animados (Florícola → Empaque → Transporte → Logística)
-  - Estadísticas del sector en glassmorphism
-  - Tipos de empresas con badges
-  - Footer con links
-  - Animaciones CSS suaves + Lottie CDN
+
+### Landing (React + Framer Motion)
+- `index.html` — template Vite mínimo (carga src/main.jsx)
+- `src/main.jsx` — entry point React (ReactDOM.createRoot)
+- `src/App.jsx` — root component
+- `src/App.css` — estilos globales (paleta floral, animaciones)
+- `src/index.css` — reset + tipografía Plus Jakarta Sans
+- `src/components/Header.jsx` + `Header.css` — nav sticky con logo + botones
+- `src/components/Hero.jsx` — Hero con SVG flores realistas + camión + botones CTA
+- `src/components/Features.jsx` — 4 cards: Verificadas, Producto Sobrante, Procesos Rápidos, Alcance Global
+- `src/components/HowItWorks.jsx` — Flujo de 4 pasos: Publica → Cotiza → Sobrantes → Transporta
+- `src/components/Footer.jsx` — Footer con links y contacto
+- `vite.config.js` — config Vite + React plugin
+- `package.json` — deps: react, framer-motion, vite
 - `registro.html` — alta combinada (crea usuario en Auth + inserta la empresa como `pending`).
   Tres tipos: floricola / logistica / transporte, con campos condicionales.
 - `panel.html` — panel de la empresa (pestañas: Explorar, Solicitudes recibidas,
@@ -86,26 +99,26 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 - Validar/probar antes de dar por terminado.
 - Avisarme si un cambio requiere correr SQL nuevo en Supabase.
 
-## Diseño e Interfaces (ACTUALIZADO ✅)
+## Diseño e Interfaces (Rediseño Floral ✅)
 
-**Redesign 2024-08:**
-- ✅ Hero section con gradiente verde oscuro + SVG pattern de flores
-- ✅ Flores Lottie animadas (realistas, tamaño medianas) en posiciones laterales
-- ✅ Sección "¿Cómo funciona?" con 4 cards + animaciones Lottie (floricola, empaque, transporte, logística)
-- ✅ Cards de características con efectos hover suave
-- ✅ Estadísticas en sección glassmorphism con bordes translúcidos
-- ✅ Animaciones CSS: slideIn, fadeInScale, scroll-smooth
-- ✅ Tipografía: Hanken Grotesk (body) + Fraunces (headings)
-- ✅ Colores: Crema (#d4a574), Verde oscuro (#2d6a4f), Rosa (#e8847f)
-- ✅ Header sticky con nav y logo
-- ✅ Responsive: mobile, tablet, desktop
-
-**Técnica de animaciones:**
-- SVG inline: flores realistas (rojo y rosa) animadas
-- CSS animations: bloom, float, sway, slideIn, fadeInScale
-- Emojis animados: 🌹🚛📦✈️ en sección de flujo
-- Glassmorphism: stats cards con backdrop-filter
-- Sin dependencias externas: funciona offline, 100% CSS/SVG
+**Rediseño 2026-08: Paleta Floral Ecuatoriana**
+- ✅ **Paleta:** Verde natural (#15803D) + Rosa floral (#EC4899)
+- ✅ **Tipografía:** Plus Jakarta Sans (moderno, profesional)
+- ✅ **Hero:** Gradiente verde/verde con rosa floral realista + camión refrigerado
+- ✅ **Características (4 cards):** 
+  - Empresas Verificadas (🔐)
+  - Producto Sobrante (🌹) ← NEW
+  - Procesos Rápidos (⚡)
+  - Alcance Global (🌐)
+- ✅ **Cómo funciona (4 pasos):**
+  - 📋 Publica (florícola publica producción)
+  - 💬 Cotiza (comprador negocia directo)
+  - 🌹 Sobrantes (vende excedentes en tablón)
+  - 🚛 Transporta (logística recoge y envía)
+- ✅ **Animaciones:** Framer Motion (stagger, whileHover, whileInView)
+- ✅ **SVG:** Flores con gradientes realistas + camión rojo/rosa
+- ✅ **Responsive:** Mobile, tablet, desktop
+- ✅ **En vivo:** https://bespoke-alpaca-050188.netlify.app/
 
 ## Notificaciones por Email (COMPLETADO ✅)
 
@@ -133,11 +146,22 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 - Triggers: SQL con pg_net (`webhook-triggers.sql` + `notification-triggers-extended.sql`)
 
 ## Roadmap / pendientes
-- **Notificaciones adicionales:** solicitudes recibidas, sobrantes publicados, cotizaciones
-  (requiere triggers en `requests`, `surplus`, `quotes`)
-- **Pago con pasarela** (PayPhone o Kushki): requiere RUC + cuenta de comercio + credenciales
-  y un backend seguro (Supabase Edge Function) para confirmar el pago vía webhook. No se puede
-  hacer de forma segura desde el sitio estático.
-- **Migración recomendada:** frontend a React (Vite + React) sobre el MISMO backend Supabase,
-  para poder escalar y mantener mejor (panel.html ya es difícil de mantener a mano).
+
+### Corto plazo (próximas sesiones)
+- ✅ **Landing completa:** Rediseñada con paleta floral, en vivo en Netlify
+- ⏳ **Panel de empresa (panel.html):** Actualizar con diseño floral + conectar Supabase real
+  - Pestañas: Explorar, Solicitudes recibidas, Mis solicitudes, Sobrantes, Mi perfil
+  - Mostrar empresas registradas, solicitudes, cotizaciones
+- ⏳ **Admin panel (admin.html):** Actualizar con diseño floral
+- ⏳ **Registro (registro.html):** Actualizar con diseño floral, formulario de 3 tipos
+- ⏳ **Tabla de Sobrantes:** Mostrar excedentes de flores en el panel
+
+### Mediano plazo
+- **Pago con pasarela** (PayPhone o Kushki): requiere RUC + cuenta + backend Edge Function
+- **Chat/Mensajería:** Entre florícolas y logística para negociar
+- **Sistema de ratings:** Calificación de empresas y transacciones
+- **Notificaciones en tiempo real:** WebSocket para nuevas solicitudes/cotizaciones
+
+### Largo plazo
+- **Migración panel a React:** Frontend unificado en React (panel.html + admin.html) para mantenibilidad
 - Moderación opcional de excedentes por el admin.
