@@ -2,10 +2,10 @@ import { motion } from 'framer-motion'
 
 export default function Features() {
   const features = [
-    { icon: '✓', title: 'Verificado', text: 'Solo empresas legales. Validación rigurosa.' },
-    { icon: '💰', title: 'Gratis', text: 'Sin comisiones, sin cuotas ocultas.' },
-    { icon: '⚡', title: 'Directo', text: 'Negocia sin intermediarios, márgenes mejores.' },
-    { icon: '🌍', title: 'Internacional', text: 'Conecta con logística especializada en exportación.' }
+    { icon: '🔐', title: 'Empresas Verificadas', text: 'Solo negocios legales validados. Garantiza confianza en cada transacción.' },
+    { icon: '📊', title: 'Sin Comisiones', text: 'Negocia directamente. Mantén márgenes completos, sin intermediarios.' },
+    { icon: '⚡', title: 'Procesos Rápidos', text: 'Solicita, cotiza y cierra acuerdos en minutos, no días.' },
+    { icon: '🌐', title: 'Alcance Global', text: 'Conecta con logística especializada en exportación internacional.' }
   ]
 
   const containerVariants = {

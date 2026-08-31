@@ -13,7 +13,7 @@
 .logo {
   font-size: 24px;
   font-weight: 700;
-  color: #2d6a4f;
+  color: #1e3a8a;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -35,18 +35,18 @@
 }
 
 .nav a:hover {
-  color: #2d6a4f;
+  color: #1e3a8a;
 }
 
 .btn-nav {
-  background: #d4a574 !important;
-  color: #2c3e50 !important;
+  background: #16a34a !important;
+  color: white !important;
   padding: 10px 24px !important;
   border-radius: 6px !important;
 }
 
 .btn-nav:hover {
-  background: #e8b892 !important;
+  background: #15803d !important;
 }
 
 @media (max-width: 768px) {

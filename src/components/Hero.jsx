@@ -18,9 +18,9 @@ export default function Hero() {
     <div className="hero">
       {/* Flor roja - izquierda */}
       <svg className="hero-flower-left" viewBox="0 0 200 280" width="140" height="200">
-        <path d="M 100 200 Q 95 240 100 280" stroke="#1a5e3f" strokeWidth="4" fill="none" strokeLinecap="round"/>
-        <ellipse cx="70" cy="240" rx="8" ry="30" fill="#2d6a4f" opacity="0.8" transform="rotate(-45 70 240)"/>
-        <ellipse cx="130" cy="260" rx="8" ry="30" fill="#2d6a4f" opacity="0.7" transform="rotate(45 130 260)"/>
+        <path d="M 100 200 Q 95 240 100 280" stroke="#16a34a" strokeWidth="4" fill="none" strokeLinecap="round"/>
+        <ellipse cx="70" cy="240" rx="8" ry="30" fill="#16a34a" opacity="0.8" transform="rotate(-45 70 240)"/>
+        <ellipse cx="130" cy="260" rx="8" ry="30" fill="#16a34a" opacity="0.7" transform="rotate(45 130 260)"/>
         <ellipse cx="100" cy="40" rx="14" ry="38" fill="#d64045"/>
         <ellipse cx="145" cy="70" rx="14" ry="38" fill="#d64045" transform="rotate(72 100 100)"/>
         <ellipse cx="155" cy="130" rx="14" ry="38" fill="#d64045" transform="rotate(144 100 100)"/>
@@ -55,8 +55,8 @@ export default function Hero() {
       </svg>
 
       <motion.div className="hero-content" variants={containerVariants} initial="hidden" animate="visible">
-        <motion.h1 variants={itemVariants}>Del campo ecuatoriano al mundo</motion.h1>
-        <motion.p variants={itemVariants}>Conecta directo florícolas, logística y transporte. Sin intermediarios, márgenes mejores.</motion.p>
+        <motion.h1 variants={itemVariants}>Mercado digital para flores ecuatorianas</motion.h1>
+        <motion.p variants={itemVariants}>Conecta florícolas con logística y transporte de forma directa. Acelera pedidos, mejora márgenes, llega al mundo.</motion.p>
         <motion.div className="hero-buttons" variants={itemVariants}>
           <motion.a href="/registro.html" className="btn btn-primary" whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.95 }}>Registrar empresa</motion.a>
           <motion.button className="btn btn-secondary" whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.95 }}>Ver directorio</motion.button>

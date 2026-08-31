@@ -2,9 +2,10 @@ import { motion } from 'framer-motion'
 
 export default function HowItWorks() {
   const steps = [
-    { icon: '🌱', title: 'Cultivo de Flores', text: 'Publica tu producción, especifica variedades y cantidad' },
-    { icon: '🚛', title: 'Transporte', text: 'Recogida refrigerada y transporte seguro' },
-    { icon: '✈️', title: 'Logística Export', text: 'Trámites aduanales y envío internacional' }
+    { icon: '📋', title: 'Regístrate', text: 'Crea tu cuenta en segundos con datos de tu empresa' },
+    { icon: '📦', title: 'Publica', text: 'Comparte producción o busca lo que necesitas' },
+    { icon: '💬', title: 'Cotiza', text: 'Intercambia propuestas y negocia directamente' },
+    { icon: '✅', title: 'Cierra', text: 'Coordina logística y cierra la transacción' }
   ]
 
   const boxVariants = {
