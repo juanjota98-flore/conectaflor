@@ -80,11 +80,29 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 - Avisarme si un cambio requiere correr SQL nuevo en Supabase.
 
 ## Notificaciones por Email (COMPLETADO ✅)
-- ✅ Bienvenida: cuando se registra una empresa (`INSERT` en listings)
-- ✅ Aprobación: cuando el admin cambia status a `approved` (`UPDATE` en listings)
-- ✅ Rechazo: cuando el admin cambia status a `rejected` (`UPDATE` en listings)
-- Vía: Edge Function `notify-empresa` + Brevo API
-- Triggers: SQL con pg_net (`webhook-triggers.sql`)
+
+**Empresas (listings):**
+- ✅ Bienvenida: cuando se registra una empresa (`INSERT`)
+- ✅ Aprobación: cuando el admin cambia status a `approved` (`UPDATE`)
+- ✅ Rechazo: cuando el admin cambia status a `rejected` (`UPDATE`)
+
+**Solicitudes (requests):**
+- ✅ Nueva solicitud recibida: cuando un empresa la solicita (`INSERT`)
+- ✅ Solicitud aceptada: cuando recipient acepta (`UPDATE` → accepted)
+- ✅ Solicitud rechazada: cuando recipient rechaza (`UPDATE` → rejected)
+
+**Cotizaciones (quotes):**
+- ✅ Cotización recibida: cuando sender envía cotización (`INSERT`)
+- ✅ Cotización aceptada: cuando requester acepta (`UPDATE` → accepted)
+- ✅ Cotización rechazada: cuando requester rechaza (`UPDATE` → rejected)
+
+**Sobrantes (surplus):**
+- ✅ Sobrantes disponibles: broadcast a todos los florícolas (`INSERT`)
+
+**Tecnología:**
+- Edge Function: `notify-empresa` (Supabase)
+- API de emails: Brevo
+- Triggers: SQL con pg_net (`webhook-triggers.sql` + `notification-triggers-extended.sql`)
 
 ## Roadmap / pendientes
 - **Notificaciones adicionales:** solicitudes recibidas, sobrantes publicados, cotizaciones
