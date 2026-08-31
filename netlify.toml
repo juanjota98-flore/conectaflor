@@ -1,0 +1,23 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/panel.html"
+  to = "/panel.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin.html"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/registro.html"
+  to = "/registro.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
