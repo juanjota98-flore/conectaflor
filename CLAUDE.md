@@ -101,10 +101,11 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 - ✅ Responsive: mobile, tablet, desktop
 
 **Técnica de animaciones:**
-- Lottie CDN: carga JSON animations desde LottieFiles
-- SVG pattern CSS: background pattern de flores en hero
-- CSS animations: @keyframes para fade, slide, scale
-- Estructura: divs con `id` para cada contenedor Lottie
+- SVG inline: flores realistas (rojo y rosa) animadas
+- CSS animations: bloom, float, sway, slideIn, fadeInScale
+- Emojis animados: 🌹🚛📦✈️ en sección de flujo
+- Glassmorphism: stats cards con backdrop-filter
+- Sin dependencias externas: funciona offline, 100% CSS/SVG
 
 ## Notificaciones por Email (COMPLETADO ✅)
 
