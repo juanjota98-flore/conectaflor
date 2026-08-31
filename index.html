@@ -3,278 +3,298 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ConectaFlor · Florícolas y logística de exportación de Ecuador</title>
+  <title>ConectaFlor · Florícolas y logística de exportación</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/framer-motion@10/dist/framer-motion.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #2c3e50; overflow-x: hidden; }
-
-    /* ANIMACIONES */
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeInScale {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    @keyframes bloom {
-      0% { transform: scale(0.8) rotate(0deg); opacity: 0; }
-      50% { opacity: 1; }
-      100% { transform: scale(1) rotate(360deg); opacity: 0.9; }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-    }
-
-    @keyframes sway {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(2deg); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: linear-gradient(to bottom, #f8f9fa 0%, #f0f4f8 100%);
+      color: #2c3e50;
+      line-height: 1.6;
     }
 
     /* HEADER */
     .header {
       background: white;
-      border-bottom: 1px solid #e0e0e0;
-      padding: 1rem 2rem;
+      padding: 1.5rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
 
-    .logo { font-size: 24px; font-weight: 700; color: #2d6a4f; }
-    .nav { display: flex; gap: 2rem; }
-    .nav a { text-decoration: none; color: #2c3e50; font-size: 14px; font-weight: 500; transition: color 0.3s; }
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2d6a4f;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav {
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #666;
+      font-size: 15px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      cursor: pointer;
+    }
+
     .nav a:hover { color: #2d6a4f; }
+
+    .btn-cta {
+      background: #d4a574;
+      color: #2c3e50;
+      padding: 10px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-cta:hover {
+      background: #e8b892;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+    }
 
     /* HERO */
     .hero {
       background: linear-gradient(135deg, #2d6a4f 0%, #1a4d35 100%);
       color: white;
-      padding: 5rem 2rem;
+      padding: 8rem 2rem;
       text-align: center;
       position: relative;
       overflow: hidden;
-      min-height: 700px;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .hero-bg {
+    .hero::before {
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0.15;
-      z-index: 1;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(212, 165, 116, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(232, 132, 127, 0.08) 0%, transparent 50%);
+      pointer-events: none;
     }
 
-    .hero-content { position: relative; z-index: 2; max-width: 900px; }
-    .hero h1 { font-size: 56px; margin-bottom: 1rem; font-weight: 700; line-height: 1.2; animation: slideIn 0.8s ease-out; }
-    .hero p { font-size: 20px; margin-bottom: 2rem; opacity: 0.95; animation: slideIn 0.8s ease-out 0.2s backwards; }
-
-    .flower-svg {
-      position: absolute;
-      width: 200px;
-      height: 200px;
-      animation: float 6s ease-in-out infinite;
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
     }
 
-    .flower-left { left: 5%; top: 10%; animation-delay: 0s; }
-    .flower-right { right: 5%; bottom: 10%; animation-delay: 2s; }
+    .hero h1 {
+      font-size: clamp(36px, 8vw, 72px);
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      letter-spacing: -1px;
+    }
 
-    .flower-svg svg { width: 100%; height: 100%; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+    .hero p {
+      font-size: clamp(18px, 3vw, 24px);
+      margin-bottom: 3rem;
+      opacity: 0.95;
+      line-height: 1.6;
+    }
 
-    .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: slideIn 0.8s ease-out 0.4s backwards; }
-
-    .btn {
-      padding: 14px 36px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-weight: 600;
+    .hero-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .btn-primary {
       background: #d4a574;
       color: #2c3e50;
+      padding: 16px 48px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
       box-shadow: 0 4px 16px rgba(212, 165, 116, 0.3);
     }
 
     .btn-primary:hover {
       background: #e8b892;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(212, 165, 116, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(212, 165, 116, 0.4);
     }
 
     .btn-secondary {
       background: white;
       color: #2d6a4f;
+      padding: 16px 48px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 16px;
       border: 2px solid white;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
     .btn-secondary:hover {
       background: transparent;
-      border-color: white;
-      transform: translateY(-2px);
+      transform: translateY(-3px);
     }
 
     /* SECTION */
     .section {
-      padding: 4rem 2rem;
-      max-width: 1200px;
+      padding: 6rem 2rem;
+      max-width: 1300px;
       margin: 0 auto;
     }
 
     .section-title {
-      font-size: 40px;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
+      font-size: clamp(32px, 6vw, 48px);
+      font-weight: 800;
       color: #2c3e50;
       text-align: center;
+      margin-bottom: 1rem;
+      letter-spacing: -0.5px;
     }
 
     .section-subtitle {
-      font-size: 16px;
-      color: #666;
+      font-size: 18px;
+      color: #888;
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 4rem;
     }
 
-    /* FLOW SECTION */
-    .flow-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 2rem;
-      align-items: flex-start;
-      margin: 3rem 0;
-    }
-
-    .flow-step {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      text-align: center;
-      box-shadow: 0 4px 16px rgba(45, 106, 79, 0.1);
-      position: relative;
-      animation: fadeInScale 0.6s ease-out forwards;
-      opacity: 0;
-    }
-
-    .flow-step:nth-child(1) { animation-delay: 0s; }
-    .flow-step:nth-child(2) { animation-delay: 0.2s; }
-    .flow-step:nth-child(3) { animation-delay: 0.4s; }
-    .flow-step:nth-child(4) { animation-delay: 0.6s; }
-
-    .flow-icon {
-      width: 140px;
-      height: 140px;
-      margin: 0 auto 1rem;
-      background: linear-gradient(135deg, #f8f9fa 0%, #e8f0eb 100%);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 60px;
-      animation: sway 4s ease-in-out infinite;
-    }
-
-    .flow-step:nth-child(2) .flow-icon { animation-delay: 0.5s; }
-    .flow-step:nth-child(3) .flow-icon { animation-delay: 1s; }
-    .flow-step:nth-child(4) .flow-icon { animation-delay: 1.5s; }
-
-    .flow-title { font-size: 18px; font-weight: 600; color: #2d6a4f; margin-bottom: 0.5rem; }
-    .flow-text { font-size: 14px; color: #666; }
-
-    /* CARDS */
+    /* CARDS GRID */
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
+      gap: 2.5rem;
+      margin: 2rem 0;
     }
 
     .card {
       background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      border: 1px solid #e0e0e0;
-      transition: all 0.3s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      animation: slideIn 0.6s ease-out forwards;
-      opacity: 0;
+      border-radius: 16px;
+      padding: 3rem 2.5rem;
+      border: 1px solid #e8e8e8;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      text-align: center;
     }
 
-    .card:nth-child(1) { animation-delay: 0s; }
-    .card:nth-child(2) { animation-delay: 0.2s; }
-    .card:nth-child(3) { animation-delay: 0.4s; }
-
     .card:hover {
-      box-shadow: 0 12px 32px rgba(45, 106, 79, 0.15);
-      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(45, 106, 79, 0.12);
+      transform: translateY(-8px);
       border-color: #d4a574;
     }
 
-    .card-icon { font-size: 48px; margin-bottom: 1rem; }
-    .card-title { font-size: 20px; font-weight: 600; color: #2d6a4f; margin-bottom: 0.75rem; }
-    .card-text { font-size: 15px; color: #666; line-height: 1.7; }
-
-    .badge {
-      display: inline-block;
-      background: #e8847f;
-      color: white;
-      padding: 0.4rem 1rem;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      margin-right: 0.5rem;
-      margin-bottom: 0.5rem;
+    .card-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* STATS */
-    .stats-section {
-      background: linear-gradient(135deg, #2d6a4f 0%, #1a4d35 100%);
-      color: white;
-      padding: 4rem 2rem;
-      margin: 3rem 0;
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2d6a4f;
+      margin-bottom: 1rem;
     }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
+    .card-text {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.8;
     }
 
-    .stat-card {
+    /* FLOW SECTION */
+    .flow-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin: 4rem 0;
+      min-height: 500px;
+    }
+
+    .flow-box {
+      background: white;
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
       text-align: center;
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 24px rgba(45, 106, 79, 0.12);
+      min-width: 240px;
+      border: 2px solid #e8e8e8;
+      transition: all 0.3s ease;
     }
 
-    .stat-number { font-size: 48px; font-weight: 700; margin-bottom: 0.5rem; }
-    .stat-label { font-size: 15px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
+    .flow-box:hover {
+      box-shadow: 0 12px 36px rgba(45, 106, 79, 0.2);
+      border-color: #2d6a4f;
+    }
+
+    .flow-icon {
+      font-size: 72px;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .flow-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2d6a4f;
+      margin-bottom: 0.75rem;
+    }
+
+    .flow-text {
+      font-size: 14px;
+      color: #888;
+    }
+
+    .flow-arrow {
+      font-size: 36px;
+      color: #d4a574;
+      display: flex;
+      align-items: center;
+    }
 
     /* FOOTER */
     .footer {
       background: #2c3e50;
       color: white;
-      padding: 3rem 2rem;
+      padding: 4rem 2rem;
       text-align: center;
       margin-top: 4rem;
     }
@@ -283,7 +303,7 @@
       display: flex;
       gap: 2rem;
       justify-content: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
       flex-wrap: wrap;
     }
 
@@ -291,200 +311,291 @@
       color: #d4a574;
       text-decoration: none;
       font-size: 14px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover { color: #e8b892; }
+
+    .footer-text {
+      font-size: 14px;
+      margin-top: 1.5rem;
+      opacity: 0.8;
     }
 
     @media (max-width: 768px) {
-      .hero h1 { font-size: 36px; }
-      .hero p { font-size: 18px; }
-      .section-title { font-size: 28px; }
-      .flow-icon { width: 100px; height: 100px; font-size: 40px; }
-      .flower-svg { width: 120px; height: 120px; }
-      .stat-number { font-size: 32px; }
+      .nav { gap: 1rem; font-size: 14px; }
+      .hero { padding: 4rem 1.5rem; }
+      .hero h1 { font-size: 32px; }
+      .flow-container { flex-direction: column; gap: 2rem; }
+      .flow-arrow { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="logo">🌸 ConectaFlor</div>
-    <div class="nav">
-      <a href="#features">Características</a>
-      <a href="#how">Cómo funciona</a>
-      <a href="#stats">Datos</a>
-      <a href="registro.html">Registrarse</a>
-    </div>
-  </div>
+  <div id="root"></div>
 
-  <div class="hero">
-    <svg class="hero-bg" viewBox="0 0 1200 600">
-      <defs>
-        <pattern id="flowerPattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
-          <circle cx="100" cy="100" r="30" opacity="0.1" fill="#e8847f"/>
-          <circle cx="100" cy="60" r="8" opacity="0.15" fill="#e8847f"/>
-          <circle cx="130" cy="80" r="8" opacity="0.15" fill="#e8847f"/>
-          <circle cx="130" cy="120" r="8" opacity="0.15" fill="#e8847f"/>
-          <circle cx="100" cy="140" r="8" opacity="0.15" fill="#e8847f"/>
-          <circle cx="70" cy="120" r="8" opacity="0.15" fill="#e8847f"/>
-          <circle cx="70" cy="80" r="8" opacity="0.15" fill="#e8847f"/>
-        </pattern>
-      </defs>
-      <rect width="1200" height="600" fill="url(#flowerPattern)"/>
-    </svg>
+  <script type="text/babel">
+    const { useState } = React;
+    const { motion } = window.Motion;
 
-    <div class="flower-svg flower-left">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="30" r="8" fill="#E74C3C"/>
-        <circle cx="65" cy="40" r="8" fill="#E74C3C"/>
-        <circle cx="65" cy="60" r="8" fill="#E74C3C"/>
-        <circle cx="50" cy="70" r="8" fill="#E74C3C"/>
-        <circle cx="35" cy="60" r="8" fill="#E74C3C"/>
-        <circle cx="35" cy="40" r="8" fill="#E74C3C"/>
-        <circle cx="50" cy="50" r="6" fill="#FFD700"/>
-        <line x1="50" y1="70" x2="50" y2="95" stroke="#228B22" stroke-width="2"/>
+    // SVG ICONS
+    const CheckIcon = () => (
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="30" stroke="#2d6a4f" strokeWidth="2"/>
+        <path d="M20 32L28 40L44 24" stroke="#2d6a4f" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
-    </div>
+    );
 
-    <div class="flower-svg flower-right">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="30" r="8" fill="#FF69B4"/>
-        <circle cx="65" cy="40" r="8" fill="#FF69B4"/>
-        <circle cx="65" cy="60" r="8" fill="#FF69B4"/>
-        <circle cx="50" cy="70" r="8" fill="#FF69B4"/>
-        <circle cx="35" cy="60" r="8" fill="#FF69B4"/>
-        <circle cx="35" cy="40" r="8" fill="#FF69B4"/>
-        <circle cx="50" cy="50" r="6" fill="#FFD700"/>
-        <line x1="50" y1="70" x2="50" y2="95" stroke="#228B22" stroke-width="2"/>
+    const MoneyIcon = () => (
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 24C12.9 24 12 24.9 12 26V50C12 51.1 12.9 52 14 52H50C51.1 52 52 51.1 52 50V26C52 24.9 51.1 24 50 24H14Z" stroke="#d4a574" strokeWidth="2"/>
+        <circle cx="32" cy="38" r="8" stroke="#d4a574" strokeWidth="2"/>
+        <path d="M32 34V42M28 38H36" stroke="#d4a574" strokeWidth="2" strokeLinecap="round"/>
       </svg>
-    </div>
+    );
 
-    <div class="hero-content">
-      <h1>Del campo al aire</h1>
-      <p>Conecta florícolas, logística y transporte en un solo marketplace verificado y gratuito</p>
-      <div class="cta-buttons">
-        <button class="btn btn-primary" onclick="window.location='registro.html'">Registrar empresa</button>
-        <button class="btn btn-secondary">Ver directorio</button>
-      </div>
-    </div>
-  </div>
+    const BoltIcon = () => (
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 8L42 28H36L44 56L22 36H28L32 8Z" fill="#e8847f" opacity="0.3"/>
+        <path d="M32 8L42 28H36L44 56L22 36H28L32 8Z" stroke="#e8847f" strokeWidth="2"/>
+      </svg>
+    );
 
-  <div class="section" id="features">
-    <h2 class="section-title">¿Por qué ConectaFlor?</h2>
-    <p class="section-subtitle">Los beneficios de conectar directamente</p>
-    <div class="cards-grid">
-      <div class="card">
-        <div class="card-icon">✓</div>
-        <h3 class="card-title">Verificado</h3>
-        <p class="card-text">Todas las empresas pasan por un proceso de validación. Solo comerciantes legítimos.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">💰</div>
-        <h3 class="card-title">Gratis</h3>
-        <p class="card-text">Sin comisiones, sin cuotas. Registrarse y negociar es totalmente gratuito.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">⚡</div>
-        <h3 class="card-title">Directo</h3>
-        <p class="card-text">Florícola ↔ Logística ↔ Transporte. Sin intermediarios, más ganancias.</p>
-      </div>
-    </div>
-  </div>
+    const GlobeIcon = () => (
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="28" stroke="#2d6a4f" strokeWidth="2"/>
+        <path d="M32 4C32 4 24 16 24 32C24 48 32 60 32 60C32 60 40 48 40 32C40 16 32 4 32 4Z" stroke="#2d6a4f" strokeWidth="2"/>
+        <ellipse cx="32" cy="32" rx="28" ry="8" stroke="#2d6a4f" strokeWidth="2"/>
+      </svg>
+    );
 
-  <div class="section" id="how">
-    <h2 class="section-title">¿Cómo funciona?</h2>
-    <p class="section-subtitle">El flujo completo desde la florícola hasta el cliente final</p>
-    <div class="flow-container">
-      <div class="flow-step">
-        <div class="flow-icon">🌹</div>
-        <h3 class="flow-title">Florícola</h3>
-        <p class="flow-text">Publica flores o solicita logística</p>
-      </div>
-      <div class="flow-step">
-        <div class="flow-icon">📦</div>
-        <h3 class="flow-title">Empaque</h3>
-        <p class="flow-text">Prepara envío con estándares internacionales</p>
-      </div>
-      <div class="flow-step">
-        <div class="flow-icon">🚛</div>
-        <h3 class="flow-title">Transporte</h3>
-        <p class="flow-text">Recoge y transporta con refrigeración</p>
-      </div>
-      <div class="flow-step">
-        <div class="flow-icon">✈️</div>
-        <h3 class="flow-title">Logística</h3>
-        <p class="flow-text">Exporta a nivel internacional</p>
-      </div>
-    </div>
-  </div>
+    const FlowerIcon = () => (
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="20" r="6" fill="#e8847f"/>
+        <circle cx="44" cy="28" r="6" fill="#e8847f"/>
+        <circle cx="44" cy="44" r="6" fill="#e8847f"/>
+        <circle cx="32" cy="52" r="6" fill="#e8847f"/>
+        <circle cx="20" cy="44" r="6" fill="#e8847f"/>
+        <circle cx="20" cy="28" r="6" fill="#e8847f"/>
+        <circle cx="32" cy="36" r="8" fill="#FFD700"/>
+        <path d="M32 52L32 60" stroke="#228B22" strokeWidth="3"/>
+      </svg>
+    );
 
-  <div class="stats-section" id="stats">
-    <h2 class="section-title" style="color: white; margin-bottom: 3rem;">El sector en cifras</h2>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-number">$1.016M</div>
-        <div class="stat-label">Exportado en 2024</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">3º</div>
-        <div class="stat-label">Del mundo en flores</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">1º</div>
-        <div class="stat-label">Mundial en rosas</div>
-      </div>
-    </div>
-  </div>
+    const TruckIcon = () => (
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="16" y="20" width="32" height="20" rx="2" stroke="#2d6a4f" strokeWidth="2"/>
+        <circle cx="24" cy="48" r="4" stroke="#2d6a4f" strokeWidth="2"/>
+        <circle cx="48" cy="48" r="4" stroke="#2d6a4f" strokeWidth="2"/>
+        <path d="M48 28V24H58L58 36H48" stroke="#2d6a4f" strokeWidth="2"/>
+      </svg>
+    );
 
-  <div class="section">
-    <h2 class="section-title">Tipos de empresas</h2>
-    <p class="section-subtitle">Conectamos los tres pilares de la industria</p>
-    <div class="cards-grid">
-      <div class="card">
-        <h3 class="card-title">🌹 Florícolas</h3>
-        <p class="card-text">Productores de flores. Vende directamente, cotiza transporte, publica sobrantes.</p>
-        <div style="margin-top: 1rem;">
-          <span class="badge">Producción</span>
-          <span class="badge">Venta</span>
+    const PlaneIcon = () => (
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 12L44 32H32V52L12 32L32 20V12Z" fill="#2d6a4f" opacity="0.2"/>
+        <path d="M32 12L44 32H32V52L12 32L32 20V12Z" stroke="#2d6a4f" strokeWidth="2"/>
+      </svg>
+    );
+
+    // COMPONENTS
+    const Hero = () => (
+      <motion.div
+        className="hero"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="hero-content">
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Del campo ecuatoriano al mundo
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            Conecta directo florícolas, logística y transporte. Sin intermediarios, márgenes mejores.
+          </motion.p>
+
+          <motion.div
+            className="hero-buttons"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            <a href="registro.html" className="btn-primary">Registrar empresa</a>
+            <button className="btn-secondary">Ver directorio</button>
+          </motion.div>
         </div>
-      </div>
-      <div class="card">
-        <h3 class="card-title">📦 Logística</h3>
-        <p class="card-text">Empresas de exportación. Cotiza servicios a nivel nacional e internacional.</p>
-        <div style="margin-top: 1rem;">
-          <span class="badge">Exportación</span>
-          <span class="badge">Aduanas</span>
-        </div>
-      </div>
-      <div class="card">
-        <h3 class="card-title">🚛 Transporte</h3>
-        <p class="card-text">Distribuidoras. Ofrece recogidas, entregas y servicio refrigerado.</p>
-        <div style="margin-top: 1rem;">
-          <span class="badge">Distribución</span>
-          <span class="badge">Refrigerado</span>
-        </div>
-      </div>
-    </div>
-  </div>
+      </motion.div>
+    );
 
-  <div class="footer">
-    <div class="footer-links">
-      <a href="index.html">Directorio</a>
-      <a href="index.html#surplus">Excedentes</a>
-      <a href="panel.html">Mi panel</a>
-      <a href="admin.html">Admin</a>
-    </div>
-    <p><strong>ConectaFlor</strong> © 2024 — Flores de Ecuador al mundo</p>
-    <p style="margin-top: 1rem; opacity: 0.7; font-size: 14px;">Flores verificadas, directo, gratuito • Conectando florícolas, logística y transporte</p>
-  </div>
+    const Features = () => (
+      <section className="section" id="features">
+        <motion.h2
+          className="section-title"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          ¿Por qué ConectaFlor?
+        </motion.h2>
+        <p className="section-subtitle">Beneficios reales para tu negocio</p>
 
-  <script>
-    document.querySelectorAll('nav a').forEach(link => {
-      link.addEventListener('click', (e) => {
-        if (link.getAttribute('href').startsWith('#')) {
-          e.preventDefault();
-          const target = document.querySelector(link.getAttribute('href'));
-          target?.scrollIntoView({ behavior: 'smooth' });
-        }
-      });
-    });
+        <div className="cards-grid">
+          {[
+            { icon: CheckIcon, title: 'Verificado', text: 'Solo empresas legales. Validación rigurosa.' },
+            { icon: MoneyIcon, title: 'Gratis', text: 'Sin comisiones, sin cuotas ocultas.' },
+            { icon: BoltIcon, title: 'Directo', text: 'Negocia sin intermediarios, márgenes mejores.' },
+            { icon: GlobeIcon, title: 'Internacional', text: 'Conecta con logística especializada en exportación.' }
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              className="card"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: i * 0.1 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.05 }}
+            >
+              <div className="card-icon">
+                <item.icon />
+              </div>
+              <h3 className="card-title">{item.title}</h3>
+              <p className="card-text">{item.text}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+    );
+
+    const HowItWorks = () => (
+      <section className="section" id="flow">
+        <motion.h2
+          className="section-title"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          ¿Cómo funciona?
+        </motion.h2>
+        <p className="section-subtitle">El flujo completo de negocio</p>
+
+        <div className="flow-container">
+          {/* STAGE 1 */}
+          <motion.div
+            className="flow-box"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ scale: 1.05 }}
+          >
+            <motion.div
+              className="flow-icon"
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <FlowerIcon />
+            </motion.div>
+            <h3 className="flow-title">Cultivo de Flores</h3>
+            <p className="flow-text">Publica tu producción, especifica variedades y cantidad</p>
+          </motion.div>
+
+          <motion.div
+            className="flow-arrow"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            →
+          </motion.div>
+
+          {/* STAGE 2 & 3 */}
+          <motion.div
+            style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <motion.div
+              className="flow-box"
+              whileHover={{ scale: 1.05 }}
+            >
+              <motion.div
+                className="flow-icon"
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.2 }}
+              >
+                <TruckIcon />
+              </motion.div>
+              <h3 className="flow-title">Transporte</h3>
+              <p className="flow-text">Recogida refrigerada y transporte seguro</p>
+            </motion.div>
+
+            <motion.div
+              className="flow-box"
+              whileHover={{ scale: 1.05 }}
+            >
+              <motion.div
+                className="flow-icon"
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.4 }}
+              >
+                <PlaneIcon />
+              </motion.div>
+              <h3 className="flow-title">Logística Export</h3>
+              <p className="flow-text">Trámites aduanales y envío internacional</p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+    );
+
+    const Footer = () => (
+      <footer className="footer">
+        <div className="footer-links">
+          <a href="#features">Características</a>
+          <a href="#flow">Cómo funciona</a>
+          <a href="panel.html">Mi panel</a>
+          <a href="admin.html">Admin</a>
+        </div>
+        <p><strong>ConectaFlor</strong> © 2024 — Flores de Ecuador al mundo 🌹</p>
+        <p className="footer-text">Flores verificadas, directo, gratuito • Conectando florícolas, logística y transporte</p>
+      </footer>
+    );
+
+    const App = () => (
+      <>
+        <motion.header className="header">
+          <div className="logo">🌿 ConectaFlor</div>
+          <nav className="nav">
+            <a href="#features">Características</a>
+            <a href="#flow">Cómo funciona</a>
+            <a href="panel.html">Panel</a>
+            <a href="registro.html" className="btn-cta">Registrar</a>
+          </nav>
+        </motion.header>
+
+        <Hero />
+        <Features />
+        <HowItWorks />
+        <Footer />
+      </>
+    );
+
+    ReactDOM.render(<App />, document.getElementById('root'));
   </script>
 </body>
 </html>
