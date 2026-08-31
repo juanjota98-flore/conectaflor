@@ -2,9 +2,10 @@ import { motion } from 'framer-motion'
 
 export default function HowItWorks() {
   const steps = [
-    { icon: '🌹', title: 'Flores', text: 'Florícola publica su producción disponible' },
-    { icon: '🚛', title: 'Logística', text: 'Coordina recogida y transporte refrigerado' },
-    { icon: '💬', title: 'Cotizaciones', text: 'Logística y comprador negocian precio y términos' }
+    { icon: '📋', title: 'Publica', text: 'Florícola publica producción, variedades y cantidad disponible' },
+    { icon: '💬', title: 'Cotiza', text: 'Comprador revisa y solicita precio. Negocia directo sin intermediarios' },
+    { icon: '🌹', title: 'Sobrantes', text: 'Vende flores excedentes en el tablón a otros compradores' },
+    { icon: '🚛', title: 'Transporta', text: 'Logística recoge, transporta refrigerado y coordina envío' }
   ]
 
   const boxVariants = {
