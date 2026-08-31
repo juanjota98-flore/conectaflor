@@ -17,8 +17,14 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
   + Brevo envían los transaccionales (bienvenida, aprobación, rechazo).
 
 ## Archivos
-- `index.html` — página pública: hero, cifras del sector, tablón de excedentes público,
-  directorio de empresas con filtros. Oculta accesos de registro si hay sesión.
+- `index.html` — página pública REDISEÑADA: 
+  - Hero con fondo gradiente y SVG animado (flores realistas con Lottie)
+  - Sección "¿Por qué ConectaFlor?" con 3 cards (Verificado, Gratis, Directo)
+  - Sección "¿Cómo funciona?" con 4 pasos animados (Florícola → Empaque → Transporte → Logística)
+  - Estadísticas del sector en glassmorphism
+  - Tipos de empresas con badges
+  - Footer con links
+  - Animaciones CSS suaves + Lottie CDN
 - `registro.html` — alta combinada (crea usuario en Auth + inserta la empresa como `pending`).
   Tres tipos: floricola / logistica / transporte, con campos condicionales.
 - `panel.html` — panel de la empresa (pestañas: Explorar, Solicitudes recibidas,
@@ -34,6 +40,7 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
   (bienvenida, aprobación, rechazo). Se despliega con `supabase functions deploy`.
 - `webhook-triggers.sql` — Triggers SQL con pg_net que disparan la Edge Function automáticamente
   al insertar/actualizar empresas. Corre una sola vez en Supabase SQL Editor.
+- `notification-triggers-extended.sql` — Triggers adicionales para requests, quotes, surplus.
 
 ## Supabase
 - Proyecto: `jbsgahlfsixbltvpdmqt` · URL en `assets/config.js`.
@@ -78,6 +85,26 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 - Un commit por funcionalidad, con mensaje claro.
 - Validar/probar antes de dar por terminado.
 - Avisarme si un cambio requiere correr SQL nuevo en Supabase.
+
+## Diseño e Interfaces (ACTUALIZADO ✅)
+
+**Redesign 2024-08:**
+- ✅ Hero section con gradiente verde oscuro + SVG pattern de flores
+- ✅ Flores Lottie animadas (realistas, tamaño medianas) en posiciones laterales
+- ✅ Sección "¿Cómo funciona?" con 4 cards + animaciones Lottie (floricola, empaque, transporte, logística)
+- ✅ Cards de características con efectos hover suave
+- ✅ Estadísticas en sección glassmorphism con bordes translúcidos
+- ✅ Animaciones CSS: slideIn, fadeInScale, scroll-smooth
+- ✅ Tipografía: Hanken Grotesk (body) + Fraunces (headings)
+- ✅ Colores: Crema (#d4a574), Verde oscuro (#2d6a4f), Rosa (#e8847f)
+- ✅ Header sticky con nav y logo
+- ✅ Responsive: mobile, tablet, desktop
+
+**Técnica de animaciones:**
+- Lottie CDN: carga JSON animations desde LottieFiles
+- SVG pattern CSS: background pattern de flores en hero
+- CSS animations: @keyframes para fade, slide, scale
+- Estructura: divs con `id` para cada contenedor Lottie
 
 ## Notificaciones por Email (COMPLETADO ✅)
 
