@@ -2,10 +2,9 @@ import { motion } from 'framer-motion'
 
 export default function HowItWorks() {
   const steps = [
-    { icon: '📋', title: 'Regístrate', text: 'Crea tu cuenta en segundos con datos de tu empresa' },
-    { icon: '📦', title: 'Publica', text: 'Comparte producción o busca lo que necesitas' },
-    { icon: '💬', title: 'Cotiza', text: 'Intercambia propuestas y negocia directamente' },
-    { icon: '✅', title: 'Cierra', text: 'Coordina logística y cierra la transacción' }
+    { icon: '🌹', title: 'Flores', text: 'Florícola publica su producción disponible' },
+    { icon: '🚛', title: 'Logística', text: 'Coordina recogida y transporte refrigerado' },
+    { icon: '💬', title: 'Cotizaciones', text: 'Logística y comprador negocian precio y términos' }
   ]
 
   const boxVariants = {

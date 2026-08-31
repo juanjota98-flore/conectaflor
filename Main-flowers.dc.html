@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: linear-gradient(135deg, #15803D 0%, #059669 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .hero {
+      max-width: 1200px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .hero-content {
+      color: white;
+      z-index: 10;
+    }
+    .hero-content h1 {
+      font-size: 56px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.5px;
+    }
+    .hero-content p {
+      font-size: 18px;
+      opacity: 0.95;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 14px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary {
+      background: #EC4899;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #DB2777;
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: white;
+      color: #15803D;
+      border: 2px solid white;
+    }
+    .btn-secondary:hover {
+      background: transparent;
+      color: white;
+    }
+    .hero-visuals {
+      position: relative;
+      height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .flower-large {
+      position: absolute;
+      width: 280px;
+      height: 320px;
+      left: -40px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .truck {
+      position: absolute;
+      width: 280px;
+      height: 180px;
+      right: -60px;
+      bottom: 20px;
+    }
+    @media (max-width: 768px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .hero-visuals {
+        height: 300px;
+        order: -1;
+      }
+      .flower-large, .truck {
+        position: static;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+<x-dc>
+<div class="hero">
+  <div class="hero-content">
+    <h1>Flores ecuatorianas al mundo</h1>
+    <p>Conecta producción, logística y cotizaciones en un solo lugar. Negocia directo, márgenes mejores.</p>
+    <div class="hero-buttons">
+      <button class="btn btn-primary">Registrar empresa</button>
+      <button class="btn btn-secondary">Ver directorio</button>
+    </div>
+  </div>
+
+  <div class="hero-visuals">
+    <!-- Rosa ecuatoriana realista -->
+    <svg class="flower-large" viewBox="0 0 240 320">
+      <defs>
+        <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#15803D;stop-opacity:1" />
+          <stop offset="50%" style="stop-color:#059669;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#0F766E;stop-opacity:1" />
+        </linearGradient>
+        <radialGradient id="petalGrad" cx="40%" cy="40%">
+          <stop offset="0%" style="stop-color:#EC4899;stop-opacity:1" />
+          <stop offset="60%" style="stop-color:#DB2777;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#BE185D;stop-opacity:1" />
+        </radialGradient>
+        <radialGradient id="centerGrad" cx="35%" cy="35%">
+          <stop offset="0%" style="stop-color:#FCD34D;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#F59E0B;stop-opacity:1" />
+        </radialGradient>
+      </defs>
+
+      <!-- Tallo -->
+      <path d="M 120 200 Q 110 250 115 310" stroke="url(#stemGrad)" stroke-width="8" fill="none" stroke-linecap="round"/>
+
+      <!-- Hojas -->
+      <ellipse cx="85" cy="260" rx="14" ry="40" fill="#059669" opacity="0.9" transform="rotate(-35 85 260)"/>
+      <ellipse cx="155" cy="285" rx="14" ry="40" fill="#047857" opacity="0.85" transform="rotate(45 155 285)"/>
+
+      <!-- Pétalos exteriores (rosa profundo) -->
+      <ellipse cx="120" cy="30" rx="24" ry="55" fill="url(#petalGrad)" opacity="1"/>
+      <ellipse cx="190" cy="70" rx="24" ry="55" fill="url(#petalGrad)" transform="rotate(72 120 90)"/>
+      <ellipse cx="205" cy="160" rx="24" ry="55" fill="url(#petalGrad)" transform="rotate(144 120 90)"/>
+      <ellipse cx="145" cy="215" rx="24" ry="55" fill="url(#petalGrad)" transform="rotate(216 120 90)"/>
+      <ellipse cx="35" cy="160" rx="24" ry="55" fill="url(#petalGrad)" transform="rotate(288 120 90)"/>
+
+      <!-- Pétalos interiores -->
+      <ellipse cx="120" cy="55" rx="18" ry="42" fill="#EC4899" opacity="0.95"/>
+      <ellipse cx="175" cy="95" rx="18" ry="42" fill="#EC4899" opacity="0.9" transform="rotate(72 120 90)"/>
+      <ellipse cx="185" cy="160" rx="18" ry="42" fill="#EC4899" opacity="0.85" transform="rotate(144 120 90)"/>
+      <ellipse cx="125" cy="200" rx="18" ry="42" fill="#EC4899" opacity="0.9" transform="rotate(216 120 90)"/>
+      <ellipse cx="55" cy="125" rx="18" ry="42" fill="#EC4899" opacity="0.95" transform="rotate(288 120 90)"/>
+
+      <!-- Centro dorado -->
+      <circle cx="120" cy="120" r="28" fill="url(#centerGrad)"/>
+      <circle cx="120" cy="120" r="20" fill="#FBBF24" opacity="0.85"/>
+      <circle cx="108" cy="108" r="7" fill="#FEF3C7" opacity="0.7"/>
+    </svg>
+
+    <!-- Camión refrigerado -->
+    <svg class="truck" viewBox="0 0 360 240">
+      <defs>
+        <linearGradient id="boxGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#EC4899;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#DB2777;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+
+      <!-- Cabina gris oscuro -->
+      <rect x="20" y="100" width="85" height="65" rx="12" fill="#1F2937"/>
+      <!-- Cristal cabina -->
+      <rect x="35" y="115" width="50" height="35" rx="4" fill="#87CEEB" opacity="0.7"/>
+      <!-- Luz -->
+      <rect x="15" y="125" width="8" height="25" fill="#EC4899"/>
+
+      <!-- Caja refrigerada gradiente -->
+      <rect x="105" y="75" width="195" height="95" rx="10" fill="url(#boxGrad)"/>
+      <!-- Líneas de refrigeración -->
+      <line x1="130" y1="80" x2="130" y2="165" stroke="#FCD34D" stroke-width="3" opacity="0.8"/>
+      <line x1="160" y1="80" x2="160" y2="165" stroke="#FCD34D" stroke-width="3" opacity="0.8"/>
+      <line x1="190" y1="80" x2="190" y2="165" stroke="#FCD34D" stroke-width="3" opacity="0.8"/>
+      <line x1="220" y1="80" x2="220" y2="165" stroke="#FCD34D" stroke-width="3" opacity="0.8"/>
+      <!-- Texto FRESCO -->
+      <text x="202" y="135" font-size="22" font-weight="bold" fill="#fff" text-anchor="middle" font-family="Arial">FRESCO</text>
+
+      <!-- Ruedas -->
+      <circle cx="145" cy="180" r="26" fill="#0F0F0F"/>
+      <circle cx="145" cy="180" r="18" fill="#333"/>
+      <circle cx="240" cy="180" r="26" fill="#0F0F0F"/>
+      <circle cx="240" cy="180" r="18" fill="#333"/>
+      <circle cx="45" cy="180" r="22" fill="#0F0F0F"/>
+      <circle cx="45" cy="180" r="15" fill="#333"/>
+
+      <!-- Parachoques -->
+      <rect x="10" y="155" width="18" height="35" fill="#0F0F0F"/>
+    </svg>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

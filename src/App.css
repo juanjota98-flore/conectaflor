@@ -27,7 +27,7 @@
 /* Hero */
 .hero {
   min-height: 120vh;
-  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #15803D 0%, #059669 100%);
   color: white;
   display: flex;
   flex-direction: column;
@@ -45,8 +45,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 20% 50%, rgba(22, 163, 74, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+  background: radial-gradient(circle at 20% 50%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(21, 128, 61, 0.08) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -116,9 +116,9 @@
 }
 
 .card:hover {
-  box-shadow: 0 16px 40px rgba(30, 58, 138, 0.12);
+  box-shadow: 0 16px 40px rgba(21, 128, 61, 0.12);
   transform: translateY(-8px);
-  border-color: #16a34a;
+  border-color: #EC4899;
 }
 
 .card-icon {
@@ -134,7 +134,7 @@
 .card-title {
   font-size: 20px;
   font-weight: 700;
-  color: #1e3a8a;
+  color: #15803D;
   margin-bottom: 1rem;
 }
 
@@ -168,8 +168,8 @@
 }
 
 .flow-box:hover {
-  box-shadow: 0 20px 40px rgba(30, 58, 138, 0.2);
-  border-color: #1e3a8a;
+  box-shadow: 0 20px 40px rgba(21, 128, 61, 0.2);
+  border-color: #15803D;
   transform: translateY(-8px);
 }
 
@@ -183,7 +183,7 @@
 .flow-title {
   font-size: 20px;
   font-weight: 700;
-  color: #1e3a8a;
+  color: #15803D;
   margin-bottom: 0.75rem;
 }
 
@@ -195,7 +195,7 @@
 
 .flow-arrow {
   font-size: 36px;
-  color: #16a34a;
+  color: #EC4899;
   display: flex;
   align-items: center;
   animation: pulse 2s ease-in-out infinite;
@@ -245,7 +245,7 @@
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: #16a34a;
+  color: #EC4899;
 }
 
 .footer-section p {
@@ -272,7 +272,7 @@
 }
 
 .footer-section a:hover {
-  color: #16a34a;
+  color: #EC4899;
 }
 
 .footer-bottom {

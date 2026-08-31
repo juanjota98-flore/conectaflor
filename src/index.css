@@ -27,12 +27,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #16a34a;
+  background: #EC4899;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #15803d;
+  background: #DB2777;
 }
 
 /* Utility */
@@ -76,25 +76,25 @@ body {
 }
 
 .btn-primary {
-  background: #16a34a;
+  background: #EC4899;
   color: white;
-  box-shadow: 0 4px 16px rgba(22, 163, 74, 0.3);
+  box-shadow: 0 4px 16px rgba(236, 72, 153, 0.3);
 }
 
 .btn-primary:hover {
-  background: #15803d;
+  background: #DB2777;
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(22, 163, 74, 0.4);
+  box-shadow: 0 6px 24px rgba(236, 72, 153, 0.4);
 }
 
 .btn-secondary {
   background: white;
-  color: #1e3a8a;
-  border: 2px solid #1e3a8a;
+  color: #15803D;
+  border: 2px solid #15803D;
 }
 
 .btn-secondary:hover {
-  background: #1e3a8a;
+  background: #15803D;
   color: white;
   transform: translateY(-2px);
 }

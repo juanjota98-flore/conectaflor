@@ -16,21 +16,21 @@ export default function Hero() {
 
   return (
     <div className="hero">
-      {/* Flor roja - izquierda */}
+      {/* Rosa ecuatoriana - izquierda */}
       <svg className="hero-flower-left" viewBox="0 0 200 280" width="140" height="200">
-        <path d="M 100 200 Q 95 240 100 280" stroke="#16a34a" strokeWidth="4" fill="none" strokeLinecap="round"/>
-        <ellipse cx="70" cy="240" rx="8" ry="30" fill="#16a34a" opacity="0.8" transform="rotate(-45 70 240)"/>
-        <ellipse cx="130" cy="260" rx="8" ry="30" fill="#16a34a" opacity="0.7" transform="rotate(45 130 260)"/>
-        <ellipse cx="100" cy="40" rx="14" ry="38" fill="#d64045"/>
-        <ellipse cx="145" cy="70" rx="14" ry="38" fill="#d64045" transform="rotate(72 100 100)"/>
-        <ellipse cx="155" cy="130" rx="14" ry="38" fill="#d64045" transform="rotate(144 100 100)"/>
-        <ellipse cx="115" cy="170" rx="14" ry="38" fill="#d64045" transform="rotate(216 100 100)"/>
-        <ellipse cx="45" cy="130" rx="14" ry="38" fill="#d64045" transform="rotate(288 100 100)"/>
-        <ellipse cx="100" cy="60" rx="10" ry="28" fill="#e8847f"/>
-        <ellipse cx="130" cy="90" rx="10" ry="28" fill="#e8847f" transform="rotate(72 100 100)"/>
-        <ellipse cx="135" cy="145" rx="10" ry="28" fill="#e8847f" transform="rotate(144 100 100)"/>
-        <ellipse cx="95" cy="160" rx="10" ry="28" fill="#e8847f" transform="rotate(216 100 100)"/>
-        <ellipse cx="65" cy="110" rx="10" ry="28" fill="#e8847f" transform="rotate(288 100 100)"/>
+        <path d="M 100 200 Q 95 240 100 280" stroke="#15803D" strokeWidth="4" fill="none" strokeLinecap="round"/>
+        <ellipse cx="70" cy="240" rx="8" ry="30" fill="#059669" opacity="0.8" transform="rotate(-45 70 240)"/>
+        <ellipse cx="130" cy="260" rx="8" ry="30" fill="#047857" opacity="0.7" transform="rotate(45 130 260)"/>
+        <ellipse cx="100" cy="40" rx="14" ry="38" fill="#DB2777"/>
+        <ellipse cx="145" cy="70" rx="14" ry="38" fill="#DB2777" transform="rotate(72 100 100)"/>
+        <ellipse cx="155" cy="130" rx="14" ry="38" fill="#DB2777" transform="rotate(144 100 100)"/>
+        <ellipse cx="115" cy="170" rx="14" ry="38" fill="#DB2777" transform="rotate(216 100 100)"/>
+        <ellipse cx="45" cy="130" rx="14" ry="38" fill="#DB2777" transform="rotate(288 100 100)"/>
+        <ellipse cx="100" cy="60" rx="10" ry="28" fill="#EC4899"/>
+        <ellipse cx="130" cy="90" rx="10" ry="28" fill="#EC4899" transform="rotate(72 100 100)"/>
+        <ellipse cx="135" cy="145" rx="10" ry="28" fill="#EC4899" transform="rotate(144 100 100)"/>
+        <ellipse cx="95" cy="160" rx="10" ry="28" fill="#EC4899" transform="rotate(216 100 100)"/>
+        <ellipse cx="65" cy="110" rx="10" ry="28" fill="#EC4899" transform="rotate(288 100 100)"/>
         <circle cx="100" cy="100" r="20" fill="#ffd700"/>
         <circle cx="100" cy="100" r="13" fill="#ffed4e" opacity="0.8"/>
       </svg>
