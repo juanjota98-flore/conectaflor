@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ConectaFlor · Florícolas y logística de exportación de Ecuador</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -19,6 +18,22 @@
     @keyframes fadeInScale {
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes bloom {
+      0% { transform: scale(0.8) rotate(0deg); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: scale(1) rotate(360deg); opacity: 0.9; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(2deg); }
     }
 
     /* HEADER */
@@ -68,41 +83,17 @@
     .hero h1 { font-size: 56px; margin-bottom: 1rem; font-weight: 700; line-height: 1.2; animation: slideIn 0.8s ease-out; }
     .hero p { font-size: 20px; margin-bottom: 2rem; opacity: 0.95; animation: slideIn 0.8s ease-out 0.2s backwards; }
 
-    .hero-animations {
+    .flower-svg {
       position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 0;
-    }
-
-    .lottie-container {
       width: 200px;
       height: 200px;
-      position: relative;
+      animation: float 6s ease-in-out infinite;
     }
 
-    .lottie-flower-left {
-      position: absolute;
-      left: 5%;
-      top: 10%;
-      width: 180px;
-      height: 180px;
-      opacity: 0.8;
-    }
+    .flower-left { left: 5%; top: 10%; animation-delay: 0s; }
+    .flower-right { right: 5%; bottom: 10%; animation-delay: 2s; }
 
-    .lottie-flower-right {
-      position: absolute;
-      right: 5%;
-      bottom: 10%;
-      width: 180px;
-      height: 180px;
-      opacity: 0.8;
-    }
+    .flower-svg svg { width: 100%; height: 100%; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
 
     .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: slideIn 0.8s ease-out 0.4s backwards; }
 
@@ -187,7 +178,7 @@
     .flow-step:nth-child(3) { animation-delay: 0.4s; }
     .flow-step:nth-child(4) { animation-delay: 0.6s; }
 
-    .flow-lottie {
+    .flow-icon {
       width: 140px;
       height: 140px;
       margin: 0 auto 1rem;
@@ -196,7 +187,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 60px;
+      animation: sway 4s ease-in-out infinite;
     }
+
+    .flow-step:nth-child(2) .flow-icon { animation-delay: 0.5s; }
+    .flow-step:nth-child(3) .flow-icon { animation-delay: 1s; }
+    .flow-step:nth-child(4) .flow-icon { animation-delay: 1.5s; }
 
     .flow-title { font-size: 18px; font-weight: 600; color: #2d6a4f; margin-bottom: 0.5rem; }
     .flow-text { font-size: 14px; color: #666; }
@@ -300,9 +297,8 @@
       .hero h1 { font-size: 36px; }
       .hero p { font-size: 18px; }
       .section-title { font-size: 28px; }
-      .flow-lottie { width: 100px; height: 100px; }
-      .lottie-flower-left,
-      .lottie-flower-right { width: 120px; height: 120px; }
+      .flow-icon { width: 100px; height: 100px; font-size: 40px; }
+      .flower-svg { width: 120px; height: 120px; }
       .stat-number { font-size: 32px; }
     }
   </style>
@@ -334,14 +330,37 @@
       <rect width="1200" height="600" fill="url(#flowerPattern)"/>
     </svg>
 
-    <div class="lottie-flower-left" id="lottieFlowerLeft"></div>
-    <div class="lottie-flower-right" id="lottieFlowerRight"></div>
+    <div class="flower-svg flower-left">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="30" r="8" fill="#E74C3C"/>
+        <circle cx="65" cy="40" r="8" fill="#E74C3C"/>
+        <circle cx="65" cy="60" r="8" fill="#E74C3C"/>
+        <circle cx="50" cy="70" r="8" fill="#E74C3C"/>
+        <circle cx="35" cy="60" r="8" fill="#E74C3C"/>
+        <circle cx="35" cy="40" r="8" fill="#E74C3C"/>
+        <circle cx="50" cy="50" r="6" fill="#FFD700"/>
+        <line x1="50" y1="70" x2="50" y2="95" stroke="#228B22" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <div class="flower-svg flower-right">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="30" r="8" fill="#FF69B4"/>
+        <circle cx="65" cy="40" r="8" fill="#FF69B4"/>
+        <circle cx="65" cy="60" r="8" fill="#FF69B4"/>
+        <circle cx="50" cy="70" r="8" fill="#FF69B4"/>
+        <circle cx="35" cy="60" r="8" fill="#FF69B4"/>
+        <circle cx="35" cy="40" r="8" fill="#FF69B4"/>
+        <circle cx="50" cy="50" r="6" fill="#FFD700"/>
+        <line x1="50" y1="70" x2="50" y2="95" stroke="#228B22" stroke-width="2"/>
+      </svg>
+    </div>
 
     <div class="hero-content">
       <h1>Del campo al aire</h1>
       <p>Conecta florícolas, logística y transporte en un solo marketplace verificado y gratuito</p>
       <div class="cta-buttons">
-        <button class="btn btn-primary">Registrar empresa</button>
+        <button class="btn btn-primary" onclick="window.location='registro.html'">Registrar empresa</button>
         <button class="btn btn-secondary">Ver directorio</button>
       </div>
     </div>
@@ -374,22 +393,22 @@
     <p class="section-subtitle">El flujo completo desde la florícola hasta el cliente final</p>
     <div class="flow-container">
       <div class="flow-step">
-        <div class="flow-lottie" id="lottieFlower1"></div>
+        <div class="flow-icon">🌹</div>
         <h3 class="flow-title">Florícola</h3>
         <p class="flow-text">Publica flores o solicita logística</p>
       </div>
       <div class="flow-step">
-        <div class="flow-lottie" id="lottieBox"></div>
+        <div class="flow-icon">📦</div>
         <h3 class="flow-title">Empaque</h3>
         <p class="flow-text">Prepara envío con estándares internacionales</p>
       </div>
       <div class="flow-step">
-        <div class="flow-lottie" id="lottieTruck"></div>
+        <div class="flow-icon">🚛</div>
         <h3 class="flow-title">Transporte</h3>
         <p class="flow-text">Recoge y transporta con refrigeración</p>
       </div>
       <div class="flow-step">
-        <div class="flow-lottie" id="lottieDelivery"></div>
+        <div class="flow-icon">✈️</div>
         <h3 class="flow-title">Logística</h3>
         <p class="flow-text">Exporta a nivel internacional</p>
       </div>
@@ -457,58 +476,6 @@
   </div>
 
   <script>
-    // Initialize Lottie animations
-    // Flores realistas en hero
-    lottie.loadAnimation({
-      container: document.getElementById('lottieFlowerLeft'),
-      renderer: 'svg',
-      loop: true,
-      autoplay: true,
-      path: 'https://assets-v3.lottiefiles.com/a/17bfb680-45ce-11ee-b026-0242ac130003.json'
-    });
-
-    lottie.loadAnimation({
-      container: document.getElementById('lottieFlowerRight'),
-      renderer: 'svg',
-      loop: true,
-      autoplay: true,
-      path: 'https://assets-v3.lottiefiles.com/a/17bfb680-45ce-11ee-b026-0242ac130003.json'
-    });
-
-    // Animaciones en flow section
-    lottie.loadAnimation({
-      container: document.getElementById('lottieFlower1'),
-      renderer: 'svg',
-      loop: true,
-      autoplay: true,
-      path: 'https://assets-v3.lottiefiles.com/a/17bfb680-45ce-11ee-b026-0242ac130003.json'
-    });
-
-    lottie.loadAnimation({
-      container: document.getElementById('lottieBox'),
-      renderer: 'svg',
-      loop: true,
-      autoplay: true,
-      path: 'https://assets-v3.lottiefiles.com/a/7d521300-42ad-11ee-9f4e-0242ac130003.json'
-    });
-
-    lottie.loadAnimation({
-      container: document.getElementById('lottieTruck'),
-      renderer: 'svg',
-      loop: true,
-      autoplay: true,
-      path: 'https://assets-v3.lottiefiles.com/a/c9c6c200-42ad-11ee-9f4e-0242ac130003.json'
-    });
-
-    lottie.loadAnimation({
-      container: document.getElementById('lottieDelivery'),
-      renderer: 'svg',
-      loop: true,
-      autoplay: true,
-      path: 'https://assets-v3.lottiefiles.com/a/17e09300-42ae-11ee-9f4e-0242ac130003.json'
-    });
-
-    // Smooth nav clicks
     document.querySelectorAll('nav a').forEach(link => {
       link.addEventListener('click', (e) => {
         if (link.getAttribute('href').startsWith('#')) {
