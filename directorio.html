@@ -161,7 +161,7 @@
 <script src="assets/app.js"><\/script>
 <script>
 document.getElementById("year").textContent = new Date().getFullYear();
-const db = getDB();
+let db;
 let allCompanies = [];
 let currentFilter = "";
 let currentSearch = "";
@@ -169,7 +169,9 @@ let currentUser = null;
 let currentCompany = null;
 
 async function checkSession() {
-  const { data } = await db.auth.getSession();
+  if (!db) db = getDB();
+  try {
+    const { data } = await db.auth.getSession();
   if (data.session) {
     const { data: userData } = await db.auth.getUser();
     const { data: company } = await db.from("listings").select("nombre").eq("user_id", userData.user.id).limit(1);
@@ -183,10 +185,11 @@ async function checkSession() {
       document.getElementById("logout-btn").addEventListener("click", async (e) => { e.preventDefault(); await db.auth.signOut(); location.reload(); });
       document.getElementById("nav-logout").addEventListener("click", async (e) => { e.preventDefault(); await db.auth.signOut(); location.reload(); });
     }
-  }
+  } catch (e) { console.error(e); }
 }
 
 async function loadCompanies() {
+  if (!db) db = getDB();
   const { data, error } = await db.from("listings").select("*").eq("status", "approved").order("created_at", { ascending: false });
   if (error) { console.error(error); document.getElementById("loading").innerHTML = "Error al cargar"; return; }
   allCompanies = data || [];
