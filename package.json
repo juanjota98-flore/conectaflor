@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && npm run copy-static",
-    "copy-static": "cp panel.html admin.html registro.html dist/ && cp -r assets dist/",
+    "copy-static": "cp panel.html admin.html registro.html directorio.html dist/ && cp -r assets dist/",
     "preview": "vite preview"
   },
   "dependencies": {
