@@ -119,18 +119,41 @@ function renderCompanies() {
   loading.style.display = "none";
   if (filtered.length === 0) { grid.innerHTML = ""; empty.style.display = "block"; return; }
   empty.style.display = "none";
-  grid.innerHTML = filtered.map(c => `
-    <div class="card">
-    <span class="card-type type-${c.tipo}">${c.tipo === "floricola" ? "Florícola" : c.tipo === "logistica" ? "Logística" : "Transporte"}</span>
-    <h3>${esc(c.nombre)}</h3>
-    <div class="card-location">${esc(c.ubicacion || "Ecuador")}</div>
-    <div class="card-detail"><strong>Contacto:</strong> ${esc(c.contacto || "—")}</div>
-    <div class="card-actions">
-    <button class="btn-contact">Contactar</button>
-    <button class="btn-contact">Solicitar</button>
-    </div>
-    </div>
-  `).join("");
+
+  grid.innerHTML = filtered.map(c => {
+    let details = "";
+    if (c.tipo === "floricola") {
+      details = `
+        <div class="card-detail"><strong>Variedades:</strong> ${esc(c.variedades || "—")}</div>
+        <div class="card-detail"><strong>Volumen:</strong> ${esc(c.volumen || "—")}</div>
+      `;
+    } else if (c.tipo === "logistica") {
+      details = `
+        <div class="card-detail"><strong>Cobertura:</strong> ${esc(c.cobertura || "—")}</div>
+        <div class="card-detail"><strong>Capacidad:</strong> ${esc(c.capacidad_carga || "—")} tallos</div>
+        <div class="card-detail"><strong>Refrigerado:</strong> ${c.refrigerado ? "✓ Sí" : "No"}</div>
+      `;
+    } else {
+      details = `
+        <div class="card-detail"><strong>Tipo vehículo:</strong> ${esc(c.tipo_vehiculo || "—")}</div>
+        <div class="card-detail"><strong>Capacidad:</strong> ${esc(c.capacidad_carga || "—")} tallos</div>
+        <div class="card-detail"><strong>Cobertura:</strong> ${esc(c.cobertura || "—")}</div>
+      `;
+    }
+    return `
+      <div class="card">
+      <span class="card-type type-${c.tipo}">${c.tipo === "floricola" ? "🌹 Florícola" : c.tipo === "logistica" ? "📦 Logística" : "🚛 Transporte"}</span>
+      <h3>${esc(c.nombre)}</h3>
+      <div class="card-location">📍 ${esc(c.ubicacion || "Ecuador")}</div>
+      ${details}
+      <div class="card-detail"><strong>Teléfono:</strong> ${esc(c.contacto || "—")}</div>
+      <div class="card-actions">
+      <button class="btn-contact" onclick="alert('Sistema de contacto próximamente')">Contactar</button>
+      <button class="btn-contact" onclick="alert('Sistema de solicitudes próximamente')">Solicitar</button>
+      </div>
+      </div>
+    `;
+  }).join("");
 }
 
 document.querySelectorAll(".filter-btn").forEach(btn => {
