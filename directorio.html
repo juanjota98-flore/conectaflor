@@ -2,44 +2,22 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Directorio · ConectaFlor</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="assets/styles.css" />
 <style>
-.directory-header { padding: 40px 0 30px; text-align: center; }
-.directory-header h1 { font-size: clamp(1.8rem, 5vw, 3rem); margin-bottom: 12px; }
-.directory-header p { font-size: 1.05rem; color: var(--ink-soft); max-width: 60ch; margin: 0 auto 2rem; }
-.toolbar-sticky { position: sticky; top: 60px; z-index: 40; background: rgba(255,255,255,.95); backdrop-filter: blur(8px); padding: 14px 0; border-bottom: 1px solid var(--line); }
-.toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-.search-box { flex: 1; min-width: 220px; display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; }
-.search-box input { flex: 1; border: none; outline: none; background: transparent; font: inherit; }
-.filters { display: flex; gap: 6px; flex-wrap: wrap; }
-.filter-btn { border: 1px solid var(--line); background: white; color: var(--ink-soft); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
-.filter-btn.active { background: var(--forest); color: white; border-color: var(--forest); }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 28px; }
-.card { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 20px; box-shadow: var(--shadow); border-top: 4px solid var(--forest); transition: all 0.2s; }
-.card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(45,106,79,0.12); border-top-color: #EC4899; }
-.card h3 { font-size: 1.2rem; font-weight: 700; margin: 0 0 8px; color: var(--ink); }
-.card-type { display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; padding: 6px 10px; border-radius: 4px; margin-bottom: 12px; background: #dcfce7; color: #15803D; }
-.card-detail { font-size: 0.9rem; color: var(--ink-soft); margin: 10px 0; }
-.card-detail strong { color: var(--ink); font-weight: 600; }
-.card-actions { display: flex; gap: 8px; margin-top: 16px; border-top: 1px solid var(--line); padding-top: 16px; }
-.btn-action { flex: 1; padding: 10px 14px; font-size: 0.85rem; border: 1px solid var(--forest); background: white; color: var(--forest); border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
-.btn-action:hover { background: var(--forest); color: white; }
-.empty { text-align: center; padding: 60px 20px; color: var(--ink-soft); }
-.loading { text-align: center; padding: 40px 20px; }
-.user-bar { background: var(--forest); color: white; padding: 12px 0; text-align: right; display: none; }
-.user-bar .wrap { display: flex; justify-content: space-between; align-items: center; }
-.user-info { font-size: 0.9rem; }
-.user-info strong { display: block; font-size: 1rem; }
-.user-actions { display: flex; gap: 12px; }
-.user-actions a { color: white; text-decoration: none; font-weight: 600; padding: 8px 14px; background: rgba(255,255,255,0.2); border-radius: 6px; cursor: pointer; }
-.user-actions a:hover { background: rgba(255,255,255,0.3); }
+.directory-header{padding:40px 0 30px;text-align:center}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-top:28px}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px;box-shadow:var(--shadow);border-top:4px solid var(--forest);transition:all 0.2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 8px 16px rgba(45,106,79,0.12);border-top-color:#EC4899}
+.card h3{font-size:1.2rem;font-weight:700;margin:0 0 8px;color:var(--ink)}
+.btn-action{flex:1;padding:10px 14px;font-size:0.85rem;border:1px solid var(--forest);background:white;color:var(--forest);border-radius:6px;cursor:pointer;font-weight:600}
+.btn-action:hover{background:var(--forest);color:white}
+.card-actions{display:flex;gap:8px;margin-top:16px;border-top:1px solid var(--line);padding-top:16px}
+.loading{text-align:center;padding:40px 20px}
+.user-bar{background:var(--forest);color:white;padding:12px 0;text-align:right;display:none}
 </style>
 </head>
 <body>
-
 <nav class="nav">
 <div class="nav-inner">
 <a class="brand" href="index.html">🌹 ConectaFlor</a>
@@ -89,7 +67,6 @@
 </div>
 
 <div id="grid" class="grid"></div>
-<div id="empty" class="empty" style="display:none;"><p>No hay empresas</p></div>
 <div id="loading" class="loading">Cargando empresas...</div>
 </div>
 </main>
@@ -101,102 +78,85 @@
 <script src="assets/app.js"><\/script>
 <script>
 document.getElementById("year").textContent = new Date().getFullYear();
+let db, companies = [], filterType = "", searchText = "";
 
-const db = getDB();
-let companies = [];
-let filterType = "";
-let searchText = "";
-
-async function checkUser() {
+setTimeout(function() {
   try {
-    const { data } = await db.auth.getSession();
-    if (data.session) {
-      const { data: user } = await db.auth.getUser();
-      const { data: company } = await db.from("listings").select("nombre").eq("user_id", user.user.id).limit(1);
-      if (company && company[0]) {
-        document.getElementById("user-bar").style.display = "block";
-        document.getElementById("user-name").textContent = company[0].nombre;
-        document.getElementById("nav-register").style.display = "none";
-        document.getElementById("nav-login").style.display = "none";
-        document.getElementById("nav-account").textContent = "Mi cuenta (" + company[0].nombre + ")";
-        document.getElementById("nav-account").style.display = "inline";
-        document.getElementById("nav-logout").style.display = "inline";
+    db = getDB();
+    
+    async function checkUser() {
+      try {
+        const { data } = await db.auth.getSession();
+        if (data.session) {
+          const { data: user } = await db.auth.getUser();
+          const { data: company } = await db.from("listings").select("nombre").eq("user_id", user.user.id).limit(1);
+          if (company && company[0]) {
+            document.getElementById("user-bar").style.display = "block";
+            document.getElementById("user-name").textContent = company[0].nombre;
+            document.getElementById("nav-register").style.display = "none";
+            document.getElementById("nav-login").style.display = "none";
+            document.getElementById("nav-account").textContent = "Mi cuenta (" + company[0].nombre + ")";
+            document.getElementById("nav-account").style.display = "inline";
+            document.getElementById("nav-logout").style.display = "inline";
+          }
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    async function load() {
+      try {
+        const { data, error } = await db.from("listings").select("*").eq("status", "approved").order("created_at", { ascending: false });
+        if (error) throw error;
+        companies = data || [];
+        render();
+      } catch (e) {
+        console.error(e);
+        document.getElementById("loading").innerHTML = "Error al cargar";
       }
     }
-  } catch (e) { console.error(e); }
-}
 
-async function load() {
-  try {
-    const { data, error } = await db.from("listings").select("*").eq("status", "approved").order("created_at", { ascending: false });
-    if (error) throw error;
-    companies = data || [];
-    render();
+    function render() {
+      const filtered = companies.filter(c => {
+        const typeMatch = !filterType || c.tipo === filterType;
+        const searchMatch = !searchText || (c.nombre && c.nombre.toLowerCase().includes(searchText.toLowerCase()));
+        return typeMatch && searchMatch;
+      });
+      const grid = document.getElementById("grid");
+      const loading = document.getElementById("loading");
+      loading.style.display = "none";
+      if (filtered.length === 0) {
+        grid.innerHTML = "<div style='text-align:center;padding:60px 20px;color:var(--ink-soft)'>No hay empresas</div>";
+        return;
+      }
+      grid.innerHTML = filtered.map(c => `<div class="card"><h3>${esc(c.nombre)}</h3><div style="font-size:0.9rem;color:var(--ink-soft);margin:10px 0"><strong>Ubicación:</strong> ${esc(c.ubicacion || "—")}</div><div style="font-size:0.9rem;color:var(--ink-soft);margin:10px 0"><strong>Contacto:</strong> ${esc(c.contacto || "—")}</div><div class="card-actions"><button class="btn-action" onclick="alert('Contacto: ${esc(c.contacto)}')">Contactar</button><button class="btn-action">Solicitar</button></div></div>`).join("");
+    }
+
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        e.target.classList.add("active");
+        filterType = e.target.dataset.type;
+        render();
+      });
+    });
+
+    document.getElementById("search").addEventListener("input", (e) => {
+      searchText = e.target.value.trim();
+      render();
+    });
+
+    checkUser();
+    load();
   } catch (e) {
-    console.error(e);
-    document.getElementById("loading").innerHTML = "Error al cargar";
+    console.error("Error inicializando:", e);
+    document.getElementById("loading").innerHTML = "Error al iniciar";
   }
-}
-
-function render() {
-  const filtered = companies.filter(c => {
-    const typeMatch = !filterType || c.tipo === filterType;
-    const searchMatch = !searchText || (c.nombre && c.nombre.toLowerCase().includes(searchText.toLowerCase()));
-    return typeMatch && searchMatch;
-  });
-
-  const grid = document.getElementById("grid");
-  const empty = document.getElementById("empty");
-  const loading = document.getElementById("loading");
-
-  loading.style.display = "none";
-
-  if (filtered.length === 0) {
-    grid.innerHTML = "";
-    empty.style.display = "block";
-    return;
-  }
-
-  empty.style.display = "none";
-  grid.innerHTML = filtered.map(c => `
-    <div class="card">
-      <span class="card-type">${c.tipo === "floricola" ? "Florícola" : c.tipo === "logistica" ? "Logística" : "Transporte"}</span>
-      <h3>${esc(c.nombre)}</h3>
-      <div class="card-detail"><strong>Ubicación:</strong> ${esc(c.ubicacion || "—")}</div>
-      <div class="card-detail"><strong>Contacto:</strong> ${esc(c.contacto || "—")}</div>
-      <div class="card-actions">
-        <button class="btn-action" onclick="alert(\'Contacto: ${esc(c.contacto)}\')">Contactar</button>
-        <button class="btn-action" onclick="solicitar(\'${c.id}\', \'${esc(c.nombre)}\')">Solicitar</button>
-      </div>
-    </div>
-  `).join("");
-}
-
-function solicitar(id, nombre) {
-  alert("Funcionalidad próximamente");
-}
+}, 500);
 
 function logout(e) {
   e.preventDefault();
   db.auth.signOut().then(() => location.reload());
 }
-
-document.querySelectorAll(".filter-btn").forEach(btn => {
-  btn.addEventListener("click", (e) => {
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    e.target.classList.add("active");
-    filterType = e.target.dataset.type;
-    render();
-  });
-});
-
-document.getElementById("search").addEventListener("input", (e) => {
-  searchText = e.target.value.trim();
-  render();
-});
-
-checkUser();
-load();
 <\/script>
 
 </body>
