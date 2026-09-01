@@ -50,7 +50,7 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background: #f5f
 <script src="assets/config.js"></script>
 <script src="assets/app.js"></script>
 <script>
-window.addEventListener("load", async function() {
+setTimeout(async function() {
   let attempts = 0;
   while (typeof getDB !== "function" && attempts < 50) {
     await new Promise(r => setTimeout(r, 100));
@@ -97,7 +97,7 @@ window.addEventListener("load", async function() {
     document.getElementById("error").style.display = "block";
     document.getElementById("error").innerHTML = "Error: getDB no disponible";
   }
-});
+}, 2000);
 <\/script>
 
 </body>
