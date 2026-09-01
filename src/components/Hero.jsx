@@ -59,7 +59,7 @@ export default function Hero() {
         <motion.p variants={itemVariants}>Conecta florícolas con logística y transporte de forma directa. Acelera pedidos, mejora márgenes, llega al mundo.</motion.p>
         <motion.div className="hero-buttons" variants={itemVariants}>
           <motion.a href="/registro.html" className="btn btn-primary" whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.95 }}>Registrar empresa</motion.a>
-          <motion.button className="btn btn-secondary" whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.95 }}>Ver directorio</motion.button>
+          <motion.a href="/directorio.html" className="btn btn-secondary" whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.95 }}>Ver directorio</motion.a>
         </motion.div>
       </motion.div>
     </div>
