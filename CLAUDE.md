@@ -23,6 +23,26 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 - **Emails:** Supabase envía los de autenticación/recuperación; Edge Function `notify-empresa`
   + Brevo envían los transaccionales (bienvenida, aprobación, rechazo).
 
+## Directorio (directorio.html) — COMPLETADO ✅
+
+**Funcionalidad:**
+- ✅ Carga automática de empresas aprobadas (IIFE + polling)
+- ✅ Muestra: nombre_empresa, ubicación (ciudad + provincia), lo que ofrece, contacto
+- ✅ Badges con tipo (Florícola/Logística/Transporte)
+- ✅ Botón Contactar: alerta con contacto de la empresa
+- ✅ Botón Solicitar: redirige a panel.html?solicitar=[id_empresa]
+
+**Diseño (pendiente en Netlify):**
+- 🔶 Colores por tipo: Florícola (#EC4899), Logística (#3b82f6), Transporte (#f59e0b)
+- 🔶 Gradientes suaves por tipo
+- 🔶 Hover effects con transform en botones
+- **⚠️ PROBLEMA:** Netlify no despliega cambios CSS. Los archivos están en GitHub y en dist/ localmente, pero Netlify no los sirve. Puede ser caché intermedio.
+
+**Para próxima sesión:**
+1. Resolver problema de deploy en Netlify (posible caché o problema de build)
+2. Completar funcionalidad de Solicitar (crear request en Supabase)
+3. Actualizar panel.html y admin.html con diseño floral
+
 ## Archivos
 
 ### Landing (React + Framer Motion)
