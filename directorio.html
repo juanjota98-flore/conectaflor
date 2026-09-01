@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Directorio · ConectaFlor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/styles.css" />
+<style>
+.directory-header { padding: 60px 0 40px; text-align: center; }
+.directory-header h1 { font-size: clamp(1.8rem, 5vw, 3rem); margin-bottom: 12px; }
+.directory-header p { font-size: 1.05rem; color: var(--ink-soft); max-width: 60ch; margin: 0 auto 2rem; }
+.toolbar-sticky { position: sticky; top: 60px; z-index: 40; background: rgba(255,255,255,.95); backdrop-filter: blur(8px); padding: 16px 0; border-bottom: 1px solid var(--line); }
+.toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.search-box { flex: 1; min-width: 220px; display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; }
+.search-box input { flex: 1; border: none; outline: none; background: transparent; font: inherit; font-size: 0.95rem; }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; }
+.filter-btn { border: none; background: transparent; cursor: pointer; font: inherit; font-weight: 600; font-size: 0.9rem; color: var(--ink-soft); padding: 8px 14px; border-radius: 6px; transition: all 0.2s ease; border: 1px solid var(--line); }
+.filter-btn.active { background: var(--forest); color: #fff; border-color: var(--forest); }
+.filter-btn:hover { border-color: var(--forest); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 28px; }
+.card { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 20px; box-shadow: var(--shadow); transition: all 0.2s ease; border-top: 4px solid var(--forest); }
+.card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(45, 106, 79, 0.12); border-top-color: #EC4899; }
+.card-type { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 6px 10px; border-radius: 4px; display: inline-block; margin-bottom: 12px; }
+.type-floricola { background: #fce7f3; color: #DB2777; }
+.type-logistica { background: #dcfce7; color: #15803D; }
+.type-transporte { background: #e0f2fe; color: #0369a1; }
+.card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--ink); }
+.card-location { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 12px; }
+.card-detail { font-size: 0.9rem; color: var(--ink-soft); margin: 8px 0; line-height: 1.5; }
+.card-detail strong { color: var(--ink); font-weight: 600; }
+.card-actions { display: flex; gap: 8px; margin-top: 16px; border-top: 1px solid var(--line); padding-top: 16px; }
+.btn-contact { flex: 1; padding: 10px 14px; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--line); background: white; color: var(--forest); border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+.btn-contact:hover { background: var(--forest); color: white; border-color: var(--forest); }
+.empty { text-align: center; padding: 60px 20px; color: var(--ink-soft); }
+.empty p { font-size: 1.1rem; margin-bottom: 12px; }
+.loading { text-align: center; padding: 40px 20px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+<div class="nav-inner">
+<a class="brand" href="index.html">🌹 ConectaFlor</a>
+<div class="nav-links">
+<a href="index.html">Inicio</a>
+<a href="directorio.html">Directorio</a>
+<a href="registro.html">Registrar empresa</a>
+<a href="panel.html">Iniciar sesión</a>
+</div>
+</div>
+</nav>
+
+<main class="section" style="padding-top: 0;">
+<div class="wrap">
+<div class="directory-header">
+<h1>Directorio de empresas</h1>
+<p>Explora florícolas, logística y transporte verificados. Conecta directamente y negocia sin intermediarios.</p>
+</div>
+
+<div class="toolbar-sticky">
+<div class="wrap">
+<div class="toolbar">
+<div class="search-box">
+<span>🔍</span>
+<input id="search" type="text" placeholder="Busca por nombre, ubicación..." />
+</div>
+<div class="filters">
+<button class="filter-btn active" data-type="">Todas</button>
+<button class="filter-btn" data-type="floricola">🌹 Florícola</button>
+<button class="filter-btn" data-type="logistica">📦 Logística</button>
+<button class="filter-btn" data-type="transporte">🚛 Transporte</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="grid" id="grid"></div>
+<div class="empty" id="empty" style="display: none;">
+<p>No encontramos empresas que coincidan.</p>
+<p style="font-size: 0.9rem; color: var(--ink-soft);">Intenta cambiar los filtros o busca otro término.</p>
+</div>
+<div class="loading" id="loading">Cargando empresas...</div>
+</div>
+</main>
+
+<footer>
+<div class="wrap">
+<span>© <span id="year"></span> ConectaFlor</span>
+</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/app.js"></script>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+const db = getDB();
+let allCompanies = [];
+let currentFilter = "";
+let currentSearch = "";
+
+async function loadCompanies() {
+  const { data, error } = await db.from("listings").select("*").eq("status", "approved").order("created_at", { ascending: false });
+  if (error) { console.error(error); document.getElementById("loading").innerHTML = "Error al cargar. Intenta más tarde."; return; }
+  allCompanies = data || [];
+  renderCompanies();
+}
+
+function renderCompanies() {
+  const filtered = allCompanies.filter(c => {
+    const matchType = !currentFilter || c.tipo === currentFilter;
+    const matchSearch = !currentSearch || c.nombre.toLowerCase().includes(currentSearch.toLowerCase()) || (c.ubicacion || "").toLowerCase().includes(currentSearch.toLowerCase());
+    return matchType && matchSearch;
+  });
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("empty");
+  const loading = document.getElementById("loading");
+  loading.style.display = "none";
+  if (filtered.length === 0) { grid.innerHTML = ""; empty.style.display = "block"; return; }
+  empty.style.display = "none";
+  grid.innerHTML = filtered.map(c => `
+    <div class="card">
+    <span class="card-type type-${c.tipo}">${c.tipo === "floricola" ? "Florícola" : c.tipo === "logistica" ? "Logística" : "Transporte"}</span>
+    <h3>${esc(c.nombre)}</h3>
+    <div class="card-location">${esc(c.ubicacion || "Ecuador")}</div>
+    <div class="card-detail"><strong>Contacto:</strong> ${esc(c.contacto || "—")}</div>
+    <div class="card-actions">
+    <button class="btn-contact">Contactar</button>
+    <button class="btn-contact">Solicitar</button>
+    </div>
+    </div>
+  `).join("");
+}
+
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    e.target.classList.add("active");
+    currentFilter = e.target.dataset.type;
+    renderCompanies();
+  });
+});
+
+document.getElementById("search").addEventListener("input", (e) => {
+  currentSearch = e.target.value.trim();
+  renderCompanies();
+});
+
+loadCompanies();
+</script>
+
+</body>
+</html>
