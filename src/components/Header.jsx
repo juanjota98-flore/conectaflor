@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import './Header.css'
 
 const supabaseUrl = 'https://jbsgahlfsixbltvpdmqt.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2dhaGxmc2l4Ymx0dnBkbXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDI1MDMwMDAsImV4cCI6MjAxODEyMzAwMH0.0OcK8e9KbNM9KBxaVfnvj2HtYZPgLnCOKBp1bRdL9nQ'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2dhaGxmc2l4Ymx0dnBkbXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxOTY4NjQsImV4cCI6MjA5NTc3Mjg2NH0.didWmqYGuUYlx4LIXRnlEB14uElEErm_Ujn_tCcaufc'
 const db = createClient(supabaseUrl, supabaseKey)
 
 export default function Header() {
