@@ -11,11 +11,14 @@
 
 <nav class="nav">
   <div class="nav-inner">
-    <a class="brand" href="index.html"><span class="dot"></span> ConectaFlor</a>
+    <a class="brand" href="index.html">🌹 ConectaFlor</a>
     <div class="nav-links">
-      <a href="index.html">Directorio</a>
-      <a href="registro.html">Registrar empresa</a>
-      <a href="panel.html">Iniciar sesión</a>
+      <a href="index.html">Inicio</a>
+      <a href="directorio.html">Directorio</a>
+      <a href="registro.html" id="nav-register">Registrar empresa</a>
+      <a href="panel.html" id="nav-login">Iniciar sesión</a>
+      <a href="panel.html" id="nav-myaccount" style="display:none;"></a>
+      <a href="#" id="nav-logout" style="display:none;">Salir</a>
     </div>
   </div>
 </nav>
@@ -239,6 +242,27 @@ document.getElementById("form").addEventListener("submit", async (e) => {
     btn.disabled = false; btn.textContent = "Crear cuenta y registrar empresa";
   }
 });
+
+// Detectar sesión y actualizar nav
+(async function() {
+  const { data } = await db.auth.getSession();
+  if (data.session) {
+    const { data: userData } = await db.auth.getUser();
+    const { data: company } = await db.from("listings").select("nombre").eq("user_id", userData.user.id).limit(1);
+    if (company && company.length > 0) {
+      document.getElementById("nav-register").style.display = "none";
+      document.getElementById("nav-login").style.display = "none";
+      document.getElementById("nav-myaccount").style.display = "inline";
+      document.getElementById("nav-myaccount").textContent = "Mi cuenta (" + company[0].nombre + ")";
+      document.getElementById("nav-logout").style.display = "inline";
+      document.getElementById("nav-logout").addEventListener("click", async (e) => {
+        e.preventDefault();
+        await db.auth.signOut();
+        location.reload();
+      });
+    }
+  }
+})();
 </script>
 </body>
 </html>

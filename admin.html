@@ -11,11 +11,12 @@
 
 <nav class="nav">
   <div class="nav-inner">
-    <a class="brand" href="index.html"><span class="dot"></span> ConectaFlor</a>
+    <a class="brand" href="index.html">🌹 ConectaFlor</a>
     <div class="nav-links">
-      <a href="index.html">Directorio</a>
-      <a href="registro.html">Registrar empresa</a>
+      <a href="index.html">Inicio</a>
+      <a href="directorio.html">Directorio</a>
       <a href="admin.html">Admin</a>
+      <a href="#" id="nav-logout">Salir</a>
     </div>
   </div>
 </nav>
@@ -228,6 +229,13 @@ document.getElementById("adminList").addEventListener("click", async (e) => {
 });
 
 refreshSession();
+
+// Manejar cierre de sesión
+document.getElementById("nav-logout").addEventListener("click", async (e) => {
+  e.preventDefault();
+  await db.auth.signOut();
+  location.href = "index.html";
+});
 </script>
 </body>
 </html>
