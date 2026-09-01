@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -50,57 +50,35 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background: #f5f
 <script src="assets/config.js"></script>
 <script src="assets/app.js"></script>
 <script>
-console.log("directorio.html script iniciado");
-setTimeout(async function() {
-  console.log("setTimeout ejecutándose, intentando getDB...");
-  let attempts = 0;
-  while (typeof getDB !== "function" && attempts < 50) {
-    await new Promise(r => setTimeout(r, 100));
-    attempts++;
-  }
-
-  if (typeof getDB === "function") {
-    try {
-      const db = getDB();
-      const { data: companies, error } = await db.from("listings").select("*").eq("status", "approved").order("created_at", { ascending: false });
-
-      if (error) throw error;
-
-      document.getElementById("loading").style.display = "none";
-      const grid = document.getElementById("grid");
-
-      if (companies && companies.length > 0) {
-        function esc(v) {
-          if (!v) return "";
-          return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+(async function loadDir() {
+  for (let i = 0; i < 100; i++) {
+    if (typeof getDB === "function") {
+      try {
+        const db = getDB();
+        const { data: companies, error } = await db.from("listings").select("*").eq("status", "approved").order("created_at", { ascending: false });
+        if (error) throw error;
+        document.getElementById("loading").style.display = "none";
+        const grid = document.getElementById("grid");
+        if (companies && companies.length > 0) {
+          function esc(v) { if (!v) return ""; return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
+          grid.innerHTML = companies.map(c => `<div class="card"><h3>${esc(c.nombre)}</h3><div class="card-detail"><strong>Ubicación:</strong> ${esc(c.ubicacion || "—")}</div><div class="card-detail"><strong>Contacto:</strong> ${esc(c.contacto || "—")}</div><div class="card-actions"><button class="btn-action" onclick="alert('Contactar a: ${esc(c.contacto)}')">Contactar</button><button class="btn-action">Solicitar</button></div></div>`).join("");
+        } else {
+          grid.innerHTML = "<div style='text-align:center;padding:40px;color:#718096;grid-column:1/-1'>No hay empresas registradas</div>";
         }
-
-        grid.innerHTML = companies.map(c => `
-          <div class="card">
-            <h3>${esc(c.nombre)}</h3>
-            <div class="card-detail"><strong>Ubicación:</strong> ${esc(c.ubicacion || "—")}</div>
-            <div class="card-detail"><strong>Contacto:</strong> ${esc(c.contacto || "—")}</div>
-            <div class="card-actions">
-              <button class="btn-action" onclick="alert('Contactar a: ${esc(c.contacto)}')">Contactar</button>
-              <button class="btn-action">Solicitar</button>
-            </div>
-          </div>
-        `).join("");
-      } else {
-        grid.innerHTML = "<div style='text-align:center;padding:40px;color:#718096;grid-column:1/-1'>No hay empresas registradas</div>";
+        return;
+      } catch (err) {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("error").style.display = "block";
+        document.getElementById("error").innerHTML = "Error: " + err.message;
+        return;
       }
-    } catch (err) {
-      console.error(err);
-      document.getElementById("loading").style.display = "none";
-      document.getElementById("error").style.display = "block";
-      document.getElementById("error").innerHTML = "Error: " + err.message;
     }
-  } else {
-    document.getElementById("error").style.display = "block";
-    document.getElementById("error").innerHTML = "Error: getDB no disponible";
+    await new Promise(r => setTimeout(r, 100));
   }
-}, 5000);
-<\/script>
+  document.getElementById("error").style.display = "block";
+  document.getElementById("error").innerHTML = "Error: getDB no disponible después de 10 segundos";
+})();
+</script>
 
 </body>
 </html>
