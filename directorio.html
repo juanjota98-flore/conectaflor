@@ -18,6 +18,7 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background: #f5f
 .loading { text-align: center; padding: 40px 20px; }
 .header-title { text-align: center; padding: 40px 0 30px; }
 .header-title h1 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
+.error { color: #c53030; text-align: center; padding: 40px 20px; }
 </style>
 </head>
 <body>
@@ -41,55 +42,58 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background: #f5f
 </div>
 
 <div id="loading" class="loading">Cargando empresas...</div>
+<div id="error" class="error" style="display:none;"></div>
 <div id="grid" class="grid"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>
 <script>
-setTimeout(function() {
-  const { createClient } = window.supabase;
-  const db = createClient("https://jbsgahlfsixbltvpdmqt.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2dhaGxmc2l4Ymx0dnBkbXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDI1MDMwMDAsImV4cCI6MjAxODEyMzAwMH0.0OcK8e9KbNM9KBxaVfnvj2HtYZPgLnCOKBp1bRdL9nQ");
-
-  function esc(v) {
-    if (!v) return "";
-    return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-  }
-
-  async function load() {
-    try {
-      const { data, error } = await db.from("listings").select("*").eq("status", "approved").order("created_at", { ascending: false });
-      if (error) throw error;
-      const companies = data || [];
-      
-      const grid = document.getElementById("grid");
-      const loading = document.getElementById("loading");
-      
-      loading.style.display = "none";
-      
-      if (companies.length === 0) {
-        grid.innerHTML = "<div style='text-align:center;padding:40px;color:#718096;grid-column:1/-1'>No hay empresas registradas</div>";
-        return;
-      }
-      
-      grid.innerHTML = companies.map(c => `
-        <div class="card">
-          <h3>${esc(c.nombre)}</h3>
-          <div class="card-detail"><strong>Ubicación:</strong> ${esc(c.ubicacion || "—")}</div>
-          <div class="card-detail"><strong>Contacto:</strong> ${esc(c.contacto || "—")}</div>
-          <div class="card-actions">
-            <button class="btn-action" onclick="alert('Contactar a: ${esc(c.contacto)}')">Contactar</button>
-            <button class="btn-action">Solicitar</button>
-          </div>
-        </div>
-      `).join("");
-    } catch (e) {
-      console.error(e);
-      document.getElementById("loading").innerHTML = "Error: " + e.message;
+async function loadCompanies() {
+  try {
+    const url = "https://jbsgahlfsixbltvpdmqt.supabase.co/rest/v1/listings?status=eq.approved&order=created_at.desc";
+    const headers = {
+      "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2dhaGxmc2l4Ymx0dnBkbXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDI1MDMwMDAsImV4cCI6MjAxODEyMzAwMH0.0OcK8e9KbNM9KBxaVfnvj2HtYZPgLnCOKBp1bRdL9nQ",
+      "Content-Type": "application/json"
+    };
+    
+    const response = await fetch(url, { headers });
+    const companies = await response.json();
+    
+    const grid = document.getElementById("grid");
+    const loading = document.getElementById("loading");
+    const error = document.getElementById("error");
+    
+    loading.style.display = "none";
+    
+    if (!Array.isArray(companies) || companies.length === 0) {
+      grid.innerHTML = "<div style='text-align:center;padding:40px;color:#718096;grid-column:1/-1'>No hay empresas registradas</div>";
+      return;
     }
+    
+    function esc(v) {
+      if (!v) return "";
+      return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+    
+    grid.innerHTML = companies.map(c => `
+      <div class="card">
+        <h3>${esc(c.nombre)}</h3>
+        <div class="card-detail"><strong>Ubicación:</strong> ${esc(c.ubicacion || "—")}</div>
+        <div class="card-detail"><strong>Contacto:</strong> ${esc(c.contacto || "—")}</div>
+        <div class="card-actions">
+          <button class="btn-action" onclick="alert('Contactar a: ${esc(c.contacto)}')">Contactar</button>
+          <button class="btn-action">Solicitar</button>
+        </div>
+      </div>
+    `).join("");
+  } catch (err) {
+    console.error(err);
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("error").style.display = "block";
+    document.getElementById("error").innerHTML = "Error al cargar: " + err.message;
   }
+}
 
-  load();
-}, 500);
+loadCompanies();
 <\/script>
 
 </body>
