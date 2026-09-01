@@ -160,8 +160,9 @@
 <script src="assets/config.js"><\/script>
 <script src="assets/app.js"><\/script>
 <script>
+window.addEventListener('load', function() {
 document.getElementById("year").textContent = new Date().getFullYear();
-let db;
+let db = getDB();
 let allCompanies = [];
 let currentFilter = "";
 let currentSearch = "";
@@ -169,7 +170,6 @@ let currentUser = null;
 let currentCompany = null;
 
 async function checkSession() {
-  if (!db) db = getDB();
   try {
     const { data } = await db.auth.getSession();
   if (data.session) {
@@ -189,7 +189,6 @@ async function checkSession() {
 }
 
 async function loadCompanies() {
-  if (!db) db = getDB();
   const { data, error } = await db.from("listings").select("*").eq("status", "approved").order("created_at", { ascending: false });
   if (error) { console.error(error); document.getElementById("loading").innerHTML = "Error al cargar"; return; }
   allCompanies = data || [];
@@ -273,6 +272,7 @@ document.getElementById("search").addEventListener("input", (e) => {
 
 checkSession();
 loadCompanies();
+});
 <\/script>
 
 </body>
