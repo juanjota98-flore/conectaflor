@@ -4,31 +4,29 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Mi panel · ConectaFlor</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="assets/styles.css" />
 <style>
-  .tabs { display:inline-flex; gap:6px; background:var(--paper-2); padding:5px; border-radius:999px; margin-bottom:24px; flex-wrap:wrap; }
-  .tab { border:none; background:transparent; cursor:pointer; font:inherit; font-weight:600; font-size:.92rem; color:var(--ink-soft); padding:9px 16px; border-radius:999px; }
-  .tab.active { background:#fff; color:var(--ink); box-shadow:var(--shadow); }
-  .item { background:#fffdf8; border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-bottom:14px; box-shadow:var(--shadow); }
+  .tabs { display:inline-flex; gap:6px; background:var(--paper-2); padding:5px; border-radius:6px; margin-bottom:24px; flex-wrap:wrap; }
+  .tab { border:none; background:transparent; cursor:pointer; font:inherit; font-weight:600; font-size:.92rem; color:var(--ink-soft); padding:9px 16px; border-radius:6px; transition: all 0.2s ease; }
+  .tab.active { background:#fff; color:var(--forest); font-weight:700; box-shadow:var(--shadow); }
+  .item { background:#fff; border:1px solid var(--line); border-radius:8px; padding:18px 20px; margin-bottom:14px; box-shadow:var(--shadow); border-left: 4px solid #EC4899; }
   .item .top { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-start; }
-  .item h4 { margin:0 0 2px; font-family:"Fraunces",serif; font-size:1.15rem; }
+  .item h4 { margin:0 0 2px; font-family:"Plus Jakarta Sans",sans-serif; font-weight:700; font-size:1.1rem; }
   .item .detail { font-size:.92rem; color:var(--ink-soft); margin-top:8px; }
   .item .detail b { color:var(--ink); }
-  .pill { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; padding:4px 10px; border-radius:999px; }
-  .pill.open { background:var(--sage); color:var(--forest); }
-  .pill.quoted { background:#fdeecf; color:#8a5a14; }
-  .pill.accepted { background:#d9eede; color:#1f6b3f; }
-  .pill.rejected, .pill.cancelled { background:var(--rose-soft); color:#8d2640; }
+  .pill { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; padding:6px 12px; border-radius:4px; }
+  .pill.open { background:#dbeafe; color:#0369a1; }
+  .pill.quoted { background:#fce7f3; color:#DB2777; }
+  .pill.accepted { background:#dcfce7; color:#15803D; }
+  .pill.rejected, .pill.cancelled { background:#fee2e2; color:#dc2626; }
   .inline-form { margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); display:none; }
   .inline-form.show { display:block; }
   .inline-form .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   .inline-form .field { margin-bottom:12px; }
-  .quote-box { background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-top:10px; }
-  .banner { background:var(--sage); border:1px solid #b9d3bf; color:var(--forest); border-radius:14px; padding:18px 20px; margin-bottom:20px; }
-  .banner.warn { background:#fdeecf; border-color:#eccf95; color:#8a5a14; }
+  .quote-box { background:#f9fafb; border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-top:10px; }
+  .banner { background:#dcfce7; border:1px solid #a7e957; color:#15803D; border-radius:8px; padding:18px 20px; margin-bottom:20px; }
+  .banner.warn { background:#fce7f3; border-color:#f472b6; color:#DB2777; }
   @media (max-width:560px){ .inline-form .grid-2 { grid-template-columns:1fr; } }
 </style>
 </head>

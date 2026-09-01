@@ -1,22 +1,22 @@
 /* ============================================================
    ConectaFlor — estilos
-   Estética: editorial / botánica / premium (rosa ecuatoriana)
+   Estética: floral / ecuatoriana (verde natural + rosa floral)
    ============================================================ */
 
 :root {
-  --paper:      #f6f2e9;
-  --paper-2:    #efe9dc;
-  --ink:        #15241c;
-  --ink-soft:   #3c5044;
-  --forest:     #1f4d39;
-  --forest-2:   #2c6b50;
-  --rose:       #bd3f5c;
-  --rose-soft:  #f3d9df;
-  --sage:       #e7ede1;
-  --line:       #d8d0bf;
-  --gold:       #c08a3e;
-  --radius:     16px;
-  --shadow:     0 1px 2px rgba(21,36,28,.05), 0 18px 40px -22px rgba(21,36,28,.35);
+  --paper:      #f5f5f5;
+  --paper-2:    #f0fdf4;
+  --ink:        #2d3748;
+  --ink-soft:   #718096;
+  --forest:     #15803D;
+  --forest-2:   #0d5a2e;
+  --rose:       #EC4899;
+  --rose-soft:  #fce7f3;
+  --sage:       #dcfce7;
+  --line:       #e2e8f0;
+  --gold:       #EC4899;
+  --radius:     8px;
+  --shadow:     0 1px 3px rgba(0,0,0,0.08);
 }
 
 * { box-sizing: border-box; }
@@ -25,21 +25,19 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
   color: var(--ink);
   background-color: var(--paper);
-  background-image:
-    radial-gradient(circle at 12% -10%, rgba(44,107,80,.10), transparent 45%),
-    radial-gradient(circle at 95% 0%, rgba(189,63,92,.08), transparent 40%);
+  background-image: none;
   background-attachment: fixed;
-  line-height: 1.55;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, .display {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 600;
-  line-height: 1.08;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
   letter-spacing: -0.01em;
   margin: 0;
 }
@@ -61,8 +59,8 @@ a { color: var(--forest); }
 }
 .brand {
   display: flex; align-items: center; gap: 10px;
-  font-family: "Fraunces", serif; font-weight: 600; font-size: 1.32rem;
-  color: var(--ink); text-decoration: none; letter-spacing: -.02em;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif; font-weight: 700; font-size: 1.32rem;
+  color: var(--forest); text-decoration: none; letter-spacing: -.02em;
 }
 .brand .dot {
   width: 13px; height: 13px; border-radius: 50%;
@@ -108,7 +106,7 @@ a { color: var(--forest); }
 }
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .stats { display: flex; gap: 34px; margin-top: 46px; flex-wrap: wrap; }
-.stat .n { font-family: "Fraunces", serif; font-size: 2rem; color: var(--forest); }
+.stat .n { font-family: "Plus Jakarta Sans", system-ui, sans-serif; font-size: 2rem; font-weight: 700; color: var(--forest); }
 .stat .l { font-size: .85rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .08em; }
 
 /* ---------- SECCIÓN / DIRECTORIO ---------- */
@@ -190,7 +188,7 @@ a { color: var(--forest); }
 }
 .type-toggle input { display: none; }
 .type-toggle label .ico { font-size: 1.5rem; display: block; margin-bottom: 6px; }
-.type-toggle label .t { font-weight: 700; font-family: "Fraunces", serif; }
+.type-toggle label .t { font-weight: 700; font-family: "Plus Jakarta Sans", system-ui, sans-serif; }
 .type-toggle input:checked + .box { }
 .type-toggle label:has(input:checked) { border-color: var(--forest); background: var(--sage); box-shadow: 0 0 0 3px rgba(31,77,57,.12); }
 
