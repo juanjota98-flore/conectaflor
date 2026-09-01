@@ -1,6 +1,11 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
+import { createClient } from '@supabase/supabase-js'
 import './Header.css'
+
+const supabaseUrl = 'https://jbsgahlfsixbltvpdmqt.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2dhaGxmc2l4Ymx0dnBkbXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDI1MDMwMDAsImV4cCI6MjAxODEyMzAwMH0.0OcK8e9KbNM9KBxaVfnvj2HtYZPgLnCOKBp1bRdL9nQ'
+const db = createClient(supabaseUrl, supabaseKey)
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -12,11 +17,6 @@ export default function Header() {
 
   const checkSession = async () => {
     try {
-      const { createClient } = await import('@supabase/supabase-js')
-      const supabaseUrl = 'https://jbsgahlfsixbltvpdmqt.supabase.co'
-      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2dhaGxmc2l4Ymx0dnBkbXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDI1MDMwMDAsImV4cCI6MjAxODEyMzAwMH0.0OcK8e9KbNM9KBxaVfnvj2HtYZPgLnCOKBp1bRdL9nQ'
-      const db = createClient(supabaseUrl, supabaseKey)
-
       const { data } = await db.auth.getSession()
       if (data.session) {
         const { data: userData } = await db.auth.getUser()
@@ -33,10 +33,6 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
-      const { createClient } = await import('@supabase/supabase-js')
-      const supabaseUrl = 'https://jbsgahlfsixbltvpdmqt.supabase.co'
-      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2dhaGxmc2l4Ymx0dnBkbXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDI1MDMwMDAsImV4cCI6MjAxODEyMzAwMH0.0OcK8e9KbNM9KBxaVfnvj2HtYZPgLnCOKBp1bRdL9nQ'
-      const db = createClient(supabaseUrl, supabaseKey)
       await db.auth.signOut()
       location.href = '/'
     } catch (e) {
