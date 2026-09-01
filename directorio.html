@@ -61,7 +61,13 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background: #f5f
         const grid = document.getElementById("grid");
         if (companies && companies.length > 0) {
           function esc(v) { if (!v) return ""; return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
-          grid.innerHTML = companies.map(c => `<div class="card"><h3>${esc(c.nombre)}</h3><div class="card-detail"><strong>Ubicación:</strong> ${esc(c.ubicacion || "—")}</div><div class="card-detail"><strong>Contacto:</strong> ${esc(c.contacto || "—")}</div><div class="card-actions"><button class="btn-action" onclick="alert('Contactar a: ${esc(c.contacto)}')">Contactar</button><button class="btn-action">Solicitar</button></div></div>`).join("");
+          function getTipo(t) { return t === "floricola" ? "🌹 Florícola" : t === "logistica" ? "✈️ Logística" : "🚛 Transporte"; }
+          grid.innerHTML = companies.map(c => {
+            const ubicacion = [c.ciudad, c.provincia].filter(Boolean).join(", ") || "—";
+            const desc = c.tipos_flores || c.servicios || c.descripcion || "—";
+            const contacto = c.contacto_nombre || c.email || c.telefono || "—";
+            return `<div class="card"><div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px;"><h3 style="margin:0;flex:1;">${esc(c.nombre_empresa)}</h3><span style="background:#15803D;color:white;font-size:0.75rem;padding:4px 8px;border-radius:4px;white-space:nowrap;">${getTipo(c.tipo)}</span></div><div class="card-detail"><strong>Ubicación:</strong> ${esc(ubicacion)}</div><div class="card-detail"><strong>Ofrece:</strong> ${esc(desc)}</div><div class="card-detail"><strong>Contacto:</strong> ${esc(contacto)}</div><div class="card-actions"><button class="btn-action" onclick="alert('Contactar a: ${esc(contacto)}')">Contactar</button><button class="btn-action">Solicitar</button></div></div>`;
+          }).join("");
         } else {
           grid.innerHTML = "<div style='text-align:center;padding:40px;color:#718096;grid-column:1/-1'>No hay empresas registradas</div>";
         }
