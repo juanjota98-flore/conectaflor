@@ -87,7 +87,14 @@ async function loadCompanies() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", loadCompanies);
+function waitForGetDB() {
+  if (typeof getDB === "function") {
+    loadCompanies();
+  } else {
+    setTimeout(waitForGetDB, 50);
+  }
+}
+waitForGetDB();
 <\/script>
 
 </body>
