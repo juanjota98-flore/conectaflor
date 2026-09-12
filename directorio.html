@@ -59,6 +59,18 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background: #f5f
 </div>
 
 <script>
+// Detectar si está logueado y actualizar nav
+(function() {
+  const userId = localStorage.getItem('user_id');
+  if (userId) {
+    const navLinks = document.querySelector('.nav-links');
+    const loginLink = navLinks.querySelector('a[href="panel.html"]');
+    if (loginLink && loginLink.textContent.includes('Iniciar')) {
+      loginLink.textContent = 'Mi panel';
+    }
+  }
+})();
+
 async function crearSolicitud(recipientId, recipientName) {
   try {
     const userId = localStorage.getItem('user_id');
