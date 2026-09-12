@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     const supabaseKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2dhaGxmc2l4Ymx0dnBkbXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxOTY4NjQsImV4cCI6MjA5NTc3Mjg2NH0.didWmqYGuUYlx4LIXRnlEB14uElEErm_Ujn_tCcaufc';
 
     if (req.method === 'POST') {
-      const { requester_id, recipient_id, kind, description } = req.body;
+      const { requester_id, recipient_id, kind } = req.body;
 
       if (!requester_id || !recipient_id || !kind) {
         return res.status(400).json({ error: 'Missing required fields' });
@@ -30,7 +30,6 @@ export default async function handler(req, res) {
           requester_id,
           recipient_id,
           kind,
-          description: description || '',
           status: 'open',
         }),
       });
