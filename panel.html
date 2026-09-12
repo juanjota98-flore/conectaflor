@@ -188,6 +188,7 @@ async function loadMe() {
   document.getElementById("reset").style.display = "none";
   document.getElementById("panel").style.display = "block";
   const { data: ures } = await db.auth.getUser();
+  localStorage.setItem('user_id', ures.user.id);
   const { data: rows, error } = await db.from("listings").select("*").eq("user_id", ures.user.id).limit(1);
   if (error) { console.error(error); }
   me = rows && rows[0];
