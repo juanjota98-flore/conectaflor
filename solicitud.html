@@ -126,11 +126,12 @@ function showLogin() {
 }
 
 async function loadMe() {
+  const { data: ures } = await db.auth.getUser();
+  if (!ures.user) return;
+
+  localStorage.setItem('user_id', ures.user.id);
   document.getElementById("login").style.display = "none";
   document.getElementById("form").style.display = "block";
-
-  const { data: ures } = await db.auth.getUser();
-  localStorage.setItem('user_id', ures.user.id);
 
   const { data: rows } = await db.from("listings").select("*").eq("user_id", ures.user.id).limit(1);
   me = rows && rows[0];
