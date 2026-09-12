@@ -58,7 +58,20 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background: #f5f
 <div id="grid" class="grid"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/app.js"></script>
 <script>
+let db = null;
+
+// Inicializar Supabase
+(async function() {
+  if (window.SUPABASE_CONFIG) {
+    const { createClient } = window.supabase;
+    db = createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+  }
+})();
+
 // Detectar si está logueado y actualizar nav
 (function() {
   const userId = localStorage.getItem('user_id');
@@ -80,20 +93,17 @@ async function crearSolicitud(recipientId, recipientName) {
       return;
     }
 
-    const res = await fetch('/api/requests', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        requester_id: userId,
-        recipient_id: recipientId,
-        kind: 'solicitud',
-      }),
+    if (!db) {
+      throw new Error('No se pudo conectar a Supabase');
+    }
+
+    const { error } = await db.from('requests').insert({
+      requester_id: userId,
+      recipient_id: recipientId,
+      kind: 'solicitud',
     });
 
-    if (!res.ok) {
-      const errData = await res.json();
-      throw new Error(errData.error || 'Error al crear solicitud');
-    }
+    if (error) throw error;
 
     alert('✅ Solicitud creada exitosamente');
     window.location.href = '/panel.html?tab=solicitudes';
