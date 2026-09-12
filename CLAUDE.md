@@ -167,10 +167,29 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 
 ## Roadmap / pendientes
 
+## Solicitudes - Flujo básico completado 2026-09-11 ✅
+
+**Logros esta sesión:**
+- ✅ Página `solicitud.html` dedicada para crear solicitud (redirige desde directorio.html)
+- ✅ Directorio agrupado por tipo: 🌹 Florícolas, ✈️ Logística, 🚛 Transporte
+- ✅ Botón "Solicitar" en cada empresa redirige a `solicitud.html?empresa=[id]`
+- ✅ Login requerido antes de crear solicitud
+- ✅ Datos básicos de empresa prefillados (nombre, tipo, ubicación, contacto)
+
+**Pendiente para próxima sesión - CRÍTICO:**
+- 🔴 **Formulario completo solicitud.html:** Expandir a campos como en panel.html:
+  - Título, Flores/Servicio, Cantidad, Fecha requerida, Detalle
+  - Campos condicionales según `kind` (pedido, envío, transporte)
+  - Validación y envío a tabla `requests` con todos los campos correctos
+- 🔴 **Notificaciones:** Verificar que triggers SQL envíen email al recipient_id
+- 🔴 **Flujo aprobación:** Aceptación, rechazo, cotizaciones
+- 🔴 **Historial:** Tab en panel.html para solicitudes completadas
+
 ### Corto plazo (próximas sesiones)
-- ✅ **Landing completa:** Rediseñada con paleta floral, en vivo en Netlify
+- ✅ **Landing completa:** Rediseñada con paleta floral, en vivo en Vercel
+- 🔴 **Solicitudes (solicitud.html):** Completar flujo de creación + notificaciones (ver arriba)
 - ⏳ **Panel de empresa (panel.html):** Actualizar con diseño floral + conectar Supabase real
-  - Pestañas: Explorar, Solicitudes recibidas, Mis solicitudes, Sobrantes, Mi perfil
+  - Pestañas: Explorar, Solicitudes recibidas, Mis solicitudes, Sobrantes, Mi perfil, Historial
   - Mostrar empresas registradas, solicitudes, cotizaciones
 - ⏳ **Admin panel (admin.html):** Actualizar con diseño floral
 - ⏳ **Registro (registro.html):** Actualizar con diseño floral, formulario de 3 tipos
