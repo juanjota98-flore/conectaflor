@@ -58,43 +58,32 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background: #f5f
 <div id="grid" class="grid"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/config.js"></script>
-<script src="assets/app.js"></script>
 <script>
 (async function loadDir() {
-  for (let i = 0; i < 100; i++) {
-    if (typeof getDB === "function") {
-      try {
-        const db = getDB();
-        const { data: companies, error } = await db.from("listings").select("*").eq("status", "approved").order("created_at", { ascending: false });
-        if (error) throw error;
-        document.getElementById("loading").style.display = "none";
-        const grid = document.getElementById("grid");
-        if (companies && companies.length > 0) {
-          function esc(v) { if (!v) return ""; return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
-          function getTipo(t) { return t === "floricola" ? "🌹 Florícola" : t === "logistica" ? "✈️ Logística" : "🚛 Transporte"; }
-          grid.innerHTML = companies.map(c => {
-            const ubicacion = [c.ciudad, c.provincia].filter(Boolean).join(", ") || "—";
-            const desc = c.tipos_flores || c.servicios || c.descripcion || "—";
-            const contacto = c.contacto_nombre || c.email || c.telefono || "—";
-            return `<div class="card ${c.tipo}"><span class="card-badge">${getTipo(c.tipo)}</span><h3>${esc(c.nombre_empresa)}</h3><div class="card-detail"><strong>Ubicación:</strong> ${esc(ubicacion)}</div><div class="card-detail"><strong>Ofrece:</strong> ${esc(desc)}</div><div class="card-detail"><strong>Contacto:</strong> ${esc(contacto)}</div><div class="card-actions"><button class="btn-action" onclick="alert('Contactar a: ${esc(contacto)}')">Contactar</button><button class="btn-action" onclick="window.location.href='/panel.html?solicitar=${esc(c.id)}'">Solicitar</button></div></div>`;
-          }).join("");
-        } else {
-          grid.innerHTML = "<div style='text-align:center;padding:40px;color:#718096;grid-column:1/-1'>No hay empresas registradas</div>";
-        }
-        return;
-      } catch (err) {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("error").style.display = "block";
-        document.getElementById("error").innerHTML = "Error: " + err.message;
-        return;
-      }
+  try {
+    const res = await fetch('/api/listings?status=approved');
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const companies = await res.json();
+
+    document.getElementById("loading").style.display = "none";
+    const grid = document.getElementById("grid");
+    if (companies && companies.length > 0) {
+      function esc(v) { if (!v) return ""; return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
+      function getTipo(t) { return t === "floricola" ? "🌹 Florícola" : t === "logistica" ? "✈️ Logística" : "🚛 Transporte"; }
+      grid.innerHTML = companies.map(c => {
+        const ubicacion = [c.ciudad, c.provincia].filter(Boolean).join(", ") || "—";
+        const desc = c.tipos_flores || c.servicios || c.descripcion || "—";
+        const contacto = c.contacto_nombre || c.email || c.telefono || "—";
+        return `<div class="card ${c.tipo}"><span class="card-badge">${getTipo(c.tipo)}</span><h3>${esc(c.nombre_empresa)}</h3><div class="card-detail"><strong>Ubicación:</strong> ${esc(ubicacion)}</div><div class="card-detail"><strong>Ofrece:</strong> ${esc(desc)}</div><div class="card-detail"><strong>Contacto:</strong> ${esc(contacto)}</div><div class="card-actions"><button class="btn-action" onclick="alert('Contactar a: ${esc(contacto)}')">Contactar</button><button class="btn-action" onclick="window.location.href='/panel.html?solicitar=${esc(c.id)}'">Solicitar</button></div></div>`;
+      }).join("");
+    } else {
+      grid.innerHTML = "<div style='text-align:center;padding:40px;color:#718096;grid-column:1/-1'>No hay empresas registradas</div>";
     }
-    await new Promise(r => setTimeout(r, 100));
+  } catch (err) {
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("error").style.display = "block";
+    document.getElementById("error").innerHTML = "Error: " + err.message;
   }
-  document.getElementById("error").style.display = "block";
-  document.getElementById("error").innerHTML = "Error: getDB no disponible después de 10 segundos";
 })();
 </script>
 
