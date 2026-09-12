@@ -37,10 +37,14 @@ export default async function handler(req, res) {
 
       if (!response.ok) {
         const errorText = await response.text();
+        console.error('Supabase error:', errorText);
         return res.status(response.status).json({ error: errorText });
       }
 
       const data = await response.json();
+      if (!data || !Array.isArray(data)) {
+        return res.status(500).json({ error: 'Invalid response from Supabase' });
+      }
       res.status(201).json(data[0]);
       return;
     }
