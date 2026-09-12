@@ -58,20 +58,7 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background: #f5f
 <div id="grid" class="grid"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/config.js"></script>
-<script src="assets/app.js"></script>
 <script>
-let db = null;
-
-// Inicializar Supabase
-(async function() {
-  if (window.SUPABASE_CONFIG) {
-    const { createClient } = window.supabase;
-    db = createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
-  }
-})();
-
 // Detectar si está logueado y actualizar nav
 (function() {
   const userId = localStorage.getItem('user_id');
@@ -82,36 +69,7 @@ let db = null;
       loginLink.textContent = 'Mi panel';
     }
   }
-})();
-
-async function crearSolicitud(recipientId, recipientName) {
-  try {
-    const userId = localStorage.getItem('user_id');
-    if (!userId) {
-      alert('Debes iniciar sesión primero');
-      window.location.href = '/panel.html';
-      return;
-    }
-
-    if (!db) {
-      throw new Error('No se pudo conectar a Supabase');
-    }
-
-    const { error } = await db.from('requests').insert({
-      requester_id: userId,
-      recipient_id: recipientId,
-      kind: 'solicitud',
-    });
-
-    if (error) throw error;
-
-    alert('✅ Solicitud creada exitosamente');
-    window.location.href = '/panel.html?tab=solicitudes';
-  } catch (err) {
-    console.error('Error:', err);
-    alert('❌ Error: ' + err.message);
-  }
-}
+});
 
 (async function loadDir() {
   try {
@@ -128,7 +86,7 @@ async function crearSolicitud(recipientId, recipientName) {
         const ubicacion = [c.ciudad, c.provincia].filter(Boolean).join(", ") || "—";
         const desc = c.tipos_flores || c.servicios || c.descripcion || "—";
         const contacto = c.contacto_nombre || c.email || c.telefono || "—";
-        return `<div class="card ${c.tipo}"><span class="card-badge">${getTipo(c.tipo)}</span><h3>${esc(c.nombre_empresa)}</h3><div class="card-detail"><strong>Ubicación:</strong> ${esc(ubicacion)}</div><div class="card-detail"><strong>Ofrece:</strong> ${esc(desc)}</div><div class="card-detail"><strong>Contacto:</strong> ${esc(contacto)}</div><div class="card-actions"><button class="btn-action" onclick="alert('Contactar a: ${esc(contacto)}')">Contactar</button><button class="btn-action" onclick="crearSolicitud('${c.id}', '${esc(c.nombre_empresa)}')">Solicitar</button></div></div>`;
+        return `<div class="card ${c.tipo}"><span class="card-badge">${getTipo(c.tipo)}</span><h3>${esc(c.nombre_empresa)}</h3><div class="card-detail"><strong>Ubicación:</strong> ${esc(ubicacion)}</div><div class="card-detail"><strong>Ofrece:</strong> ${esc(desc)}</div><div class="card-detail"><strong>Contacto:</strong> ${esc(contacto)}</div><div class="card-actions"><button class="btn-action" onclick="alert('Contactar a: ${esc(contacto)}')">Contactar</button><button class="btn-action" onclick="window.location.href='/panel.html?solicitar=${c.id}'">Solicitar</button></div></div>`;
       }).join("");
     } else {
       grid.innerHTML = "<div style='text-align:center;padding:40px;color:#718096;grid-column:1/-1'>No hay empresas registradas</div>";
