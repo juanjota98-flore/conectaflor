@@ -14,13 +14,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing table parameter' });
     }
 
-    const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2dhaGxmc2l4Ymx0dnBkbXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxOTY4NjQsImV4cCI6MjA5NTc3Mjg2NH0.didWmqYGuUYlx4LIXRnlEB14uElEErm_Ujn_tCcaufc';
+    const anonKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2dhaGxmc2l4Ymx0dnBkbXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxOTY4NjQsImV4cCI6MjA5NTc3Mjg2NH0.didWmqYGuUYlx4LIXRnlEB14uElEErm_Ujn_tCcaufc';
+    const supabaseUrl = process.env.SUPABASE_URL || 'https://jbsgahlfsixbltvpdmqt.supabase.co';
 
-    let query = `*`;
-    if (status) query += `&status=eq.${status}`;
-    if (order) query += `&order=${order}`;
+    let url = `${supabaseUrl}/rest/v1/${table}?select=*`;
+    if (status) url += `&status=eq.${status}`;
+    if (order) url += `&order=${order}`;
 
-    const response = await fetch(`https://jbsgahlfsixbltvpdmqt.supabase.co/rest/v1/${table}?select=${query}`, {
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'apikey': anonKey,
@@ -28,9 +29,14 @@ export default async function handler(req, res) {
       },
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      return res.status(response.status).json({ error: errorText });
+    }
+
     const data = await response.json();
-    res.status(response.status).json(data);
+    res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message, stack: error.stack });
   }
 }
