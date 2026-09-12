@@ -1003,35 +1003,7 @@ async function setOfferStatus(offerId, status, btn) {
   renderExcedentes();
 }
 
-// Detectar si viene del directorio con ?solicitar=[id]
-const urlParams = new URLSearchParams(window.location.search);
-const solicitarId = urlParams.get('solicitar');
-
-async function handleSolicitarRedirect() {
-  if (!solicitarId) return;
-
-  // Esperar a que el panel cargue
-  await new Promise(r => setTimeout(r, 500));
-
-  // Cambiar a tab "explorar"
-  showTab("explorar");
-
-  // Esperar a que renderExplorar se ejecute
-  await new Promise(r => setTimeout(r, 500));
-
-  // Buscar y hacer clic en el botón de solicitar de la empresa
-  const btn = document.querySelector(`[data-send="${solicitarId}"]`);
-  if (btn) {
-    // El botón de "Solicitar" abre el formulario
-    btn.closest('.item').querySelector('[data-toggle]').click();
-  }
-
-  // Limpiar URL para no volver a activar esto
-  window.history.replaceState({}, document.title, window.location.pathname);
-}
-
 init();
-handleSolicitarRedirect();
 </script>
 </body>
 </html>

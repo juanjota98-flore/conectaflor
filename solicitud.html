@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nueva solicitud · ConectaFlor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/styles.css" />
+<style>
+  .form-container { max-width: 600px; margin: 0 auto; }
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.92rem; }
+  .field input, .field textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; font-family: inherit; }
+  .field textarea { min-height: 100px; resize: vertical; }
+  .company-info { background: #f9fafb; border: 1px solid var(--line); border-radius: 8px; padding: 18px; margin-bottom: 24px; }
+  .company-info h3 { margin: 0 0 8px; }
+  .company-info .detail { font-size: 0.92rem; color: var(--ink-soft); margin: 4px 0; }
+  .btn-group { display: flex; gap: 12px; }
+  .btn { flex: 1; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">🌹 ConectaFlor</a>
+    <div class="nav-links">
+      <a href="index.html">Inicio</a>
+      <a href="directorio.html">Directorio</a>
+      <a href="panel.html">Mi panel</a>
+      <a href="#" id="nav-logout">Salir</a>
+    </div>
+  </div>
+</nav>
+
+<main class="section" style="padding-top: 48px;">
+  <div class="wrap form-container">
+    <h2 style="margin-bottom: 24px;">Nueva solicitud</h2>
+
+    <div id="login" class="form-card login-box" style="display:none;">
+      <h3>Inicia sesión</h3>
+      <div class="field"><label>Correo</label><input id="email" type="email" /></div>
+      <div class="field"><label>Contraseña</label><input id="password" type="password" /></div>
+      <button id="loginBtn" class="btn btn-primary" style="width:100%;">Entrar</button>
+    </div>
+
+    <div id="form" style="display:none;">
+      <div class="company-info">
+        <h3 id="company-name">—</h3>
+        <div class="detail"><strong>Tipo:</strong> <span id="company-type">—</span></div>
+        <div class="detail"><strong>Ubicación:</strong> <span id="company-location">—</span></div>
+        <div class="detail"><strong>Contacto:</strong> <span id="company-contact">—</span></div>
+      </div>
+
+      <div class="field">
+        <label>Título de la solicitud</label>
+        <input id="titulo" type="text" placeholder="Ej: Solicitud de flores premium" />
+      </div>
+
+      <div class="field">
+        <label>Detalle / Descripción</label>
+        <textarea id="detalle" placeholder="Cuéntale más sobre tu solicitud..."></textarea>
+      </div>
+
+      <div class="btn-group">
+        <button id="cancelBtn" class="btn btn-ghost">Cancelar</button>
+        <button id="submitBtn" class="btn btn-primary">Enviar solicitud</button>
+      </div>
+
+      <div id="notice" class="notice" style="margin-top: 18px; display:none;"></div>
+    </div>
+  </div>
+</main>
+
+<footer><div class="wrap"><span>© <span id="year"></span> ConectaFlor</span></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
+<script src="assets/app.js"></script>
+<script>
+let db = null;
+let me = null;
+let company = null;
+
+const empresaId = new URLSearchParams(window.location.search).get('empresa');
+
+(async function init() {
+  if (!window.SUPABASE_CONFIG) return;
+  const { createClient } = window.supabase;
+  db = createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  db.auth.onAuthStateChange((event, session) => {
+    if (session) loadMe();
+    else showLogin();
+  });
+
+  const { data: session } = await db.auth.getSession();
+  if (session) loadMe();
+  else showLogin();
+
+  document.getElementById("loginBtn").addEventListener("click", async () => {
+    const email = document.getElementById("email").value;
+    const pass = document.getElementById("password").value;
+    if (!email || !pass) { alert("Completa los campos."); return; }
+    const { error } = await db.auth.signInWithPassword({ email, password: pass });
+    if (error) { alert("Error: " + error.message); return; }
+  });
+
+  document.getElementById("cancelBtn").addEventListener("click", () => {
+    window.location.href = '/directorio.html';
+  });
+
+  document.getElementById("submitBtn").addEventListener("click", sendRequest);
+  document.getElementById("nav-logout").addEventListener("click", async (e) => {
+    e.preventDefault();
+    await db.auth.signOut();
+    window.location.href = '/index.html';
+  });
+})();
+
+function showLogin() {
+  document.getElementById("login").style.display = "block";
+  document.getElementById("form").style.display = "none";
+}
+
+async function loadMe() {
+  document.getElementById("login").style.display = "none";
+  document.getElementById("form").style.display = "block";
+
+  const { data: ures } = await db.auth.getUser();
+  localStorage.setItem('user_id', ures.user.id);
+
+  const { data: rows } = await db.from("listings").select("*").eq("user_id", ures.user.id).limit(1);
+  me = rows && rows[0];
+
+  if (!empresaId) {
+    document.getElementById("submitBtn").disabled = true;
+    return;
+  }
+
+  const { data: comp } = await db.from("listings").select("*").eq("id", empresaId).limit(1);
+  if (comp && comp.length) {
+    company = comp[0];
+    document.getElementById("company-name").textContent = company.nombre_empresa;
+    document.getElementById("company-type").textContent =
+      company.tipo === "floricola" ? "🌹 Florícola" :
+      company.tipo === "logistica" ? "✈️ Logística" : "🚛 Transporte";
+    document.getElementById("company-location").textContent = [company.ciudad, company.provincia].filter(Boolean).join(", ") || "—";
+    document.getElementById("company-contact").textContent = company.contacto_nombre || company.email || company.telefono || "—";
+  }
+}
+
+async function sendRequest() {
+  const titulo = document.getElementById("titulo").value.trim();
+  const detalle = document.getElementById("detalle").value.trim();
+
+  if (!titulo) {
+    alert("Escribe un título para la solicitud.");
+    return;
+  }
+
+  if (!empresaId || !company) {
+    alert("Error: empresa no encontrada.");
+    return;
+  }
+
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  btn.textContent = "Enviando…";
+
+  const { error } = await db.from("requests").insert({
+    requester_id: me.id,
+    recipient_id: empresaId,
+    kind: "solicitud",
+    titulo,
+    detalle: detalle || null,
+  });
+
+  btn.disabled = false;
+  btn.textContent = "Enviar solicitud";
+
+  if (error) {
+    alert("Error: " + error.message);
+    return;
+  }
+
+  alert("✅ Solicitud enviada exitosamente");
+  window.location.href = '/panel.html?tab=enviadas';
+}
+</script>
+</body>
+</html>
