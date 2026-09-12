@@ -59,6 +59,35 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background: #f5f
 </div>
 
 <script>
+async function crearSolicitud(recipientId, recipientName) {
+  try {
+    const userId = localStorage.getItem('user_id');
+    if (!userId) {
+      alert('Debes iniciar sesión primero');
+      window.location.href = '/panel.html';
+      return;
+    }
+
+    const res = await fetch('/api/requests', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requester_id: userId,
+        recipient_id: recipientId,
+        kind: 'solicitud',
+        description: `Solicitud de negocio de ${recipientName}`,
+      }),
+    });
+
+    if (!res.ok) throw new Error('Error al crear solicitud');
+
+    alert('✅ Solicitud creada exitosamente');
+    window.location.href = '/panel.html?tab=solicitudes';
+  } catch (err) {
+    alert('❌ Error: ' + err.message);
+  }
+}
+
 (async function loadDir() {
   try {
     const res = await fetch('/api/listings?status=approved');
@@ -74,7 +103,7 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background: #f5f
         const ubicacion = [c.ciudad, c.provincia].filter(Boolean).join(", ") || "—";
         const desc = c.tipos_flores || c.servicios || c.descripcion || "—";
         const contacto = c.contacto_nombre || c.email || c.telefono || "—";
-        return `<div class="card ${c.tipo}"><span class="card-badge">${getTipo(c.tipo)}</span><h3>${esc(c.nombre_empresa)}</h3><div class="card-detail"><strong>Ubicación:</strong> ${esc(ubicacion)}</div><div class="card-detail"><strong>Ofrece:</strong> ${esc(desc)}</div><div class="card-detail"><strong>Contacto:</strong> ${esc(contacto)}</div><div class="card-actions"><button class="btn-action" onclick="alert('Contactar a: ${esc(contacto)}')">Contactar</button><button class="btn-action" onclick="window.location.href='/panel.html?solicitar=${esc(c.id)}'">Solicitar</button></div></div>`;
+        return `<div class="card ${c.tipo}"><span class="card-badge">${getTipo(c.tipo)}</span><h3>${esc(c.nombre_empresa)}</h3><div class="card-detail"><strong>Ubicación:</strong> ${esc(ubicacion)}</div><div class="card-detail"><strong>Ofrece:</strong> ${esc(desc)}</div><div class="card-detail"><strong>Contacto:</strong> ${esc(contacto)}</div><div class="card-actions"><button class="btn-action" onclick="alert('Contactar a: ${esc(contacto)}')">Contactar</button><button class="btn-action" onclick="crearSolicitud('${c.id}', '${esc(c.nombre_empresa)}')">Solicitar</button></div></div>`;
       }).join("");
     } else {
       grid.innerHTML = "<div style='text-align:center;padding:40px;color:#718096;grid-column:1/-1'>No hay empresas registradas</div>";
