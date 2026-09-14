@@ -213,20 +213,20 @@ async function sendRequest() {
     kind,
     titulo,
     detalle: detalle || null,
-    required_date: fecha || null,
+    fecha_requerida: fecha || null,
   };
 
   if (kind === "transporte") {
-    const origin = document.getElementById("origin").value.trim();
-    const destination = document.getElementById("destination").value.trim();
-    const cargo = document.getElementById("cargo").value.trim();
-    if (!origin || !destination || !cargo) {
+    const origen = document.getElementById("origin").value.trim();
+    const destino = document.getElementById("destination").value.trim();
+    const carga = document.getElementById("cargo").value.trim();
+    if (!origen || !destino || !carga) {
       alert("Completa todos los campos de transporte.");
       return;
     }
-    payload.origin = origin;
-    payload.destination = destination;
-    payload.cargo = cargo;
+    payload.origen = origen;
+    payload.destino = destino;
+    payload.carga = carga;
   } else if (kind === "pedido") {
     const flores = document.getElementById("flores").value.trim();
     const cantidad = document.getElementById("cantidad").value.trim();
@@ -237,14 +237,14 @@ async function sendRequest() {
     payload.flores = flores;
     payload.cantidad = cantidad;
   } else { // envio
-    const origin = document.getElementById("origin").value.trim();
-    const destination = document.getElementById("destination").value.trim();
-    if (!origin || !destination) {
+    const origen = document.getElementById("origin").value.trim();
+    const destino = document.getElementById("destination").value.trim();
+    if (!origen || !destino) {
       alert("Completa origen y destino.");
       return;
     }
-    payload.origin = origin;
-    payload.destination = destination;
+    payload.origen = origen;
+    payload.destino = destino;
   }
 
   const btn = document.getElementById("submitBtn");
