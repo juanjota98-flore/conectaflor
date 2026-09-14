@@ -57,9 +57,16 @@
         <input id="titulo" type="text" placeholder="Ej: Solicitud de flores premium" />
       </div>
 
+      <div id="campos-dinamicos"></div>
+
       <div class="field">
-        <label>Detalle / Descripción</label>
-        <textarea id="detalle" placeholder="Cuéntale más sobre tu solicitud..."></textarea>
+        <label>Fecha requerida</label>
+        <input id="fecha" type="date" />
+      </div>
+
+      <div class="field">
+        <label>Detalle / Notas adicionales</label>
+        <textarea id="detalle" placeholder="Notas adicionales..."></textarea>
       </div>
 
       <div class="btn-group">
@@ -125,6 +132,13 @@ function showLogin() {
   document.getElementById("form").style.display = "none";
 }
 
+function kindFor(tipo) {
+  if (tipo === "floricola") return ["pedido", "envio"];
+  if (tipo === "logistica") return "envio";
+  if (tipo === "transporte") return "transporte";
+  return null;
+}
+
 async function loadMe() {
   const { data: ures } = await db.auth.getUser();
   if (!ures.user) return;
@@ -150,12 +164,37 @@ async function loadMe() {
       company.tipo === "logistica" ? "✈️ Logística" : "🚛 Transporte";
     document.getElementById("company-location").textContent = [company.ciudad, company.provincia].filter(Boolean).join(", ") || "—";
     document.getElementById("company-contact").textContent = company.contacto_nombre || company.email || company.telefono || "—";
+
+    // Determinar el kind según el tipo de empresa y mostrar campos dinámicos
+    const kindOp = kindFor(company.tipo);
+    const kind = Array.isArray(kindOp) ? kindOp[0] : kindOp;
+
+    let camposHTML = "";
+    if (kind === "transporte") {
+      camposHTML = `
+        <div class="field"><label>Origen (recoger en)</label><input id="origin" placeholder="Ej: Finca en Cayambe" /></div>
+        <div class="field"><label>Destino (entregar en)</label><input id="destination" placeholder="Ej: Aeropuerto Tababela" /></div>
+        <div class="field"><label>Carga / cantidad</label><input id="cargo" placeholder="Ej: 20 cajas / 5.000 tallos" /></div>`;
+    } else if (kind === "pedido") {
+      camposHTML = `
+        <div class="field"><label>Flores</label><input id="flores" placeholder="Ej: Rosas rojas 60cm" /></div>
+        <div class="field"><label>Cantidad</label><input id="cantidad" placeholder="Ej: 5.000 tallos" /></div>`;
+    } else { // envio
+      camposHTML = `
+        <div class="field"><label>Origen</label><input id="origin" placeholder="Ej: Cayambe" /></div>
+        <div class="field"><label>Destino</label><input id="destination" placeholder="Ej: Miami, USA" /></div>`;
+    }
+
+    document.getElementById("campos-dinamicos").innerHTML = camposHTML;
+    document.getElementById("submitBtn").dataset.kind = kind;
   }
 }
 
 async function sendRequest() {
   const titulo = document.getElementById("titulo").value.trim();
   const detalle = document.getElementById("detalle").value.trim();
+  const fecha = document.getElementById("fecha").value;
+  const kind = document.getElementById("submitBtn").dataset.kind;
 
   if (!titulo) {
     alert("Escribe un título para la solicitud.");
@@ -167,23 +206,59 @@ async function sendRequest() {
     return;
   }
 
+  // Obtener campos dinámicos según el kind
+  let payload = {
+    requester_id: me.id,
+    recipient_id: empresaId,
+    kind,
+    titulo,
+    detalle: detalle || null,
+    required_date: fecha || null,
+  };
+
+  if (kind === "transporte") {
+    const origin = document.getElementById("origin").value.trim();
+    const destination = document.getElementById("destination").value.trim();
+    const cargo = document.getElementById("cargo").value.trim();
+    if (!origin || !destination || !cargo) {
+      alert("Completa todos los campos de transporte.");
+      return;
+    }
+    payload.origin = origin;
+    payload.destination = destination;
+    payload.cargo = cargo;
+  } else if (kind === "pedido") {
+    const flores = document.getElementById("flores").value.trim();
+    const cantidad = document.getElementById("cantidad").value.trim();
+    if (!flores || !cantidad) {
+      alert("Completa flores y cantidad.");
+      return;
+    }
+    payload.flores = flores;
+    payload.cantidad = cantidad;
+  } else { // envio
+    const origin = document.getElementById("origin").value.trim();
+    const destination = document.getElementById("destination").value.trim();
+    if (!origin || !destination) {
+      alert("Completa origen y destino.");
+      return;
+    }
+    payload.origin = origin;
+    payload.destination = destination;
+  }
+
   const btn = document.getElementById("submitBtn");
   btn.disabled = true;
   btn.textContent = "Enviando…";
 
-  const { error } = await db.from("requests").insert({
-    requester_id: me.id,
-    recipient_id: empresaId,
-    kind: "solicitud",
-    titulo,
-    detalle: detalle || null,
-  });
+  const { error } = await db.from("requests").insert(payload);
 
   btn.disabled = false;
   btn.textContent = "Enviar solicitud";
 
   if (error) {
     alert("Error: " + error.message);
+    console.error(error);
     return;
   }
 
