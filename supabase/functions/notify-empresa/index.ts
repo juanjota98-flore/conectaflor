@@ -73,7 +73,7 @@ function getEmailContent(event: SupabaseWebhookPayload): EmailResult | null {
           <h2>¡Hola ${nombre_empresa}!</h2>
           <p>Gracias por registrarte en ConectaFlor.</p>
           <p>Tu solicitud está siendo revisada por nuestro equipo. Te notificaremos cuando sea aprobada.</p>
-          <p>Mientras tanto, puedes explorar nuestro directorio en <a href="https://conectaflor.netlify.app">conectaflor.netlify.app</a></p>
+          <p>Mientras tanto, puedes explorar nuestro directorio en <a href="https://conectaflor.vercel.app">conectaflor.netlify.app</a></p>
           <p>Saludos,<br/>Equipo ConectaFlor</p>
         `,
       };
@@ -87,7 +87,7 @@ function getEmailContent(event: SupabaseWebhookPayload): EmailResult | null {
         html: `
           <h2>¡Felicidades ${nombre_empresa}!</h2>
           <p>Tu empresa ha sido aprobada y ahora es visible en el directorio de ConectaFlor.</p>
-          <p>Puedes acceder a tu panel aquí: <a href="https://conectaflor.netlify.app/panel.html">Panel de Control</a></p>
+          <p>Puedes acceder a tu panel aquí: <a href="https://conectaflor.vercel.app/panel.html">Panel de Control</a></p>
           <p>Saludos,<br/>Equipo ConectaFlor</p>
         `,
       };
@@ -127,7 +127,7 @@ function getEmailContent(event: SupabaseWebhookPayload): EmailResult | null {
           <h2>Hola ${recipient_empresa},</h2>
           <p>Has recibido una nueva solicitud de <strong>${requester_empresa}</strong>.</p>
           <p><strong>Solicitud:</strong> ${titulo}</p>
-          <p>Puedes ver los detalles y enviar tu cotización en el panel: <a href="https://conectaflor.netlify.app/panel.html">Panel de Control</a></p>
+          <p>Puedes ver los detalles y enviar tu cotización en el panel: <a href="https://conectaflor.vercel.app/panel.html">Panel de Control</a></p>
           <p>Saludos,<br/>Equipo ConectaFlor</p>
         `,
       };
@@ -141,7 +141,7 @@ function getEmailContent(event: SupabaseWebhookPayload): EmailResult | null {
         html: `
           <h2>Hola ${requester_empresa},</h2>
           <p><strong>${recipient_empresa}</strong> ha aceptado tu solicitud: <strong>${titulo}</strong></p>
-          <p>Puedes ver los detalles en tu panel: <a href="https://conectaflor.netlify.app/panel.html">Panel de Control</a></p>
+          <p>Puedes ver los detalles en tu panel: <a href="https://conectaflor.vercel.app/panel.html">Panel de Control</a></p>
           <p>Saludos,<br/>Equipo ConectaFlor</p>
         `,
       };
@@ -155,7 +155,7 @@ function getEmailContent(event: SupabaseWebhookPayload): EmailResult | null {
         html: `
           <h2>Hola ${requester_empresa},</h2>
           <p><strong>${recipient_empresa}</strong> ha rechazado tu solicitud: <strong>${titulo}</strong></p>
-          <p>Puedes intentar con otro proveedor en el directorio: <a href="https://conectaflor.netlify.app">ConectaFlor</a></p>
+          <p>Puedes intentar con otro proveedor en el directorio: <a href="https://conectaflor.vercel.app">ConectaFlor</a></p>
           <p>Saludos,<br/>Equipo ConectaFlor</p>
         `,
       };
@@ -181,7 +181,7 @@ function getEmailContent(event: SupabaseWebhookPayload): EmailResult | null {
           <h2>Hola ${requester_empresa},</h2>
           <p>Has recibido una cotización de <strong>${sender_empresa}</strong>.</p>
           <p><strong>Monto:</strong> ${precio} ${moneda}</p>
-          <p>Puedes revisar y aceptar o rechazar en tu panel: <a href="https://conectaflor.netlify.app/panel.html">Panel de Control</a></p>
+          <p>Puedes revisar y aceptar o rechazar en tu panel: <a href="https://conectaflor.vercel.app/panel.html">Panel de Control</a></p>
           <p>Saludos,<br/>Equipo ConectaFlor</p>
         `,
       };
@@ -209,7 +209,7 @@ function getEmailContent(event: SupabaseWebhookPayload): EmailResult | null {
         html: `
           <h2>Hola ${requester_empresa},</h2>
           <p>Has rechazado la cotización de <strong>${sender_empresa}</strong> por ${precio} ${moneda}.</p>
-          <p>Puedes solicitar nuevas cotizaciones en tu panel: <a href="https://conectaflor.netlify.app/panel.html">Panel de Control</a></p>
+          <p>Puedes solicitar nuevas cotizaciones en tu panel: <a href="https://conectaflor.vercel.app/panel.html">Panel de Control</a></p>
           <p>Saludos,<br/>Equipo ConectaFlor</p>
         `,
       };
@@ -235,7 +235,7 @@ function getEmailContent(event: SupabaseWebhookPayload): EmailResult | null {
           <p><strong>Flores:</strong> ${flores}</p>
           <p><strong>Cantidad:</strong> ${cantidad}</p>
           <p><strong>Precio:</strong> ${precio} USD</p>
-          <p>Accede al tablón para ofertar: <a href="https://conectaflor.netlify.app">ConectaFlor</a></p>
+          <p>Accede al tablón para ofertar: <a href="https://conectaflor.vercel.app">ConectaFlor</a></p>
           <p>Saludos,<br/>Equipo ConectaFlor</p>
         `,
       };
