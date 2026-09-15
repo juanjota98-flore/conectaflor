@@ -185,9 +185,14 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 - ✅ Botón "Solicitar" en cada empresa redirige a `solicitud.html?empresa=[id]`
 - ✅ Login requerido antes de crear solicitud
 
+**Logros sesión 2026-09-14 (cont.):**
+- ✅ **Emails funcionando:** Cambio de sender a `juanjota98@gmail.com` (dominio verificado en Brevo)
+- ✅ **Links en emails corregidos:** Todos los URLs en Edge Function actualizados de `netlify.app` → `vercel.app`
+- ✅ **Edge Function deployada:** `supabase functions deploy notify-empresa` exitosa
+
 **Pendiente para próxima sesión:**
 - 🔴 **Sincronización de datos:** Datos en panel.html "Explorar" vs directorio.html deben ser consistentes
-- 🔴 **Notificaciones:** Verificar que triggers SQL envíen email automático al recipient_id
+- 🔴 **Notificaciones:** Verificar que triggers SQL envíen email automático al recipient_id (debe estar funcionando ya)
 - 🔴 **Flujo aprobación:** Panel recipient reciba solicitud en "Solicitudes recibidas", pueda cotizar/aceptar/rechazar
 - 🔴 **Historial:** Tab en panel.html para solicitudes completadas (aceptadas/rechazadas)
 
