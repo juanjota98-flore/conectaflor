@@ -167,23 +167,29 @@ solicitan/cotizan servicios entre sí. Idioma de la interfaz: **español**.
 
 ## Roadmap / pendientes
 
-## Solicitudes - Flujo básico completado 2026-09-11 ✅
+## Solicitudes - Flujo de creación completado 2026-09-14 ✅
 
-**Logros esta sesión:**
-- ✅ Página `solicitud.html` dedicada para crear solicitud (redirige desde directorio.html)
+**Logros sesión 2026-09-14:**
+- ✅ **Formulario completo en solicitud.html:**
+  - Título, Flores/Servicio, Cantidad, Fecha requerida, Detalle
+  - Campos dinámicos condicionales: Pedido (Flores+Cantidad), Envío (Origen+Destino), Transporte (Origen+Destino+Carga)
+  - Validación de campos requeridos
+  - Envío correcto a tabla `requests` con nombres de columna correctos
+- ✅ **Datos de empresa prefillados y correctos**
+- ✅ **Flujo completo:** Directorio → Solicitar → solicitud.html (prefillado) → Enviar → panel.html "Mis solicitudes"
+- ✅ **Solicitudes se guardan en Supabase** y aparecen inmediatamente en "Mis solicitudes"
+
+**Logros sesión anterior (2026-09-11):**
+- ✅ Página `solicitud.html` dedicada para crear solicitud
 - ✅ Directorio agrupado por tipo: 🌹 Florícolas, ✈️ Logística, 🚛 Transporte
 - ✅ Botón "Solicitar" en cada empresa redirige a `solicitud.html?empresa=[id]`
 - ✅ Login requerido antes de crear solicitud
-- ✅ Datos básicos de empresa prefillados (nombre, tipo, ubicación, contacto)
 
-**Pendiente para próxima sesión - CRÍTICO:**
-- 🔴 **Formulario completo solicitud.html:** Expandir a campos como en panel.html:
-  - Título, Flores/Servicio, Cantidad, Fecha requerida, Detalle
-  - Campos condicionales según `kind` (pedido, envío, transporte)
-  - Validación y envío a tabla `requests` con todos los campos correctos
-- 🔴 **Notificaciones:** Verificar que triggers SQL envíen email al recipient_id
-- 🔴 **Flujo aprobación:** Aceptación, rechazo, cotizaciones
-- 🔴 **Historial:** Tab en panel.html para solicitudes completadas
+**Pendiente para próxima sesión:**
+- 🔴 **Sincronización de datos:** Datos en panel.html "Explorar" vs directorio.html deben ser consistentes
+- 🔴 **Notificaciones:** Verificar que triggers SQL envíen email automático al recipient_id
+- 🔴 **Flujo aprobación:** Panel recipient reciba solicitud en "Solicitudes recibidas", pueda cotizar/aceptar/rechazar
+- 🔴 **Historial:** Tab en panel.html para solicitudes completadas (aceptadas/rechazadas)
 
 ### Corto plazo (próximas sesiones)
 - ✅ **Landing completa:** Rediseñada con paleta floral, en vivo en Vercel
