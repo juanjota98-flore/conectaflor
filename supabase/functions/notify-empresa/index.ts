@@ -26,7 +26,7 @@ async function sendEmail(
 
   const payload = {
     to: [{ email: to }],
-    sender: { name: "ConectaFlor", email: "noreply@conectaflor.com" },
+    sender: { name: "ConectaFlor", email: "juanjota98@gmail.com" },
     subject,
     htmlContent,
   };
