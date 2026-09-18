@@ -246,14 +246,14 @@ declare
   florista_listing record;
   recipient record;
 begin
-  select nombre_empresa into florista_listing from public.listings where id = new.florista_id;
+  select nombre_empresa into florista_listing from public.listings where id = new.listing_id;
 
   edge_function_url := 'https://jbsgahlfsixbltvpdmqt.supabase.co/functions/v1/notify-empresa';
   anon_key := 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impic2dhaGxmc2l4Ymx0dnBkbXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxOTY4NjQsImV4cCI6MjA5NTc3Mjg2NH0.didWmqYGuUYlx4LIXRnlEB14uElEErm_Ujn_tCcaufc';
 
   -- Enviar notificación a TODAS las empresas excepto transportistas
   for recipient in select id, nombre_empresa, email, tipo from public.listings
-    where status = 'approved' and tipo != 'transporte' and id != new.florista_id
+    where status = 'approved' and tipo != 'transporte' and id != new.listing_id
   loop
     perform net.http_post(
       url := edge_function_url,
