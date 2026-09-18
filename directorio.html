@@ -76,18 +76,26 @@ body { font-family: "Plus Jakarta Sans", system-ui, sans-serif; background: #f5f
 </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/config.js"></script>
 <script>
 // Detectar si está logueado y actualizar nav
-(function() {
-  const userId = localStorage.getItem('user_id');
-  if (userId) {
-    const navLinks = document.querySelector('.nav-links');
-    const loginLink = navLinks.querySelector('a[href="panel.html"]');
-    if (loginLink && loginLink.textContent.includes('Iniciar')) {
-      loginLink.textContent = 'Mi panel';
+(async function() {
+  try {
+    const db = window.supabase?.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+    if (!db) return;
+    const { data } = await db.auth.getSession();
+    if (data.session) {
+      const navLinks = document.querySelector('.nav-links');
+      // Ocultar "Registrar"
+      const registerLink = navLinks.querySelector('a[href="registro.html"]');
+      if (registerLink) registerLink.style.display = 'none';
+      // Cambiar "Iniciar sesión" a "Mi panel"
+      const loginLink = navLinks.querySelector('a[href="panel.html"]');
+      if (loginLink) loginLink.textContent = 'Mi panel';
     }
-  }
-});
+  } catch (e) { /* sin sesión */ }
+})();
 
 (async function loadDir() {
   try {
