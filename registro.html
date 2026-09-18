@@ -132,20 +132,12 @@
 <script>
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// Si ya hay sesión iniciada, esta página no aplica: al panel.
+// Si ya hay sesión iniciada, redirigir a panel.html
 (async () => {
   try {
     const { data } = await getDB().auth.getSession();
     if (data.session) {
-      const card = document.querySelector(".form-card");
-      if (card) card.innerHTML = `<div style="text-align:center;padding:20px;">
-        <h3 style="font-family:'Fraunces',serif;margin-bottom:10px;">Ya tienes una sesión iniciada</h3>
-        <p style="color:var(--ink-soft);margin-bottom:18px;">Para registrar o editar tu empresa, ve a tu panel.</p>
-        <a class="btn btn-primary" href="panel.html">Ir a mi panel</a>
-        <p style="margin-top:14px;"><a href="#" id="ro-logout" style="color:var(--ink-soft);">Cerrar sesión para registrar otra empresa</a></p>
-      </div>`;
-      const lo = document.getElementById("ro-logout");
-      if (lo) lo.addEventListener("click", async (e) => { e.preventDefault(); await getDB().auth.signOut(); location.reload(); });
+      window.location.href = '/panel.html';
     }
   } catch (e) { /* sin sesión: registro normal */ }
 })();

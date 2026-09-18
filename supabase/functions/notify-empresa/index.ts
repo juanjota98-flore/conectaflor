@@ -223,19 +223,21 @@ function getEmailContent(event: SupabaseWebhookPayload): EmailResult | null {
       const cantidad = record.cantidad as string;
       const precio = record.precio as number;
       const florista_empresa = record.florista_empresa as string;
+      const recipient_email = record.recipient_email as string;
+      const recipient_empresa = record.recipient_empresa as string;
 
-      // Nota: Este email se envía a todos los florícolas (broadcast)
-      // El trigger debe manejar enviar a múltiples destinatarios
+      if (!recipient_email) return null;
+
       return {
-        to: "broadcast", // Marcador especial para triggers
+        to: recipient_email,
         subject: `Sobrantes disponibles: ${flores}`,
         html: `
-          <h2>Sobrantes Disponibles</h2>
+          <h2>Hola ${recipient_empresa},</h2>
           <p><strong>${florista_empresa}</strong> tiene sobrantes disponibles:</p>
           <p><strong>Flores:</strong> ${flores}</p>
           <p><strong>Cantidad:</strong> ${cantidad}</p>
-          <p><strong>Precio:</strong> ${precio} USD</p>
-          <p>Accede al tablón para ofertar: <a href="https://conectaflor.vercel.app">ConectaFlor</a></p>
+          ${precio ? `<p><strong>Precio:</strong> ${precio} USD</p>` : ""}
+          <p>Accede al tablón para hacer tu oferta: <a href="https://conectaflor.vercel.app/panel.html?tab=excedentes">Ver sobrantes</a></p>
           <p>Saludos,<br/>Equipo ConectaFlor</p>
         `,
       };

@@ -88,6 +88,13 @@
           <button class="tab" data-tab="historial">Historial</button>
           <button class="tab" data-tab="perfil">Mi perfil</button>
         </div>
+        <style>
+          .explorar-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 20px; }
+          .explorar-col h3 { font-size: 1rem; font-weight: 700; color: var(--ink); margin: 0 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--line); }
+          .explorar-col-floricola h3 { border-bottom-color: #EC4899; }
+          .explorar-col-logistica h3 { border-bottom-color: #3b82f6; }
+          .explorar-col-transporte h3 { border-bottom-color: #f59e0b; }
+        </style>
         <div id="content"></div>
       </div>
     </div>
@@ -240,6 +247,7 @@ function renderTab() {
   else if (currentTab === "recibidas") renderRecibidas();
   else if (currentTab === "enviadas") renderEnviadas();
   else if (currentTab === "excedentes") renderExcedentes();
+  else if (currentTab === "historial") renderHistorial();
   else renderPerfil();
 }
 
@@ -283,10 +291,13 @@ async function renderExplorar() {
   const lista = (data || []).filter(co => kindFor(co.tipo) !== null && !(co.tipo === "transporte" && co.disponible === false));
   if (!lista.length) { c.innerHTML = `<div class='empty'>Aún no hay empresas disponibles para solicitar.</div>`; return; }
 
-  c.innerHTML = lista.map(co => {
+  // Agrupar por tipo
+  const porTipo = { floricola: [], logistica: [], transporte: [] };
+  lista.forEach(co => { if (porTipo[co.tipo]) porTipo[co.tipo].push(co); });
+
+  const renderItem = (co) => {
     const kind = kindFor(co.tipo);
     const tipoTag = co.tipo === "floricola" ? "🌹 Florícola" : (co.tipo === "logistica" ? "✈️ Logística" : "🚛 Transporte");
-    // Ficha extra para transportistas
     const infoTransporte = co.tipo === "transporte" ? `
       <div class="detail">
         ${co.camiones_disponibles != null ? `<b>Camiones:</b> ${co.camiones_disponibles} · ` : ""}
@@ -295,7 +306,6 @@ async function renderExplorar() {
         ${co.cobertura ? `<b>Cobertura:</b> ${esc(co.cobertura)} · ` : ""}
         <b>Refrigerado:</b> ${co.refrigerado ? "Sí ❄️" : "No"}
       </div>` : "";
-    // Campos del formulario según el tipo de solicitud
     let camposForm;
     if (kind === "transporte") {
       camposForm = `
@@ -310,7 +320,7 @@ async function renderExplorar() {
           <div class="field"><label>Flores</label><input id="fl-${co.id}" placeholder="Ej: Rosas rojas 60cm" /></div>
           <div class="field"><label>Cantidad</label><input id="cd-${co.id}" placeholder="Ej: 5.000 tallos" /></div>
         </div>`;
-    } else { // envio
+    } else {
       camposForm = `
         <div class="grid-2">
           <div class="field"><label>Origen</label><input id="or-${co.id}" placeholder="Ej: Cayambe" /></div>
@@ -335,7 +345,16 @@ async function renderExplorar() {
         <button class="btn btn-primary btn-sm" data-send="${co.id}" data-kind="${kind}">Enviar solicitud</button>
       </div>
     </div>`;
-  }).join("");
+  };
+
+  const colsHTML = `
+    <div class="explorar-cols">
+      ${porTipo.floricola.length ? `<div class="explorar-col explorar-col-floricola"><h3>🌹 Florícolas</h3>${porTipo.floricola.map(renderItem).join("")}</div>` : ""}
+      ${porTipo.logistica.length ? `<div class="explorar-col explorar-col-logistica"><h3>✈️ Logística</h3>${porTipo.logistica.map(renderItem).join("")}</div>` : ""}
+      ${porTipo.transporte.length ? `<div class="explorar-col explorar-col-transporte"><h3>🚛 Transporte</h3>${porTipo.transporte.map(renderItem).join("")}</div>` : ""}
+    </div>`;
+
+  c.innerHTML = colsHTML;
 
   c.querySelectorAll("[data-toggle]").forEach(b => b.addEventListener("click", () => document.getElementById("f-"+b.dataset.toggle).classList.toggle("show")));
   c.querySelectorAll("[data-send]").forEach(b => b.addEventListener("click", () => sendRequest(b.dataset.send, b.dataset.kind, b)));
@@ -784,6 +803,58 @@ async function deleteAccount() {
   me = null; showLogin();
 }
 
+/* ---------- HISTORIAL (solicitudes completadas) ---------- */
+async function renderHistorial() {
+  const c = document.getElementById("content");
+  c.innerHTML = "<div class='loading'>Cargando historial…</div>";
+
+  // Solicitudes que envié y fueron aceptadas
+  const { data: enviadas, error: e1 } = await db.from("requests")
+    .select("*").eq("requester_id", me.id).eq("status", "accepted").order("created_at",{ascending:false});
+
+  // Solicitudes que recibí y fueron aceptadas
+  const { data: recibidas, error: e2 } = await db.from("requests")
+    .select("*").eq("recipient_id", me.id).eq("status", "accepted").order("created_at",{ascending:false});
+
+  if (e1 || e2) { c.innerHTML = "<div class='empty'>Error al cargar.</div>"; console.error(e1||e2); return; }
+
+  const allReqs = [...(enviadas||[]), ...(recibidas||[])].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+  if (!allReqs.length) { c.innerHTML = "<div class='empty'>No tienes solicitudes completadas en el historial.</div>"; return; }
+
+  const allIds = [...new Set(allReqs.map(r => r.requester_id).concat(allReqs.map(r => r.recipient_id)))];
+  const { data: companies } = await db.from("listings").select("id,nombre_empresa,email,whatsapp,ciudad").in("id", allIds);
+  const cMap = namesMap(companies);
+
+  const reqIds = allReqs.map(r => r.id);
+  const { data: quotes } = await db.from("quotes").select("*").in("request_id", reqIds);
+  const acceptedQ = {}; (quotes||[]).forEach(q => { if (q.status === "accepted") acceptedQ[q.request_id] = q; });
+
+  c.innerHTML = allReqs.map(r => {
+    const isMyRequest = r.requester_id === me.id;
+    const otherParty = cMap[isMyRequest ? r.recipient_id : r.requester_id] || {};
+    const q = acceptedQ[r.id];
+    const titulo = r.kind === "transporte" ? (r.titulo || "Solicitud de transporte 🚛")
+                 : (r.titulo || (r.kind === "pedido" ? "Pedido de flores" : "Solicitud de envío"));
+
+    return `
+    <div class="item">
+      <div class="top">
+        <div><h4>${esc(titulo)}</h4>
+          <div class="place">${isMyRequest ? "Para: " : "De: "}${esc(otherParty.nombre_empresa || "—")}</div></div>
+        <span class="pill accepted">✅ Completado</span>
+      </div>
+      <div class="detail">
+        ${r.flores ? `<b>Carga:</b> ${esc(r.flores)} · ` : ""}${r.cantidad ? `<b>Cantidad:</b> ${esc(r.cantidad)} · ` : ""}
+        ${r.origen ? `<b>Origen:</b> ${esc(r.origen)} · ` : ""}${r.destino ? `<b>Destino:</b> ${esc(r.destino)} · ` : ""}
+        ${r.fecha_requerida ? `<b>Para:</b> ${esc(r.fecha_requerida)}` : ""}
+      </div>
+      ${r.detalle ? `<div class="detail">${esc(r.detalle)}</div>` : ""}
+      ${q ? `<div class="quote-box"><b>Cotización aceptada:</b> ${fmtMoney(q.precio,q.moneda)}${q.detalle ? " · "+esc(q.detalle) : ""}</div>` : ""}
+      <div class="detail"><b>Contacto:</b> ${esc(otherParty.email||"")} ${otherParty.whatsapp ? "· WA "+esc(otherParty.whatsapp) : ""}</div>
+    </div>`;
+  }).join("");
+}
+
 /* ---------- EXCEDENTES (tablón) ---------- */
 async function renderExcedentes() {
   const c = document.getElementById("content");
@@ -904,10 +975,10 @@ async function renderExcedentes() {
   }).join("") : "<div class='detail'>No hay excedentes de otras empresas por ahora.</div>";
 
   c.innerHTML = `
-    ${formHTML}
-    <h3 style="font-family:'Fraunces',serif;margin:26px 0 12px;">Mis excedentes</h3>
+    <h3 style="font-family:'Fraunces',serif;margin:0 0 12px;">Mis excedentes publicados</h3>
     ${mineHTML}
-    <h3 style="font-family:'Fraunces',serif;margin:26px 0 12px;">Excedentes disponibles</h3>
+    ${formHTML}
+    <h3 style="font-family:'Fraunces',serif;margin:26px 0 12px;">Excedentes disponibles de otras empresas</h3>
     ${othersHTML}`;
 
   document.getElementById("sp-publish").addEventListener("click", publishSurplus);
